@@ -3,18 +3,14 @@
     <div>
       <logo />
       <h1 class="title">
-        {{application_name}}
+        {{ application_name }}
       </h1>
       <h2 class="subtitle">
         A simple task sheduler.
       </h2>
       <gin-banner>test</gin-banner>
       <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >
+        <a href="https://nuxtjs.org/" target="_blank" class="button--green">
           Documentation
         </a>
         <a
@@ -30,16 +26,16 @@
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+import Logo from "~/components/Logo.vue"
 
 export default {
+  components: {
+    Logo
+  },
   computed: {
     application_name() {
       return this.$store.state.application_name
     }
-  },
-  components: {
-    Logo
   }
 }
 </script>
@@ -55,8 +51,8 @@ export default {
 }
 
 .title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   display: block;
   font-weight: 300;
   font-size: 100px;

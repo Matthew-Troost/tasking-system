@@ -3,26 +3,26 @@
     <!-- Navbar -->
     <navigation
       class="navbar-top navbar-horizontal navbar-dark"
-      containerClasses="px-4 container"
+      container-classes="px-4 container"
       expand
     >
       <router-link slot="brand" class="navbar-brand" to="/">
         <h2>STEVE.</h2>
       </router-link>
 
-      <template v-slot="{closeMenu}">
+      <template v-slot="{ closeMenu }">
         <!-- Collapse header -->
         <div class="navbar-collapse-header d-md-none">
           <div class="row">
             <div class="col-6 collapse-close">
               <button
                 type="button"
-                @click="closeMenu"
                 class="navbar-toggler"
                 aria-label="Toggle sidenav"
+                @click="closeMenu"
               >
-                <span></span>
-                <span></span>
+                <span />
+                <span />
               </button>
             </div>
           </div>
@@ -31,25 +31,25 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
             <router-link class="nav-link nav-link-icon" to="/">
-              <i class="ni ni-planet"></i>
+              <i class="ni ni-planet" />
               <span class="nav-link-inner--text">Dashboard</span>
             </router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link nav-link-icon" to="/register">
-              <i class="ni ni-circle-08"></i>
+              <i class="ni ni-circle-08" />
               <span class="nav-link-inner--text">Register</span>
             </router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link nav-link-icon" to="/login">
-              <i class="ni ni-key-25"></i>
+              <i class="ni ni-key-25" />
               <span class="nav-link-inner--text">Login</span>
             </router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link nav-link-icon" to="/profile">
-              <i class="ni ni-single-02"></i>
+              <i class="ni ni-single-02" />
               <span class="nav-link-inner--text">Profile</span>
             </router-link>
           </li>
@@ -62,10 +62,12 @@
         <div class="header-body text-center mb-7">
           <div class="row justify-content-center">
             <div class="col-lg-5 col-md-6">
-              <h1 class="text-white">Welcome!</h1>
+              <h1 class="text-white">
+                Welcome!
+              </h1>
               <p class="text-lead text-white">
-                Use these awesome forms to login or create new account in
-                your project for free.
+                Use these awesome forms to login or create new account in your
+                project for free.
               </p>
             </div>
           </div>
@@ -87,7 +89,7 @@
     <!-- Page content -->
     <div class="container mt--8 pb-5">
       <slide-y-up-transition mode="out-in" origin="center top">
-        <router-view></router-view>
+        <router-view />
       </slide-y-up-transition>
     </div>
     <footer class="py-5">
@@ -95,18 +97,26 @@
         <div class="row align-items-center justify-content-xl-between">
           <div class="col-xl-6">
             <div class="copyright text-center text-xl-left text-muted">
-              &copy; {{year}}
+              &copy; {{ year }}
               <a
                 href="https://www.netgen.co.za/"
                 class="font-weight-bold ml-1"
                 target="_blank"
-              >{{companyName}}</a>
+                >{{ companyName }}
+              </a>
             </div>
           </div>
           <div class="col-xl-6">
-            <ul class="nav nav-footer justify-content-center justify-content-xl-end">
+            <ul
+              class="nav nav-footer justify-content-center justify-content-xl-end"
+            >
               <li class="nav-item">
-                <a href="https://www.creative-tim.com" class="nav-link" target="_blank">A product of Netgen (Pty) Ltd</a>
+                <a
+                  href="https://www.creative-tim.com"
+                  class="nav-link"
+                  target="_blank"
+                  >A product of Netgen (Pty) Ltd
+                </a>
               </li>
             </ul>
           </div>
@@ -117,11 +127,11 @@
 </template>
 
 <script>
-import { SlideYUpTransition } from "vue2-transitions";
-import Navigation from "../components/Navigation";
+import { SlideYUpTransition } from "vue2-transitions"
+import Navigation from "../components/Navigation"
 
 export default {
-  name: "auth-layout",
+  name: "AuthLayout",
   components: {
     SlideYUpTransition,
     Navigation
@@ -131,8 +141,7 @@ export default {
       year: new Date().getFullYear(),
       showMenu: false,
       companyName: "Netgen (Pty) Ltd"
-    };
+    }
   }
-};
+}
 </script>
-

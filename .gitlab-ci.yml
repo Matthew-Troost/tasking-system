@@ -1,0 +1,3 @@
+// this is used for Continuous integration set-up
+
+// add 'npm run lintfix' and 'npm run lint' to scripts

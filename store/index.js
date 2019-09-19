@@ -1,9 +1,9 @@
 export const state = () => ({
-    application_name: "steve."
-  })
-  
-  export const mutations = {
-    update (state, text) {
-      state.application_name = text;
-    }
+  application_name: "steve."
+})
+
+export const mutations = {
+  update(state, text) {
+    state.application_name = text
   }
+}
