@@ -8,6 +8,7 @@
       <h2 class="subtitle">
         A simple task sheduler.
       </h2>
+      <gin-banner>test</gin-banner>
       <div class="links">
         <a
           href="https://nuxtjs.org/"
