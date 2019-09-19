@@ -3,7 +3,7 @@
     <div>
       <logo />
       <h1 class="title">
-        steve
+        {{application_name}}
       </h1>
       <h2 class="subtitle">
         A simple task sheduler.
@@ -32,6 +32,11 @@
 import Logo from '~/components/Logo.vue'
 
 export default {
+  computed: {
+    application_name() {
+      return this.$store.state.application_name
+    }
+  },
   components: {
     Logo
   }
