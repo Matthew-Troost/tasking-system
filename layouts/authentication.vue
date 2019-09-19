@@ -7,18 +7,13 @@
       expand
     >
       <router-link slot="brand" class="navbar-brand" to="/">
-        <img src="../assets/images/logo.png" />
+        <h2>STEVE.</h2>
       </router-link>
 
       <template v-slot="{closeMenu}">
         <!-- Collapse header -->
         <div class="navbar-collapse-header d-md-none">
           <div class="row">
-            <div class="col-6 collapse-brand">
-              <router-link to="/">
-                <img src="img/brand/green.png" />
-              </router-link>
-            </div>
             <div class="col-6 collapse-close">
               <button
                 type="button"
@@ -108,6 +103,13 @@
               >{{companyName}}</a>
             </div>
           </div>
+          <div class="col-xl-6">
+            <ul class="nav nav-footer justify-content-center justify-content-xl-end">
+              <li class="nav-item">
+                <a href="https://www.creative-tim.com" class="nav-link" target="_blank">A product of Netgen (Pty) Ltd</a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </footer>
@@ -121,13 +123,14 @@ import Navigation from "../components/Navigation";
 export default {
   name: "auth-layout",
   components: {
-    SlideYUpTransition
+    SlideYUpTransition,
+    Navigation
   },
   data() {
     return {
       year: new Date().getFullYear(),
       showMenu: false,
-      companyName: "Netgen (Pty) Ltd."
+      companyName: "Netgen (Pty) Ltd"
     };
   }
 };

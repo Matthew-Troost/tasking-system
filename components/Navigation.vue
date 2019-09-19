@@ -21,8 +21,7 @@
 
             <div class="collapse navbar-collapse"
                  :class="{show: toggled}"
-                 :id="contentId"
-                 v-click-outside="closeMenu">
+                 :id="contentId">
 
                 <slot :close-menu="closeMenu"></slot>
             </div>
@@ -33,6 +32,7 @@
   import NavigationToggleButton from "./NavigationToggleButton";
 
   export default {
+      name: "navigation",
     components: {
       NavigationToggleButton
     },
