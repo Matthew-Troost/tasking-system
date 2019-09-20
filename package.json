@@ -14,27 +14,27 @@
     "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore ."
   },
   "dependencies": {
-    "babel-eslint": "^10.0.3",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.1",
     "cross-env": "^5.2.0",
+    "express": "^4.16.4",
+    "gin-blocks": "^0.1.1",
+    "nuxt": "^2.0.0",
+    "vue2-transitions": "^0.3.0",
+    "vuex": "^3.1.1"
+  },
+  "devDependencies": {
+    "@vue/test-utils": "^1.0.0-beta.27",
+    "babel-eslint": "^10.0.3",
+    "babel-jest": "^24.1.0",
     "eslint": "^6.4.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-loader": "^3.0.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.2.3",
-    "express": "^4.16.4",
-    "gin-blocks": "^0.1.1",
-    "nuxt": "^2.0.0",
-    "prettier": "^1.18.2",
-    "vue2-transitions": "^0.3.0",
-    "vuex": "^3.1.1"
-  },
-  "devDependencies": {
-    "nodemon": "^1.18.9",
-    "@vue/test-utils": "^1.0.0-beta.27",
-    "babel-jest": "^24.1.0",
     "jest": "^24.1.0",
+    "nodemon": "^1.18.9",
+    "prettier": "^1.18.2",
     "vue-jest": "^4.0.0-0"
   }
 }

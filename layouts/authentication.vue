@@ -1,7 +1,7 @@
 <template>
   <div class="main-content bg-default">
     <!-- Navbar -->
-    <navigation
+    <Navigation
       class="navbar-top navbar-horizontal navbar-dark"
       container-classes="px-4 container"
       expand
@@ -55,16 +55,14 @@
           </li>
         </ul>
       </template>
-    </navigation>
+    </Navigation>
     <!-- Header -->
     <div class="header bg-gradient-success py-7 py-lg-8">
       <div class="container">
         <div class="header-body text-center mb-7">
           <div class="row justify-content-center">
             <div class="col-lg-5 col-md-6">
-              <h1 class="text-white">
-                Welcome!
-              </h1>
+              <h1 class="text-white">Welcome!</h1>
               <p class="text-lead text-white">
                 Use these awesome forms to login or create new account in your
                 project for free.
@@ -88,9 +86,9 @@
     </div>
     <!-- Page content -->
     <div class="container mt--8 pb-5">
-      <slide-y-up-transition mode="out-in" origin="center top">
+      <SlideYUpTransition mode="out-in" origin="center top">
         <router-view />
-      </slide-y-up-transition>
+      </SlideYUpTransition>
     </div>
     <footer class="py-5">
       <div class="container">
@@ -102,8 +100,8 @@
                 href="https://www.netgen.co.za/"
                 class="font-weight-bold ml-1"
                 target="_blank"
-                >{{ companyName }}
-              </a>
+                >{{ companyName }}</a
+              >
             </div>
           </div>
           <div class="col-xl-6">
@@ -111,12 +109,7 @@
               class="nav nav-footer justify-content-center justify-content-xl-end"
             >
               <li class="nav-item">
-                <a
-                  href="https://www.creative-tim.com"
-                  class="nav-link"
-                  target="_blank"
-                  >A product of Netgen (Pty) Ltd
-                </a>
+                <p>A product of Netgen (Pty) Ltd</p>
               </li>
             </ul>
           </div>

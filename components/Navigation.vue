@@ -16,14 +16,14 @@
           {{ $route.name }}
         </router-link>
       </slot>
-      <navigation-toggle-button
+      <NavigationToggleButton
         v-if="showToggleButton"
         :toggled="toggled"
         :target="contentId"
         @click.native.stop="toggled = !toggled"
       >
         <span class="navbar-toggler-icon" />
-      </navigation-toggle-button>
+      </NavigationToggleButton>
 
       <div
         :id="contentId"
