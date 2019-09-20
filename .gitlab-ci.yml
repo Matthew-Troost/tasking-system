@@ -1,3 +1,55 @@
-// this is used for Continuous integration set-up
+image: node:latest
 
-// add 'npm run lintfix' and 'npm run lint' to scripts
+stages:
+  - format
+  - build
+  # - test
+  - deploy
+
+# this gets run before anything else
+before_script: 
+  - npm run install
+
+format:
+  stage: format
+  script:
+    - npm run lintfix
+
+build:
+  stage: build
+  script:
+    - npm run build
+  artifacts: #describes a path to the build result. The files in this path can be used in the next build steps
+    expire_in: 1 week
+    paths:
+      - dist
+  dependencies:
+    - format
+
+# test:
+#   stage: test
+#   script:
+#     - npm run test
+#   artifacts:
+#     when: always  # save test results even when the task fails
+#     expire_in: 1 week  # save gitlab server space, we copy the files we need to deploy folder later on
+#     paths:
+#       - '.\TestResult.xml'  # saving NUnit results to copy to deploy folder
+#   dependencies:
+#     - format
+#     - build
+
+deploy:
+  stage: deploy
+  only:
+    - master #this step only occurs on the master branch
+  script:
+    - npm install -g firebase-tools
+    - npm run install
+    - npm run build
+    - firebase deploy -m "Pipeline $CI_PIPELINE_ID, build $CI_BUILD_ID" --non-interactive --token $FIREBASE_DEPLOY_KEY
+  
+  dependencies:
+    - format
+    - build
+    - test
