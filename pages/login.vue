@@ -81,6 +81,19 @@ export default {
         password: ""
       }
     }
+  },
+  methods: {
+    login: function() {
+      this.$store.dispatch("users/login", this.email, this.password).then(
+        // eslint-disable-next-line no-unused-vars
+        response => {
+          alert("Succesfully authenticated!")
+        },
+        error => {
+          alert("Oops.. an error occured: " + error)
+        }
+      )
+    }
   }
 }
 </script>
