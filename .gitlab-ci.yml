@@ -8,7 +8,7 @@ stages:
 
 # this gets run before anything else
 before_script: 
-  - npm run install
+  - npm install
 
 format:
   stage: format
