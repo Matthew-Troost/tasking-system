@@ -1,71 +1,14 @@
 <template>
   <div class="main-content bg-default">
-    <!-- Navbar -->
-    <Navigation
-      class="navbar-top navbar-horizontal navbar-dark"
-      container-classes="px-4 container"
-      expand
-    >
-      <router-link slot="brand" class="navbar-brand" to="/">
-        <h2>STEVE.</h2>
-      </router-link>
-
-      <template v-slot="{ closeMenu }">
-        <!-- Collapse header -->
-        <div class="navbar-collapse-header d-md-none">
-          <div class="row">
-            <div class="col-6 collapse-close">
-              <button
-                type="button"
-                class="navbar-toggler"
-                aria-label="Toggle sidenav"
-                @click="closeMenu"
-              >
-                <span />
-                <span />
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- Navbar items -->
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <router-link class="nav-link nav-link-icon" to="/">
-              <i class="ni ni-planet" />
-              <span class="nav-link-inner--text">Dashboard</span>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link nav-link-icon" to="/register">
-              <i class="ni ni-circle-08" />
-              <span class="nav-link-inner--text">Register</span>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link nav-link-icon" to="/login">
-              <i class="ni ni-key-25" />
-              <span class="nav-link-inner--text">Login</span>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link nav-link-icon" to="/profile">
-              <i class="ni ni-single-02" />
-              <span class="nav-link-inner--text">Profile</span>
-            </router-link>
-          </li>
-        </ul>
-      </template>
-    </Navigation>
     <!-- Header -->
     <div class="header bg-gradient-success py-7 py-lg-8">
       <div class="container">
         <div class="header-body text-center mb-7">
           <div class="row justify-content-center">
             <div class="col-lg-5 col-md-6">
-              <h1 class="text-white">Welcome!</h1>
+              <h1 class="text-white">STEVE.</h1>
               <p class="text-lead text-white">
-                Use these awesome forms to login or create new account in your
-                project for free.
+                A simple task scheduler
               </p>
             </div>
           </div>
@@ -100,8 +43,9 @@
                 href="https://www.netgen.co.za/"
                 class="font-weight-bold ml-1"
                 target="_blank"
-                >{{ companyName }}</a
               >
+                {{ companyName }}
+              </a>
             </div>
           </div>
           <div class="col-xl-6">
@@ -121,13 +65,11 @@
 
 <script>
 import { SlideYUpTransition } from "vue2-transitions"
-import Navigation from "../components/Navigation"
 
 export default {
   name: "AuthLayout",
   components: {
-    SlideYUpTransition,
-    Navigation
+    SlideYUpTransition
   },
   data() {
     return {
