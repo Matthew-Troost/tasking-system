@@ -27,7 +27,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["@plugins/global.js"],
+  plugins: ["@plugins/global.js", "@plugins/firebase.js"],
   /*
    ** Nuxt.js dev-modules
    */
