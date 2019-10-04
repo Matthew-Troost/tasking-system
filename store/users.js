@@ -1,6 +1,4 @@
-import firebase from "firebase/app"
-import "firebase/firestore"
-
+import firebase from "../services/firebase"
 // const ballsCollection = firebase.firestore().collection("balls")
 
 // ballsCollection.onSnapshot(ballsRef => {
