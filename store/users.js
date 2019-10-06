@@ -17,15 +17,21 @@ export const state = () => ({
   list: []
 })
 
+export const getters = {
+  current_user() {
+    return firebase.auth().currentUser
+  }
+}
+
 export const mutations = {}
 
 // actions commit mutations i.e they perform mutations asynchronously
 export const actions = {
-  register(context, email, password) {
+  register_with_email(context, payload) {
     return new Promise((resolve, reject) => {
       firebase
         .auth()
-        .createUserWithEmailAndPassword(email, password)
+        .createUserWithEmailAndPassword(payload.email, payload.password)
         .then(
           function(user) {
             resolve(user)
@@ -36,11 +42,11 @@ export const actions = {
         )
     })
   },
-  login(context, email, password) {
+  login(context, payload) {
     return new Promise((resolve, reject) => {
       firebase
         .auth()
-        .signInWithEmailAndPassword(email, password)
+        .signInWithEmailAndPassword(payload.email, payload.password)
         .then(
           function(user) {
             resolve(user)

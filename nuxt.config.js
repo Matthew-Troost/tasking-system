@@ -1,5 +1,5 @@
 module.exports = {
-  mode: "spa",
+  mode: "spa", //spa (single page application) is client-side rendered, universal is server-side
   /*
    ** Headers of the page
    */
@@ -35,7 +35,26 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: [],
+  modules: ["@nuxtjs/toast", "@nuxtjs/auth"],
+
+  //Notifications
+  toast: {
+    position: "top-center",
+    register: [
+      // Register custom toasts
+      {
+        name: "steves-error",
+        message: "Damn...Something went wrong",
+        options: {
+          type: "error"
+        }
+      }
+    ]
+  },
+
+  router: {
+    middleware: ["authenticationguard"]
+  },
   /*
    ** Build configuration
    */
@@ -52,6 +71,10 @@ module.exports = {
           loader: "eslint-loader",
           exclude: /(node_modules)/
         })
+      }
+      //chrome debugging
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? "eval-source-map" : "inline-source-map"
       }
     }
   }

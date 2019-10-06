@@ -24,6 +24,7 @@
               v-model="model.email"
               class="input-group-alternative mb-3"
               placeholder="Email"
+              type="email"
               required
             ></gin-input>
 
@@ -36,7 +37,10 @@
             ></gin-input>
 
             <div class="text-center">
-              <gin-button class="mt-4" @click="register"
+              <gin-button
+                class="mt-4"
+                native-type="submit"
+                @click.prevent="register"
                 >Create account
               </gin-button>
             </div>
@@ -59,11 +63,9 @@
   </div>
 </template>
 <script>
-import firebase from "firebase/app"
-import "firebase/firestore"
-
 export default {
   layout: "authentication",
+  auth: false,
   name: "Register",
   data() {
     return {
@@ -76,17 +78,55 @@ export default {
   },
   methods: {
     register: function() {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.model.email, this.model.password)
+      // if (this.validateForm()) {
+      this.$store
+        .dispatch("users/register", {
+          email: this.model.email,
+          password: this.model.password
+        })
         .then(
-          function(user) {
-            alert(user)
+          user => {
+            this.$toast.success(`Nice ${user.email}!`, {
+              theme: "bubble",
+              position: "top-left",
+              duration: 5000
+            })
           },
-          function(error) {
-            alert(error)
+          error => {
+            this.$toast.error(error, {
+              theme: "bubble",
+              position: "top-left",
+              duration: 5000
+            })
           }
         )
+      // }
+    },
+    validateForm: function() {
+      var nodes = document.querySelectorAll(`form :invalid`)
+      var vm = this //current vue instance;
+
+      Object.keys(this["validationErrors"]).forEach(key => {
+        this["validationErrors"][key] = null
+      })
+
+      if (nodes.length > 0) {
+        nodes.forEach(node => {
+          if (node.title) {
+            this["validationErrors"][node.name] = node.title
+          } else {
+            this["validationErrors"][node.name] = node.validationMessage
+          }
+
+          node.addEventListener("change", function() {
+            vm.validateForm()
+          })
+        })
+
+        return false
+      } else {
+        return true
+      }
     }
   }
 }

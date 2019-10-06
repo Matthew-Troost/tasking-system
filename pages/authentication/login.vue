@@ -30,7 +30,7 @@
               type="password"
             />
             <div class="text-center">
-              <gin-button class="mt-4">Get organized</gin-button>
+              <gin-button class="mt-4" @click="login">Get organized</gin-button>
             </div>
           </form>
         </div>
@@ -53,6 +53,7 @@
 <script>
 export default {
   layout: "authentication",
+  auth: false,
   name: "Login",
   data() {
     return {
@@ -64,15 +65,29 @@ export default {
   },
   methods: {
     login: function() {
-      this.$store.dispatch("users/login", this.email, this.password).then(
-        // eslint-disable-next-line no-unused-vars
-        response => {
-          alert("Succesfully authenticated!")
-        },
-        error => {
-          alert("Oops.. an error occured: " + error)
-        }
-      )
+      this.$store
+        .dispatch("users/login", {
+          email: this.model.email,
+          password: this.model.password
+        })
+        .then(
+          user => {
+            console.log(user)
+            this.$toast.success(`Nice ${user.email}!`, {
+              theme: "bubble",
+              position: "top-left",
+              duration: 5000
+            })
+            this.$router.push("/dashboard")
+          },
+          error => {
+            this.$toast.error(error, {
+              theme: "bubble",
+              position: "top-left",
+              duration: 5000
+            })
+          }
+        )
     }
   }
 }
