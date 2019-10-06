@@ -7,3 +7,5 @@ export const mutations = {
     state.application_name = text
   }
 }
+
+export const strict = false

@@ -63,6 +63,11 @@ export default {
       }
     }
   },
+  created() {
+    if (this.$store.getters["users/current_user"]) {
+      this.$store.dispatch("users/logout")
+    }
+  },
   methods: {
     login: function() {
       this.$store
@@ -73,7 +78,7 @@ export default {
         .then(
           user => {
             console.log(user)
-            this.$toast.success(`Nice ${user.email}!`, {
+            this.$toast.success(`Welcome back!`, {
               theme: "bubble",
               position: "top-left",
               duration: 5000

@@ -14,16 +14,20 @@ import firebase from "../services/firebase"
 // })
 
 export const state = () => ({
-  list: []
+  current_user: null
 })
 
 export const getters = {
-  current_user() {
-    return firebase.auth().currentUser
+  current_user: state => {
+    return state.current_user
   }
 }
 
-export const mutations = {}
+export const mutations = {
+  setCurrentUser(state, { user }) {
+    state.current_user = user
+  }
+}
 
 // actions commit mutations i.e they perform mutations asynchronously
 export const actions = {
@@ -49,6 +53,7 @@ export const actions = {
         .signInWithEmailAndPassword(payload.email, payload.password)
         .then(
           function(user) {
+            //  context.commit("setCurrentUser", user)
             resolve(user)
           },
           function(error) {
@@ -56,5 +61,9 @@ export const actions = {
           }
         )
     })
+  },
+  logout() {
+    firebase.auth().signOut()
+    // context.commit("setCurrentUser", null)
   }
 }
