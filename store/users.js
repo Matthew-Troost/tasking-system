@@ -1,31 +1,44 @@
 import firebase from "../services/firebase"
-// const ballsCollection = firebase.firestore().collection("balls")
-
-// ballsCollection.onSnapshot(ballsRef => {
-//   const balls = []
-
-//   ballsRef.forEach(doc => {
-//     const ball = doc.data()
-//     ball.id = doc.id
-//     balls.push(ball)
-//   })
-
-//   state.list = balls
-// })
 
 export const state = () => ({
-  current_user: null
+  current_user: null,
+  users: []
+})
+
+const usersCollection = firebase.firestore().collection("users")
+
+usersCollection.onSnapshot(usersRef => {
+  const users = []
+
+  usersRef.forEach(doc => {
+    users.push(doc.data())
+  })
+
+  state.users = users
 })
 
 export const getters = {
   current_user: state => {
     return state.current_user
+  },
+  users: state => {
+    return state.users
   }
 }
 
 export const mutations = {
   setCurrentUser(state, { user }) {
     state.current_user = user
+  },
+  addUser(state, { first_name, last_name, auth_id }) {
+    state.users.add({
+      first_name,
+      last_name,
+      auth_id
+    })
+  },
+  updateUsers(state, { users }) {
+    state.users = users
   }
 }
 
