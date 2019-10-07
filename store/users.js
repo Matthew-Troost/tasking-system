@@ -29,11 +29,11 @@ export const actions = {
       auth_id: payload.auth_id
     })
   },
-  async getAll(context, commit) {
+  async getAll(context) {
     let usersRef = context.rootState.db.collection("users")
     let users = await usersRef.get()
 
-    users.forEach(user => commit("setUser", { user }))
+    users.forEach(user => context.commit("setUser", { user }))
   },
   register(context, payload) {
     return new Promise((resolve, reject) => {
