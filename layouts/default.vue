@@ -1,55 +1,93 @@
 <template>
-  <div>
-    <nuxt />
+  <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
+    <side-bar
+      :background-color="sidebarBackground"
+      short-title="Argon"
+      title="Argon"
+    >
+      <template slot="links">
+        <sidebar-item
+          :link="{
+            name: 'Dashboard',
+            icon: 'linkedin',
+            path: '/dashboard'
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Icons',
+            icon: 'ni ni-planet text-blue',
+            path: '/icons'
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Maps',
+            icon: 'ni ni-pin-3 text-orange',
+            path: '/maps'
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'User Profile',
+            icon: 'ni ni-single-02 text-yellow',
+            path: '/profile'
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Tables',
+            icon: 'ni ni-bullet-list-67 text-red',
+            path: '/tables'
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Login',
+            icon: 'ni ni-key-25 text-info',
+            path: '/login'
+          }"
+        />
+        <sidebar-item
+          :link="{
+            name: 'Register',
+            icon: 'ni ni-circle-08 text-pink',
+            path: '/register'
+          }"
+        />
+      </template>
+    </side-bar>
+    <div class="main-content" :data="sidebarBackground">
+      <div @click="toggleSidebar">
+        <FadeTransition :duration="200" origin="center top" mode="out-in">
+          <!-- your content here -->
+          <div style="margin:50px">
+            <nuxt />
+          </div>
+        </FadeTransition>
+        <!-- <content-footer v-if="!$route.meta.hideFooter"></content-footer> -->
+      </div>
+    </div>
   </div>
 </template>
+<script>
+import { FadeTransition } from "vue2-transitions"
 
-<style>
-html {
-  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
+export default {
+  components: {
+    FadeTransition
+  },
+  data() {
+    return {
+      sidebarBackground: "vue" //vue|blue|orange|green|red|primary
+    }
+  },
+  methods: {
+    toggleSidebar() {
+      if (this.$sidebar.showSidebar) {
+        this.$sidebar.displaySidebar(false)
+      }
+    }
+  }
 }
-
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-  margin: 0;
-}
-
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
-}
-
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
-}
-</style>
+</script>
