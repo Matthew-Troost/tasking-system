@@ -14,6 +14,9 @@ var config = {
 }
 
 !firebase.apps.length ? firebase.initializeApp(config) : ""
+
+firebase.firestore().enablePersistence()
+
 export const GoogleProvider = new firebase.auth.GoogleAuthProvider()
 export const auth = firebase.auth()
 export const DB = firebase.database()

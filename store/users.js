@@ -1,28 +1,11 @@
-import firebase from "../services/firebase"
-
 export const state = () => ({
   current_user: null,
   users: []
 })
 
-const usersCollection = firebase.firestore().collection("users")
-
-usersCollection.onSnapshot(usersRef => {
-  const users = []
-
-  usersRef.forEach(doc => {
-    users.push(doc.data())
-  })
-
-  state.users = users
-})
-
 export const getters = {
   current_user: state => {
     return state.current_user
-  },
-  users: state => {
-    return state.users
   }
 }
 
@@ -30,27 +13,39 @@ export const mutations = {
   setCurrentUser(state, { user }) {
     state.current_user = user
   },
-  addUser(state, { first_name, last_name, auth_id }) {
-    state.users.add({
-      first_name,
-      last_name,
-      auth_id
-    })
-  },
-  updateUsers(state, { users }) {
-    state.users = users
+  setUser(state, { user }) {
+    state.users = { ...state.users, [user.id]: user.data() }
   }
 }
 
 // actions commit mutations i.e they perform mutations asynchronously
 export const actions = {
-  register_with_email(context, payload) {
+  insert(context, payload) {
+    let usersRef = context.rootState.db.collection("users")
+
+    usersRef.add({
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      auth_id: payload.auth_id
+    })
+  },
+  async getAll(context, commit) {
+    let usersRef = context.rootState.db.collection("users")
+    let users = await usersRef.get()
+
+    users.forEach(user => commit("setUser", { user }))
+  },
+  register(context, payload) {
     return new Promise((resolve, reject) => {
-      firebase
-        .auth()
+      context.rootState.auth
         .createUserWithEmailAndPassword(payload.email, payload.password)
         .then(
           function(user) {
+            context.dispatch("insert", {
+              first_name: payload.first_name,
+              last_name: payload.last_name,
+              auth_id: user.user.uid
+            })
             resolve(user)
           },
           function(error) {
@@ -61,12 +56,10 @@ export const actions = {
   },
   login(context, payload) {
     return new Promise((resolve, reject) => {
-      firebase
-        .auth()
+      context.rootState.auth
         .signInWithEmailAndPassword(payload.email, payload.password)
         .then(
           function(user) {
-            //  context.commit("setCurrentUser", user)
             resolve(user)
           },
           function(error) {
@@ -75,8 +68,8 @@ export const actions = {
         )
     })
   },
-  logout() {
-    firebase.auth().signOut()
+  logout(context) {
+    context.rootState.auth.signOut()
     // context.commit("setCurrentUser", null)
   }
 }

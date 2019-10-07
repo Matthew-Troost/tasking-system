@@ -1,11 +1,8 @@
-export const state = () => ({
-  application_name: "steve."
-})
+import firebase from "../services/firebase"
 
-export const mutations = {
-  update(state, text) {
-    state.application_name = text
-  }
-}
+export const state = () => ({
+  db: firebase.firestore(),
+  auth: firebase.auth()
+})
 
 export const strict = false

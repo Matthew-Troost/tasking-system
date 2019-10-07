@@ -21,6 +21,22 @@
           </div>
           <form role="form">
             <gin-input
+              v-model="model.first_name"
+              class="input-group-alternative mb-3"
+              placeholder="First Name"
+              type="text"
+              required
+            ></gin-input>
+
+            <gin-input
+              v-model="model.last_name"
+              class="input-group-alternative mb-3"
+              placeholder="Last Name"
+              type="text"
+              required
+            ></gin-input>
+
+            <gin-input
               v-model="model.email"
               class="input-group-alternative mb-3"
               placeholder="Email"
@@ -70,7 +86,8 @@ export default {
   data() {
     return {
       model: {
-        name: "",
+        first_name: "",
+        last_name: "",
         email: "",
         password: ""
       }
@@ -82,15 +99,21 @@ export default {
       this.$store
         .dispatch("users/register", {
           email: this.model.email,
-          password: this.model.password
+          password: this.model.password,
+          first_name: this.model.first_name,
+          last_name: this.model.last_name
         })
         .then(
+          // eslint-disable-next-line no-unused-vars
           user => {
-            this.$toast.success(`Nice ${user.email}!`, {
-              theme: "bubble",
-              position: "top-left",
-              duration: 5000
-            })
+            this.$toast.success(
+              `Nice ${this.model.first_name}! We have sent you a verification email - please confirm that bad boy.`,
+              {
+                theme: "bubble",
+                position: "top-left",
+                duration: 5000
+              }
+            )
           },
           error => {
             this.$toast.error(error, {

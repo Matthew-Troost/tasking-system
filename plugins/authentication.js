@@ -6,7 +6,11 @@ export default context => {
   return new Promise(resolve => {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        return resolve(store.commit("users/setCurrentUser", { user }))
+        if (user.emailVerified) {
+          store.commit("users/setCurrentUser", { user })
+        } else {
+          firebase.auth().currentUser.sendEmailVerification()
+        }
       }
       return resolve()
     })
