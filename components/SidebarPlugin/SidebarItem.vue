@@ -9,7 +9,7 @@
     >
       <template>
         <!-- <i :class="link.icon"></i> -->
-        <font-awesome-icon :icon="['fab', link.icon]" size="lg" />
+        <font-awesome-icon :icon="link.icon" size="2x" fixed-width />
         <span class="nav-link-text">{{ link.name }}</span>
       </template>
     </router-link>
@@ -58,7 +58,8 @@ export default {
 </script>
 <style scoped>
 .nav-link-text {
-  margin-left: 10px;
+  margin-left: 15px;
   font-weight: 600;
+  font-size: 18px;
 }
 </style>

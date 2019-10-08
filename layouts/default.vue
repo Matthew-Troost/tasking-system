@@ -2,57 +2,34 @@
   <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
     <side-bar
       :background-color="sidebarBackground"
-      short-title="Argon"
-      title="Argon"
+      short-title="Steve"
+      title="Steve"
     >
       <template slot="links">
+        <div class="avatar">
+          <img :src="matthewt" />
+          <h4>Matthew Troost</h4>
+        </div>
+        <hr class="my-3" />
         <sidebar-item
           :link="{
             name: 'Dashboard',
-            icon: 'linkedin',
+            icon: 'chart-line',
             path: '/dashboard'
           }"
         />
         <sidebar-item
           :link="{
-            name: 'Icons',
-            icon: 'ni ni-planet text-blue',
-            path: '/icons'
+            name: 'Team',
+            icon: 'hand-peace',
+            path: '/team'
           }"
         />
         <sidebar-item
           :link="{
-            name: 'Maps',
-            icon: 'ni ni-pin-3 text-orange',
-            path: '/maps'
-          }"
-        />
-        <sidebar-item
-          :link="{
-            name: 'User Profile',
-            icon: 'ni ni-single-02 text-yellow',
-            path: '/profile'
-          }"
-        />
-        <sidebar-item
-          :link="{
-            name: 'Tables',
-            icon: 'ni ni-bullet-list-67 text-red',
-            path: '/tables'
-          }"
-        />
-        <sidebar-item
-          :link="{
-            name: 'Login',
-            icon: 'ni ni-key-25 text-info',
-            path: '/login'
-          }"
-        />
-        <sidebar-item
-          :link="{
-            name: 'Register',
-            icon: 'ni ni-circle-08 text-pink',
-            path: '/register'
+            name: 'Projects',
+            icon: 'code',
+            path: '/projects'
           }"
         />
       </template>
@@ -61,7 +38,7 @@
       <div @click="toggleSidebar">
         <FadeTransition :duration="200" origin="center top" mode="out-in">
           <!-- your content here -->
-          <div style="margin:50px">
+          <div style="margin: 20px 50px 50px 50px">
             <nuxt />
           </div>
         </FadeTransition>
@@ -72,6 +49,7 @@
 </template>
 <script>
 import { FadeTransition } from "vue2-transitions"
+import matthewt from "../assets/images/avatars/matthewt.svg"
 
 export default {
   components: {
@@ -79,7 +57,8 @@ export default {
   },
   data() {
     return {
-      sidebarBackground: "vue" //vue|blue|orange|green|red|primary
+      sidebarBackground: "vue", //vue|blue|orange|green|red|primary
+      matthewt
     }
   },
   methods: {
@@ -91,3 +70,19 @@ export default {
   }
 }
 </script>
+<style scoped>
+.avatar {
+  text-align: center;
+  width: 100%;
+  height: unset;
+  background-color: transparent;
+  display: block;
+}
+.avatar img {
+  width: 40%;
+}
+
+.avatar h4 {
+  margin-top: 10px;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>Dashboard</h1>
-    <p v-for="user in users" :key="user.auth_id">{{ user.first_name }}</p>
+    <h2>Dashboard</h2>
+    <!-- <p v-for="user in users" :key="user.auth_id">{{ user.first_name }}</p> -->
   </div>
 </template>
 <script>

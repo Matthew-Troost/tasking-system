@@ -7,6 +7,7 @@ html, body, #__nuxt, #__layout{
 body{
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
     font-size: 1em;
+    background-color: white;
 }
 
 h1, h2, h3, h4, h5, h6{
@@ -92,4 +93,12 @@ h1 {
 
 .__nuxt-error-page{
   position: unset !important;
+}
+
+.navbar-vertical .navbar-collapse:before {
+  margin: 0 !important;
+}
+
+.bg-grey{
+  background-color: #e6e6e6;
 }
