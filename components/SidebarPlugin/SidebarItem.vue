@@ -62,4 +62,7 @@ export default {
   font-weight: 600;
   font-size: 18px;
 }
+.fa-2x {
+  font-size: 1.6em !important;
+}
 </style>

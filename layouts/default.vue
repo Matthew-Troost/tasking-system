@@ -38,7 +38,7 @@
       <div @click="toggleSidebar">
         <FadeTransition :duration="200" origin="center top" mode="out-in">
           <!-- your content here -->
-          <div style="margin: 20px 50px 50px 50px">
+          <div style="margin: 30px 50px 50px 50px">
             <nuxt />
           </div>
         </FadeTransition>
