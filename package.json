@@ -27,8 +27,10 @@
     "express": "^4.16.4",
     "firebase": "^6.6.2",
     "gin-blocks": "^1.1.0",
+    "mobile-device-detect": "^0.3.3",
     "nuxt": "^2.0.0",
     "nuxt-fontawesome": "^0.4.0",
+    "vue-perfect-scrollbar": "^0.2.0",
     "vue2-transitions": "^0.3.0",
     "vuex": "^3.1.1"
   },
