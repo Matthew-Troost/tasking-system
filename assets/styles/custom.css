@@ -9,3 +9,11 @@ body {
 .main-header .header-part-right {
   margin-right: 15px;
 }
+.card-profile-1 .avatar {
+  width: 50% !important;
+  height: 50% !important;
+}
+
+.page-title{
+  margin-bottom: 20px;
+}

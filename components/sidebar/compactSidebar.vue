@@ -76,7 +76,7 @@
         >
           <header>
             <h6>Dashboard</h6>
-            <p>Lorem ipsum dolor sit.</p>
+            <p>Select a project you're on.</p>
           </header>
           <ul class="childNav" data-parent="dashboards">
             <li class="nav-item">
@@ -111,13 +111,13 @@
           </header>
           <ul class="childNav" data-parent="team">
             <li class="nav-item">
-              <router-link tag="a" class to="/app/dashboards/dashboard.v1">
+              <router-link tag="a" class to="/team/developers">
                 <i class="nav-icon i-Coding"></i>
                 <span class="item-name">Developers</span>
               </router-link>
             </li>
             <li class="nav-item">
-              <router-link tag="a" class to="/app/dashboards/dashboard.v2">
+              <router-link tag="a" class to="/team/designers">
                 <i class="nav-icon i-Wordpress"></i>
                 <span class="item-name">Designers</span>
               </router-link>
@@ -154,7 +154,7 @@
               </router-link>
             </li>
             <li class="nav-item">
-              <router-link tag="a" class to="/app/charts/eChart">
+              <router-link tag="a" class to="/projects/systems">
                 <i class="nav-icon i-Split-Vertical"></i>
                 <span class="item-name">Systems</span>
               </router-link>

@@ -71,7 +71,8 @@ module.exports = {
   },
 
   router: {
-    middleware: ["authenticationguard"]
+    middleware: ["authenticationguard"],
+    linkActiveClass: "open"
   },
   /*
    ** Build configuration
