@@ -237,7 +237,7 @@ export default {
     toggleSelectedParentMenu() {
       const currentParentUrl = this.$route.path
         .split("/")
-        .filter(x => x !== "")[1]
+        .filter(x => x !== "")[0]
 
       if (currentParentUrl !== undefined && currentParentUrl !== null) {
         this.selectedParentMenu = currentParentUrl.toLowerCase()
