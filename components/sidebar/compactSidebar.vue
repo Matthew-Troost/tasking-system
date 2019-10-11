@@ -13,7 +13,7 @@
     >
       <ul class="navigation-left">
         <div class="logo">
-          <img alt="" src="@/assets/images/avatars/matthewt.svg" />
+          <img alt src="@/assets/images/avatars/matthewt.svg" />
         </div>
         <li
           :class="{ active: selectedParentMenu == 'dashboards' }"
@@ -88,7 +88,12 @@
             <li class="nav-item">
               <router-link tag="a" class to="/app/dashboards/dashboard.v2">
                 <i class="nav-icon i-Clock-4"></i>
-                <span class="item-name">Project 1</span>
+                <span class="item-name">
+                  Project 1
+                  <span class="ml-2 badge badge-pill badge-danger"
+                    >3 tasks</span
+                  >
+                </span>
               </router-link>
             </li>
             <li class="nav-item">
