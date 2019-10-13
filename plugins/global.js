@@ -16,6 +16,8 @@ import "../assets/styles/custom.css"
 
 // ------------ COMPONENTS
 library.add(faChartLine, faHandPeace, faCode)
-Vue.component("font-awesome-icon", FontAwesomeIcon)
+import Loading from "../components/loading.vue"
 
+Vue.component("font-awesome-icon", FontAwesomeIcon)
+Vue.component("loading", Loading)
 Vue.use(themeKit)

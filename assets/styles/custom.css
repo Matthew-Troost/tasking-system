@@ -39,3 +39,7 @@ small {
   padding-left: 20px;
   border-color: white !important;
 }
+
+.hide{
+  display: none;
+}
