@@ -17,7 +17,7 @@ export const actions = {
     })
   },
   async getAll(context) {
-    let projectsRef = context.rootState.db.collection("projects")
+    let projectsRef = context.rootState.db.collection("projects").where("name")
     let projects = await projectsRef.get()
 
     projects.forEach(project => context.commit("setProject", { project }))
