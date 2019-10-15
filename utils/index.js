@@ -25,6 +25,21 @@ const toggleFullScreen = () => {
   }
 }
 
+function stringToLink(toConvert) {
+  return toConvert.toLowerCase().replace(new RegExp(" ", "g"), "-")
+}
+
+function linkToString(toConvert) {
+  var str = toConvert.replace("-", " ")
+
+  return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match) {
+    if (+match === 0) return " " // or if (/\s+/.test(match)) for white spaces
+    return match.toUpperCase()
+  })
+}
+
 export default {
-  toggleFullScreen
+  toggleFullScreen,
+  stringToLink,
+  linkToString
 }

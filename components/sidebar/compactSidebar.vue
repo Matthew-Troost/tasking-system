@@ -80,13 +80,13 @@
           </header>
           <ul class="childNav" data-parent="dashboards">
             <li class="nav-item">
-              <router-link tag="a" class to="/app/dashboards/dashboard.v1">
+              <nuxt-link tag="a" class to="/app/dashboards/dashboard.v1">
                 <i class="nav-icon i-Pie-Chart-3"></i>
                 <span class="item-name">Overview</span>
-              </router-link>
+              </nuxt-link>
             </li>
             <li class="nav-item">
-              <router-link tag="a" class to="/app/dashboards/dashboard.v2">
+              <nuxt-link tag="a" class to="/app/dashboards/dashboard.v2">
                 <i class="nav-icon i-Clock-4"></i>
                 <span class="item-name">
                   Project 1
@@ -94,13 +94,13 @@
                     >3 tasks</span
                   >
                 </span>
-              </router-link>
+              </nuxt-link>
             </li>
             <li class="nav-item">
-              <router-link tag="a" class to="/app/dashboards/dashboard.v3">
+              <nuxt-link tag="a" class to="/app/dashboards/dashboard.v3">
                 <i class="nav-icon i-Over-Time"></i>
                 <span class="item-name">Project 2</span>
-              </router-link>
+              </nuxt-link>
             </li>
           </ul>
         </div>
@@ -116,28 +116,28 @@
           </header>
           <ul class="childNav" data-parent="team">
             <li class="nav-item">
-              <router-link tag="a" class to="/team/developers">
+              <nuxt-link tag="a" class to="/team/developers">
                 <i class="nav-icon i-Coding"></i>
                 <span class="item-name">Developers</span>
-              </router-link>
+              </nuxt-link>
             </li>
             <li class="nav-item">
-              <router-link tag="a" class to="/team/designers">
+              <nuxt-link tag="a" class to="/team/designers">
                 <i class="nav-icon i-Wordpress"></i>
                 <span class="item-name">Designers</span>
-              </router-link>
+              </nuxt-link>
             </li>
             <li class="nav-item">
-              <router-link tag="a" class to="/app/dashboards/dashboard.v3">
+              <nuxt-link tag="a" class to="/app/dashboards/dashboard.v3">
                 <i class="nav-icon i-Management"></i>
                 <span class="item-name">Managing</span>
-              </router-link>
+              </nuxt-link>
             </li>
             <li class="nav-item">
-              <router-link tag="a" class to="/app/dashboards/dashboard.v3">
+              <nuxt-link tag="a" class to="/app/dashboards/dashboard.v3">
                 <i class="nav-icon i-Instagram"></i>
                 <span class="item-name">Social Media</span>
-              </router-link>
+              </nuxt-link>
             </li>
           </ul>
         </div>
@@ -153,22 +153,22 @@
           </header>
           <ul class="childNav" data-parent="projects">
             <li class="nav-item">
-              <router-link tag="a" class to="/app/charts/eChart">
+              <nuxt-link tag="a" class to="/app/charts/eChart">
                 <i class="nav-icon i-Android"></i>
                 <span class="item-name">Mobile Apps</span>
-              </router-link>
+              </nuxt-link>
             </li>
             <li class="nav-item">
-              <router-link tag="a" class to="/projects/systems">
+              <nuxt-link tag="a" class to="/projects/systems">
                 <i class="nav-icon i-Split-Vertical"></i>
                 <span class="item-name">Systems</span>
-              </router-link>
+              </nuxt-link>
             </li>
             <li class="nav-item">
-              <router-link tag="a" class to="/app/charts/eChart">
+              <nuxt-link tag="a" class to="/app/charts/eChart">
                 <i class="nav-icon i-Globe"></i>
                 <span class="item-name">Sites</span>
-              </router-link>
+              </nuxt-link>
             </li>
           </ul>
         </div>

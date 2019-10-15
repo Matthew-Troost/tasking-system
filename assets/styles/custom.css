@@ -47,8 +47,23 @@ small {
   padding: .55rem 1rem !important;
 }
 .btn-group-sm>.btn, .btn-sm {
-  padding: .25rem .5rem !important;
+  padding: .15rem .5rem !important;
 }
 .btn-sm, .dropdown-toggle:after{
   content: none !important;
+}
+.datepicker-sm{
+  display: inline-block;
+}
+.datepicker-sm input{
+  font-size: 14px;
+  padding: 0;
+  border: none;
+  margin-top: 5px;
+  text-align: center;
+}
+
+.datepicker-sm input:focus{
+  outline: none !important;
+  box-shadow: none !important;
 }

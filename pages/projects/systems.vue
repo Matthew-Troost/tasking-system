@@ -43,7 +43,13 @@
             </b-col>
             <b-col md="6" class="text-right">
               <div class="button-container">
-                <b-button pill variant="primary ripple">View tasks</b-button>
+                <b-button
+                  pill
+                  variant="primary ripple"
+                  :to="'/projects/' + toLink(project.name)"
+                  nuxt
+                  >View tasks</b-button
+                >
               </div>
             </b-col>
           </b-row>
@@ -74,6 +80,7 @@
 </template>
 <script>
 import ProjectAvatar from "../../components/projectAvatar"
+import Util from "@/utils"
 import { mapState } from "vuex"
 
 export default {
@@ -126,8 +133,8 @@ export default {
         this.newProjectName = ""
       }
     },
-    filterProjects: function() {
-      // this.$store.dispatch("projects/filterAll")
+    toLink: function(projectName) {
+      return Util.stringToLink(projectName)
     }
   }
 }
