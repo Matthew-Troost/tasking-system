@@ -7,7 +7,7 @@
             <gin-input
               v-model="model.email"
               class="input-group-alternative mb-3"
-              placeholder="Email"
+              placeholder="Email2"
             ></gin-input>
 
             <gin-input
