@@ -91,7 +91,7 @@ export default {
 }
 
 .auth-layout-wrap {
-  min-height: 90.5vh;
+  min-height: 90vh;
 }
 p,
 .font-weight-bold,
