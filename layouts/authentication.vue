@@ -79,7 +79,7 @@ export default {
       year: new Date().getFullYear(),
       showMenu: false,
       companyName: "Netgen (Pty) Ltd",
-      bgImage: require("@../../../assets/images/background2.jpg")
+      bgImage: require("@../../../assets/images/background.jpg")
     }
   }
 }
