@@ -6,6 +6,9 @@ export const state = () => ({
 export const getters = {
   current_user: state => {
     return state.current_user
+  },
+  users: state => {
+    return state.users
   }
 }
 

@@ -110,6 +110,7 @@ export default {
         )
       }
     })
+    console.log(this.projects)
   },
   methods: {
     addProject: function() {
