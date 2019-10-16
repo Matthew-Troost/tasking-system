@@ -99,3 +99,12 @@ p,
   color: white !important;
 }
 </style>
+<style>
+html,
+.main-content,
+#__nuxt,
+#__layout,
+body {
+  height: 100% !important;
+}
+</style>
