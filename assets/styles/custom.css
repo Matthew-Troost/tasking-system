@@ -67,3 +67,7 @@ small {
   outline: none !important;
   box-shadow: none !important;
 }
+
+.list-group {
+  margin-bottom: 25px !important;
+}

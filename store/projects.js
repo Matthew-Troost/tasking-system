@@ -4,17 +4,24 @@ export const state = () => ({
 
 export const mutations = {
   setProject(state, { project }) {
-    state.all = { ...state.all, [project.id]: project.data() }
+    state.all = {
+      ...state.all,
+      [project.id]: { ...project.data(), id: project.id }
+    }
   }
 }
 
 export const actions = {
   insert(context, payload) {
     let projectsRef = context.rootState.db.collection("projects")
+    projectsRef.add(payload.project)
+  },
+  update(context, payload) {
+    let projectRef = context.rootState.db
+      .collection("projects")
+      .doc(payload.project.id)
 
-    projectsRef.add({
-      name: payload.name
-    })
+    projectRef.update(payload.project)
   },
   async get(context, payload) {
     return new Promise((resolve, reject) => {

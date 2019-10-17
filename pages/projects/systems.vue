@@ -120,7 +120,9 @@ export default {
           duration: 5000
         })
       } else {
-        this.$store.dispatch("projects/insert", { name: this.newProjectName })
+        this.$store.dispatch("projects/insert", {
+          project: { name: this.newProjectName }
+        })
         this.$bvModal.hide("modal-add-project")
         this.$toast.success(
           `${this.newProjectName} has been added as a project`,

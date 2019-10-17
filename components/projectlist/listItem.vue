@@ -3,7 +3,12 @@
     <b-row>
       <b-col md="6">
         <label class="checkbox checkbox-primary" style="display: inline">
-          <input type="checkbox" />
+          <input
+            v-model="checked"
+            type="checkbox"
+            :value="value.completed"
+            @change="update()"
+          />
           <span class="checkmark"></span>
         </label>
         <input
@@ -21,6 +26,7 @@
           >
             <v-date-picker
               v-model="range"
+              :popover="{ placement: 'top', visibility: 'click' }"
               mode="range"
               title-position="right"
               :masks="{ input: 'DD MMM' }"
@@ -67,6 +73,18 @@ export default {
       range: {
         start: this.value.startdate.toDate(),
         end: this.value.enddate.toDate()
+      },
+      checkedProxy: false,
+      updateTimer: null
+    }
+  },
+  computed: {
+    checked: {
+      get() {
+        return this.value.completed
+      },
+      set(val) {
+        this.checkedProxy = val
       }
     }
   },
@@ -80,8 +98,8 @@ export default {
   },
   methods: {
     update() {
-      console.log(this.$store.state.firebase.firestore)
       this.$emit("input", {
+        completed: this.checkedProxy,
         description: this.$refs.description_input.value,
         priority: this.priority,
         startdate: this.$store.state.firebase.firestore.Timestamp.fromDate(
@@ -91,10 +109,20 @@ export default {
           this.range.end
         )
       })
+      this.updateParent()
     },
     updatePriority(priority) {
       this.priority = priority
       this.update()
+    },
+    updateParent() {
+      //we dont want to update on every keyup, so use a countdown instead
+      if (this.updateTimer != null) {
+        clearTimeout(this.updateTimer)
+      }
+      this.updateTimer = setTimeout(() => {
+        this.$parent.updateProject()
+      }, 5000)
     }
   }
 }
