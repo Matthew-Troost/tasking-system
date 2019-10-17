@@ -2,28 +2,20 @@
   <div>
     <Loading v-if="loading" />
     <div v-else>
-      <h2 class="page-title">{{ project == null ? "" : project.name }}</h2>
-      <div
+      <h2 class="page-title">{{ project.name }}</h2>
+      <List
         v-for="(list, index) in project.lists"
         :id="'list_' + list.name"
         :key="list.id"
-        class="list-group"
-      >
-        <h5>{{ project.lists[index].name }}</h5>
-        <ListItem
-          v-for="(task, taskindex) in project.lists[index].tasks"
-          :key="task.id"
-          v-model="project.lists[index].tasks[taskindex]"
-          :priority="task.priority"
-        />
-      </div>
+        v-model="project.lists[index]"
+        update-handle-name="updateProject"
+      />
     </div>
   </div>
 </template>
 <script>
-import Sortable from "sortablejs"
 import Loading from "../../components/loading"
-import ListItem from "../../components/projectlist/listItem"
+import List from "../../components/projectlist/list"
 import Util from "@/utils"
 import { mapState } from "vuex"
 
@@ -31,28 +23,19 @@ export default {
   layout: "default",
   name: "Project",
   components: {
-    ListItem,
+    List,
     Loading
   },
   data() {
     return {
       loading: true,
-      project: null,
-      projectListRefs: []
+      project: null
     }
   },
   computed: {
     ...mapState({
       projects: state => state.projects.all
     })
-  },
-  watch: {
-    project: {
-      //deep: true,
-      handler() {
-        // console.log("model changed")
-      }
-    }
   },
   created() {
     this.$store.state.db
@@ -84,17 +67,6 @@ export default {
           })
         }
       )
-  },
-  updated() {
-    if (!!this.project.lists && this.projectListRefs.length == 0) {
-      this.project.lists.forEach(list => {
-        this.projectListRefs.push(
-          new Sortable(document.getElementById("list_" + list.name), {
-            group: "shared"
-          })
-        )
-      })
-    }
   },
   methods: {
     updateProject: function() {

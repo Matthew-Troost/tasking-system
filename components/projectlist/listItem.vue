@@ -14,6 +14,7 @@
         <input
           ref="description_input"
           :value="value.description"
+          placeholder="..."
           style="padding-right: 20px; width: 100%"
           @input="update()"
         />
@@ -66,7 +67,12 @@
 
 <script>
 export default {
-  props: ["value"],
+  props: {
+    value: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
     return {
       priority: this.value.priority,
@@ -121,7 +127,7 @@ export default {
         clearTimeout(this.updateTimer)
       }
       this.updateTimer = setTimeout(() => {
-        this.$parent.updateProject()
+        this.$parent.updateParent()
       }, 5000)
     }
   }
