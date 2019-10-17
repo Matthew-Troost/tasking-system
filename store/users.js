@@ -17,7 +17,10 @@ export const mutations = {
     state.current_user = user
   },
   setUser(state, { user }) {
-    state.users = { ...state.users, [user.id]: user.data() }
+    state.users = {
+      ...state.users,
+      [user.id]: { ...user.data(), id: user.id }
+    }
   }
 }
 

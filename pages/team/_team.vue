@@ -1,37 +1,43 @@
 <template>
   <div class="main-content">
     <h2 class="page-title">{{ name }}</h2>
+    <keep-alive>
+      <b-row v-if="!loading">
+        <b-col
+          v-for="user in users"
+          v-show="user.type && user.type.includes(position)"
+          :key="user.id"
+          lg="3"
+          sm="6"
+          md="4"
+          class="user-card"
+        >
+          <!-- start::profile -->
+          <b-card class="card-profile-1 mb-30 text-center">
+            <div class="avatar mb-3">
+              <img src="@/assets/images/avatars/matthewt.svg" alt />
+            </div>
+            <h5 class="m-0">{{ user.first_name }}</h5>
 
-    <b-row v-if="!loading">
-      <b-col
-        v-for="user in users"
-        :key="user.id"
-        lg="3"
-        sm="6"
-        md="4"
-        class="user-card"
-      >
-        <!-- start::profile -->
-        <b-card class="card-profile-1 mb-30 text-center">
-          <div class="avatar mb-3">
-            <img src="@/assets/images/avatars/matthewt.svg" alt />
-          </div>
-          <h5 class="m-0">{{ user.first_name }}</h5>
-          <div
-            v-for="project in getUserProjects(user.id)"
-            :key="project.id"
-            class="text-center"
-          >
-            <b-badge pill variant="outline-dark p-2 m-1"
-              >{{ project.name }}
-            </b-badge>
-          </div>
-          <button class="btn btn-primary btn-rounded mt-2">
-            {{ user.first_name }}'s Schedule
-          </button>
-        </b-card>
-      </b-col>
-    </b-row>
+            <div v-if="userProjects[user.id]">
+              <div
+                v-for="project in userProjects[user.id].map(x => x)"
+                :key="project"
+                class="text-center"
+              >
+                <b-badge pill variant="outline-dark p-2 m-1"
+                  >{{ project }}
+                </b-badge>
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-rounded mt-2">
+              {{ user.first_name }}'s Schedule
+            </button>
+          </b-card>
+        </b-col>
+      </b-row>
+    </keep-alive>
   </div>
 </template>
 <script>
@@ -44,8 +50,8 @@ export default {
   data() {
     return {
       name: "",
+      position: "",
       loading: true,
-      projectsArray: [],
       userProjects: []
     }
   },
@@ -66,19 +72,9 @@ export default {
     }
   },
   created() {
-    //fetch projects
-    this.$store.state.db.collection("projects").onSnapshot(projects => {
-      if (projects && projects.docs) {
-        projects.docs.forEach(project => {
-          this.$store.commit("projects/setProject", {
-            project
-          })
-          this.projectsArray.push(project.data())
-        })
-      }
-    })
     //fetch users
     this.$store.state.db.collection("users").onSnapshot(users => {
+      console.log(users)
       if (users && users.docs) {
         users.docs.forEach(user => {
           this.$store.commit("users/setUser", {
@@ -87,28 +83,60 @@ export default {
         })
       }
     })
+    //fetch projects
+    this.$store.state.db.collection("projects").onSnapshot(projects => {
+      if (projects && projects.docs) {
+        projects.docs.forEach(project => {
+          this.$store.commit("projects/setProject", {
+            project
+          })
+          //Populate userProjects array
+          const projectData = project.data()
+          if (projectData.lists) {
+            projectData.lists.forEach(list => {
+              if (list.tasks)
+                list.tasks.forEach(task => {
+                  debugger
+                  if (task.users)
+                    task.users.forEach(user => {
+                      if (!this.userProjects[user.id]) {
+                        this.userProjects[user.id] = []
+                      }
+                      this.userProjects[user.id].push(projectData.name)
+                    })
+                })
+            })
+          }
+        })
+      }
+    })
   },
   mounted() {
-    this.name =
-      this.$route.params.team.charAt(0).toUpperCase() +
-      this.$route.params.team.slice(1)
-  },
-  methods: {
-    getUserProjects(userId) {
-      debugger
-      return this.projectsArray.filter(function(project) {
-        try {
-          return project.lists.tasks.filter(function(task) {
-            return task.users.filter(function(user) {
-              return user.id === userId
-            })
-          })
-        } catch (e) {
-          console.log(e)
-          return false
-        }
-      })
+    switch (this.$route.params.team) {
+      case "developers":
+        this.position = "developer"
+        this.name = "Developers"
+        break
+      case "designers":
+        this.position = "designer"
+        this.name = "Designers"
+        break
+      case "managing":
+        this.position = "management"
+        this.name = "Managing"
+        break
+      case "socialmedia":
+        this.position = "socialmedia"
+        this.name = "Social Media"
+        break
     }
+  },
+  methods: {},
+  addUserProject(userId, projectName) {
+    if (!this.userProjects[userId]) {
+      this.userProjects[userId] = []
+    }
+    this.userProjects[userId].push(projectName)
   }
 }
 </script>

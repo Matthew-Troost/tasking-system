@@ -4,7 +4,10 @@ export const state = () => ({
 
 export const mutations = {
   setProject(state, { project }) {
-    state.all = { ...state.all, [project.id]: project.data() }
+    state.all = {
+      ...state.all,
+      [project.id]: { ...project.data(), id: project.id }
+    }
   }
 }
 
