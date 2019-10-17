@@ -15,45 +15,45 @@
         </b-form-input>
       </b-col>
     </b-row>
-    <keep-alive>
-      <b-row>
-        <b-col
-          v-for="user in users"
-          v-show="
-            user.type && user.type.includes(position) && searchUser(user.id)
-          "
-          :key="user.id"
-          lg="3"
-          sm="6"
-          md="4"
-          class="user-card"
-        >
-          <!-- start::profile -->
-          <b-card class="card-profile-1 mb-30 text-center">
-            <div class="avatar mb-3">
-              <img src="@/assets/images/avatars/matthewt.svg" alt />
-            </div>
-            <h5 class="m-0">{{ user.first_name }}</h5>
+    <!-- <keep-alive> -->
+    <b-row>
+      <b-col
+        v-for="user in users"
+        v-show="
+          user.type && user.type.includes(position) && searchUser(user.id)
+        "
+        :key="user.id"
+        lg="3"
+        sm="6"
+        md="4"
+        class="user-card"
+      >
+        <!-- start::profile -->
+        <b-card class="card-profile-1 mb-30 text-center">
+          <div class="avatar mb-3">
+            <img src="@/assets/images/avatars/matthewt.svg" alt />
+          </div>
+          <h5 class="m-0">{{ user.first_name }}</h5>
 
-            <div v-if="userProjects[user.id]">
-              <div
-                v-for="project in userProjects[user.id].map(x => x)"
-                :key="project"
-                class="text-center"
-              >
-                <b-badge pill variant="outline-dark p-2 m-1"
-                  >{{ project }}
-                </b-badge>
-              </div>
+          <div v-if="userProjects[user.id]">
+            <div
+              v-for="project in userProjects[user.id].map(x => x)"
+              :key="project"
+              class="text-center"
+            >
+              <b-badge pill variant="outline-dark p-2 m-1"
+                >{{ project }}
+              </b-badge>
             </div>
+          </div>
 
-            <button class="btn btn-primary btn-rounded mt-2">
-              {{ user.first_name }}'s Schedule
-            </button>
-          </b-card>
-        </b-col>
-      </b-row>
-    </keep-alive>
+          <button class="btn btn-primary btn-rounded mt-2">
+            {{ user.first_name }}'s Schedule
+          </button>
+        </b-card>
+      </b-col>
+    </b-row>
+    <!-- </keep-alive> -->
   </div>
 </template>
 <script>
@@ -89,7 +89,6 @@ export default {
   created() {
     //fetch users
     this.$store.state.db.collection("users").onSnapshot(users => {
-      console.log(users)
       if (users && users.docs) {
         users.docs.forEach(user => {
           this.$store.commit("users/setUser", {
@@ -97,7 +96,14 @@ export default {
           })
         })
       }
-    })
+    }),
+      error => {
+        this.$toast.error(error, {
+          theme: "bubble",
+          position: "top-left",
+          duration: 5000
+        })
+      }
     //fetch projects
     this.$store.state.db.collection("projects").onSnapshot(projects => {
       if (projects && projects.docs) {
@@ -111,7 +117,6 @@ export default {
             projectData.lists.forEach(list => {
               if (list.tasks)
                 list.tasks.forEach(task => {
-                  debugger
                   if (task.users)
                     task.users.forEach(user => {
                       if (!this.userProjects[user.id]) {
@@ -124,7 +129,14 @@ export default {
           }
         })
       }
-    })
+    }),
+      error => {
+        this.$toast.error(error, {
+          theme: "bubble",
+          position: "top-left",
+          duration: 5000
+        })
+      }
   },
   mounted() {
     switch (this.$route.params.team) {
