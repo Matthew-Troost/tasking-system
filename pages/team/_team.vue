@@ -1,11 +1,27 @@
 <template>
-  <div class="main-content">
-    <h2 class="page-title">{{ name }}</h2>
+  <div v-if="!loading" class="main-content">
+    <b-row>
+      <b-col md="8">
+        <h2 class="page-title">{{ name }}</h2>
+      </b-col>
+      <b-col md="4">
+        <b-form-input
+          v-model="searchWord"
+          class="form-control-rounded"
+          type="text"
+          required
+          placeholder="Search..."
+        >
+        </b-form-input>
+      </b-col>
+    </b-row>
     <keep-alive>
-      <b-row v-if="!loading">
+      <b-row>
         <b-col
           v-for="user in users"
-          v-show="user.type && user.type.includes(position)"
+          v-show="
+            user.type && user.type.includes(position) && searchUser(user.id)
+          "
           :key="user.id"
           lg="3"
           sm="6"
@@ -42,7 +58,6 @@
 </template>
 <script>
 import { mapState } from "vuex"
-import Util from "@/utils"
 
 export default {
   layout: "default",
@@ -52,7 +67,8 @@ export default {
       name: "",
       position: "",
       loading: true,
-      userProjects: []
+      userProjects: [],
+      searchWord: ""
     }
   },
   computed: {
@@ -62,8 +78,7 @@ export default {
     })
   },
   validate({ params }) {
-    console.log(Util.linkToString(params.team))
-
+    console.log(params.team)
     return true
   },
   watch: {
@@ -131,7 +146,17 @@ export default {
         break
     }
   },
-  methods: {},
+  methods: {
+    searchUser(userId) {
+      const user = this.users[userId]
+      return (
+        (user.first_name &&
+          user.first_name.toLowerCase().includes(this.searchWord)) ||
+        (user.last_name &&
+          user.last_name.toLowerCase().includes(this.searchWord))
+      )
+    }
+  },
   addUserProject(userId, projectName) {
     if (!this.userProjects[userId]) {
       this.userProjects[userId] = []
