@@ -8,7 +8,9 @@
     <div class="main-content-wrap d-flex flex-column">
       <compactTopbar></compactTopbar>
       <transition name="page" mode="out-in">
-        <nuxt style="margin-top: 100px" />
+        <div>
+          <nuxt style="margin-top: 100px" />
+        </div>
       </transition>
     </div>
   </div>
@@ -25,8 +27,19 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isSideBarOpen: "sidebar/isOpen"
+      isSideBarOpen: "sidebar/isOpen",
+      loading: "loading"
     })
   }
 }
 </script>
+<style scoped>
+img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+}
+</style>

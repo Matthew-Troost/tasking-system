@@ -16,8 +16,29 @@ export const actions = {
       name: payload.name
     })
   },
+  async get(context, payload) {
+    return new Promise((resolve, reject) => {
+      let projectRef = context.rootState.db
+        .collection("projects")
+        .where("name", "==", payload.projectName)
+        .limit(1)
+
+      projectRef
+        .get()
+        .then(doc => {
+          if (doc.docs.length > 0) {
+            resolve(doc.docs[0].data())
+          } else {
+            resolve("Project does not exist.")
+          }
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
   async getAll(context) {
-    let projectsRef = context.rootState.db.collection("projects").where("name")
+    let projectsRef = context.rootState.db.collection("projects")
     let projects = await projectsRef.get()
 
     projects.forEach(project => context.commit("setProject", { project }))

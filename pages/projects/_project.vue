@@ -1,45 +1,90 @@
 <template>
   <div>
-    <h2>{{ projectName }}</h2>
-    <div id="simpleList" class="list-group">
-      <div class="list-group-item">
-        This is <a href="http://rubaxa.github.io/Sortable/">Sortable</a>
+    <Loading v-if="loading" />
+    <div v-else>
+      <h2>{{ project == null ? "" : project.name }}</h2>
+      <div
+        v-for="(list, index) in project.lists"
+        :id="'list_' + project.name"
+        :key="list.id"
+        class="list-group"
+      >
+        <!-- TODO: pass in props to list item here -->
+        <ListItem
+          v-for="(task, taskindex) in project.lists[index].tasks"
+          :key="task.id"
+          v-model="project.lists[index].tasks[taskindex]"
+          :priority="task.priority"
+        />
       </div>
-      <ListItem />
-      <div class="list-group-item">It has support for touch devices.</div>
-      <div class="list-group-item">Just drag some elements around.</div>
     </div>
   </div>
 </template>
 <script>
-import Sortable from "sortablejs"
+//import Sortable from "sortablejs"
+import Loading from "../../components/loading"
 import ListItem from "../../components/projectlist/listItem"
 import Util from "@/utils"
+import { mapState } from "vuex"
 
 export default {
   layout: "default",
   name: "Project",
   components: {
-    ListItem
-  },
-  validate({ params }) {
-    //check firebase to see if project exists
-    //set project name from firebase object rather
-    console.log(Util.linkToString(params.project))
-    return true
+    ListItem,
+    Loading
   },
   data() {
     return {
-      projectName: "",
-      projectLists: []
+      loading: true,
+      project: null
     }
   },
-  mounted() {
-    this.projectName = this.$route.params.project
-
-    new Sortable(document.getElementById("simpleList"), {
-      group: "shared"
+  computed: {
+    ...mapState({
+      projects: state => state.projects.all
     })
+  },
+  created() {
+    //TODO: this needs to be a snapshot query!!
+    this.$store
+      .dispatch("projects/get", {
+        projectName: Util.linkToString(this.$route.params.project)
+      })
+      .then(
+        result => {
+          if (typeof result == "string") {
+            this.$toast.info(result, {
+              theme: "bubble",
+              position: "top-left",
+              duration: 5000
+            })
+            this.$router.back()
+          } else {
+            this.project = result
+            this.initializeLists()
+          }
+        },
+        error => {
+          this.$toast.error(error, {
+            theme: "bubble",
+            position: "top-left",
+            duration: 5000
+          })
+          this.$router.back()
+        }
+      )
+  },
+  mounted() {
+    // new Sortable(document.getElementById("simpleList"), {
+    //   group: "shared"
+    // })
+  },
+  methods: {
+    initializeLists: function() {
+      //TODO: create drag and drops out of lists
+      this.loading = false
+    }
   }
 }
 </script>

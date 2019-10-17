@@ -30,7 +30,7 @@ function stringToLink(toConvert) {
 }
 
 function linkToString(toConvert) {
-  var str = toConvert.replace("-", " ")
+  var str = toConvert.replace(new RegExp("-", "g"), " ")
 
   return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match) {
     if (+match === 0) return " " // or if (/\s+/.test(match)) for white spaces

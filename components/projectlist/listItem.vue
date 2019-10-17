@@ -6,7 +6,12 @@
           <input type="checkbox" />
           <span class="checkmark"></span>
         </label>
-        <input value="testing..." style="padding-right: 20px; width: 100%" />
+        <input
+          ref="description_input"
+          :value="value.description"
+          style="padding-right: 20px; width: 100%"
+          @input="update()"
+        />
       </b-col>
       <b-col md="6">
         <b-row style="text-align: center">
@@ -26,13 +31,13 @@
             <b-dropdown
               id="dropdown-1"
               :variant="
-                dropdown == 'high'
+                priority == 'high'
                   ? 'danger'
-                  : dropdown == 'medium'
+                  : priority == 'medium'
                   ? 'warning'
                   : 'success'
               "
-              :text="dropdown + ' priority'"
+              :text="priority + ' priority'"
               size="sm"
             >
               <b-dropdown-item @click="updatePriority('low')"
@@ -46,7 +51,7 @@
               >
             </b-dropdown>
           </b-col>
-          <b-col md="4"> </b-col>
+          <b-col md="4"></b-col>
         </b-row>
       </b-col>
     </b-row>
@@ -55,18 +60,41 @@
 
 <script>
 export default {
+  props: ["value"],
   data() {
     return {
-      dropdown: "low",
+      priority: this.value.priority,
       range: {
-        start: new Date(),
-        end: new Date()
+        start: this.value.startdate.toDate(),
+        end: this.value.enddate.toDate()
+      }
+    }
+  },
+  watch: {
+    range: {
+      deep: true,
+      handler() {
+        this.update()
       }
     }
   },
   methods: {
-    updatePriority: function(priority) {
-      this.dropdown = priority
+    update() {
+      console.log(this.$store.state.firebase.firestore)
+      this.$emit("input", {
+        description: this.$refs.description_input.value,
+        priority: this.priority,
+        startdate: this.$store.state.firebase.firestore.Timestamp.fromDate(
+          this.range.start
+        ),
+        enddate: this.$store.state.firebase.firestore.Timestamp.fromDate(
+          this.range.end
+        )
+      })
+    },
+    updatePriority(priority) {
+      this.priority = priority
+      this.update()
     }
   }
 }
