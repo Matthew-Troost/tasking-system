@@ -15,47 +15,45 @@
         </b-form-input>
       </b-col>
     </b-row>
-    <keep-alive>
-      <b-row>
-        <!-- <transition-group name="fade" tag="b-col"> -->
-        <b-col
-          v-for="user in users"
-          v-show="
-            user.type && user.type.includes(position) && searchUser(user.id)
-          "
-          :key="user.id"
-          lg="3"
-          sm="6"
-          md="4"
-          class="user-card"
-        >
-          <!-- start::profile -->
-          <b-card class="card-profile-1 mb-30 text-center">
-            <div class="avatar mb-3">
-              <img src="@/assets/images/avatars/matthewt.svg" alt />
-            </div>
-            <h5 class="m-0">{{ user.first_name }}</h5>
+    <!-- <keep-alive> -->
+    <transition-group name="fade" tag="b-row">
+      <b-col
+        v-for="user in users"
+        v-show="
+          user.type && user.type.includes(position) && searchUser(user.id)
+        "
+        :key="user.id"
+        lg="3"
+        sm="6"
+        md="4"
+        class="user-card"
+      >
+        <!-- start::profile -->
+        <b-card class="card-profile-1 mb-30 text-center">
+          <div class="avatar mb-3">
+            <img src="@/assets/images/avatars/matthewt.svg" alt />
+          </div>
+          <h5 class="m-0">{{ user.first_name }}</h5>
 
-            <div v-if="userProjects[user.id]">
-              <div
-                v-for="project in userProjects[user.id].map(x => x)"
-                :key="project"
-                class="text-center"
-              >
-                <b-badge pill variant="outline-dark p-2 m-1"
-                  >{{ project }}
-                </b-badge>
-              </div>
+          <div v-if="userProjects[user.id]">
+            <div
+              v-for="project in userProjects[user.id].map(x => x)"
+              :key="project"
+              class="text-center"
+            >
+              <b-badge pill variant="outline-dark p-2 m-1"
+                >{{ project }}
+              </b-badge>
             </div>
+          </div>
 
-            <button class="btn btn-primary btn-rounded mt-2">
-              {{ user.first_name }}'s Schedule
-            </button>
-          </b-card>
-        </b-col>
-        <!-- </transition-group> -->
-      </b-row>
-    </keep-alive>
+          <button class="btn btn-primary btn-rounded mt-2">
+            {{ user.first_name }}'s Schedule
+          </button>
+        </b-card>
+      </b-col>
+    </transition-group>
+    <!-- </keep-alive> -->
   </div>
 </template>
 <script>
@@ -178,7 +176,7 @@ export default {
 }
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s;
+  transition: all 0.5s ease;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
