@@ -15,50 +15,51 @@
         </b-form-input>
       </b-col>
     </b-row>
-    <!-- <keep-alive> -->
-    <transition-group name="fade" tag="b-row">
-      <b-col
-        v-for="user in users"
-        v-show="
-          user.type && user.type.includes(position) && searchUser(user.id)
-        "
-        :key="user.id"
-        lg="3"
-        sm="6"
-        md="4"
-        class="user-card"
-      >
-        <!-- start::profile -->
-        <b-card class="card-profile-1 mb-30 text-center">
-          <div class="avatar mb-3">
-            <img src="@/assets/images/avatars/matthewt.svg" alt />
-          </div>
-          <h5 class="m-0">{{ user.first_name }}</h5>
-
-          <div v-if="userProjects[user.id]">
-            <div
-              v-for="project in userProjects[user.id].map(x => x)"
-              :key="project"
-              class="text-center"
-            >
-              <b-badge pill variant="outline-dark p-2 m-1"
-                >{{ project }}
-              </b-badge>
+    <keep-alive>
+      <transition-group name="fade" tag="b-row">
+        <b-col
+          v-for="user in users"
+          v-show="
+            user.type && user.type.includes(position) && searchUser(user.id)
+          "
+          :key="user.id"
+          lg="3"
+          sm="6"
+          md="4"
+          class="user-card"
+        >
+          <!-- start::profile -->
+          <b-card class="card-profile-1 mb-30 text-center">
+            <div class="avatar mb-3">
+              <img src="@/assets/images/avatars/matthewt.svg" alt />
             </div>
-          </div>
+            <h5 class="m-0">{{ user.first_name }}</h5>
 
-          <button class="btn btn-primary btn-rounded mt-2">
-            {{ user.first_name }}'s Schedule
-          </button>
-        </b-card>
-      </b-col>
-    </transition-group>
-    <!-- </keep-alive> -->
+            <div v-if="userProjects[user.id]">
+              <div
+                v-for="project in userProjects[user.id].map(x => x)"
+                :key="project"
+                class="text-center"
+              >
+                <b-badge pill variant="outline-dark p-2 m-1"
+                  >{{ project }}
+                </b-badge>
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-rounded mt-2">
+              {{ user.first_name }}'s Schedule
+            </button>
+          </b-card>
+        </b-col>
+      </transition-group>
+    </keep-alive>
   </div>
 </template>
 <script>
 import { mapState } from "vuex"
 import Util from "@/utils"
+import Loading from "../../components/loading"
 
 export default {
   layout: "default",
