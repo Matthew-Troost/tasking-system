@@ -1,5 +1,7 @@
 <template>
   <div v-if="!loading" class="main-content">
+    <Loading v-if="loading" />
+
     <b-row>
       <b-col md="8">
         <h2 class="page-title">{{ name }}</h2>
@@ -63,6 +65,9 @@ import Loading from "../../components/loading"
 
 export default {
   layout: "default",
+  components: {
+    Loading
+  },
   data() {
     return {
       name: "",
@@ -79,8 +84,9 @@ export default {
     })
   },
   validate({ params }) {
-    console.log(params.team)
-    return true
+    return ["developers", "designers", "managing", "socialmedia"].includes(
+      params.team
+    )
   },
   watch: {
     projects() {
@@ -107,11 +113,20 @@ export default {
     //fetch users
     this.$store.state.db.collection("users").onSnapshot(users => {
       if (users && users.docs) {
-        users.docs.forEach(user => {
-          this.$store.commit("users/setUser", {
-            user
-          })
-        })
+        users.docs.forEach(
+          user => {
+            this.$store.commit("users/setUser", {
+              user
+            })
+          },
+          error => {
+            this.$toast.error(error, {
+              theme: "bubble",
+              position: "top-left",
+              duration: 5000
+            })
+          }
+        )
       }
     })
 
