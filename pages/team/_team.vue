@@ -1,10 +1,18 @@
 <template>
-  <div v-if="!loading" class="main-content">
+  <div class="main-content">
     <Loading v-if="loading" />
 
     <b-row>
       <b-col md="8">
-        <h2 class="page-title">{{ name }}</h2>
+        <h2 class="page-title">
+          {{ name }}
+          <small>
+            <nuxt-link tag="a" class to="/team/adduser">
+              <i class="nav-icon i-Add"></i>
+              <span class="item-name"> Add New</span>
+            </nuxt-link>
+          </small>
+        </h2>
       </b-col>
       <b-col md="4">
         <b-form-input
@@ -35,7 +43,9 @@
             <div class="avatar mb-3">
               <img src="@/assets/images/avatars/matthewt.svg" alt />
             </div>
-            <h5 class="m-0">{{ user.first_name }}</h5>
+            <h5 class="m-0">
+              {{ !user.nickname ? user.first_name : user.nickname }}
+            </h5>
 
             <div v-if="userProjects[user.id]">
               <div
@@ -153,7 +163,6 @@ export default {
       }
     )
   },
-  mounted() {},
   methods: {
     searchUser(userId) {
       const user = this.users[userId]
@@ -163,7 +172,11 @@ export default {
             .toLowerCase()
             .includes(this.searchWord.toLowerCase())) ||
         (user.last_name &&
-          user.last_name.toLowerCase().includes(this.searchWord.toLowerCase()))
+          user.last_name
+            .toLowerCase()
+            .includes(this.searchWord.toLowerCase())) ||
+        (user.nickname &&
+          user.nickname.toLowerCase().includes(this.searchWord.toLowerCase()))
       )
     },
     addUserProject(projectData) {
@@ -194,7 +207,8 @@ export default {
 .fade-leave-active {
   transition: all 0.5s ease;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

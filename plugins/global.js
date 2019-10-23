@@ -3,6 +3,7 @@ import Vue from "vue"
 //------------ PACKAGE DECLARATIONS
 import themeKit from "./theme-kit"
 import { library } from "@fortawesome/fontawesome-svg-core"
+import VueTagsInput from "@johmun/vue-tags-input"
 import {
   faChartLine,
   faHandPeace,
@@ -22,3 +23,4 @@ Vue.use(VCalendar)
 Vue.component("font-awesome-icon", FontAwesomeIcon)
 Vue.component("loading", Loading)
 Vue.use(themeKit)
+Vue.use(VueTagsInput)
