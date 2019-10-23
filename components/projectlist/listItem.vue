@@ -6,6 +6,7 @@
           <input
             v-model="checked"
             type="checkbox"
+            :disabled="value.completed"
             :value="value.completed"
             @change="update()"
           />

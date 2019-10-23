@@ -1,12 +1,13 @@
 <template>
   <div>
     <h5>
-      {{ list.name }}
-      <i class="nav-icon i-Add" @click="addTask"></i>
+      <i v-if="!fixed" class="nav-icon i-Add" @click="addTask"></i>
+      <input :value="list.name" />
+      <i v-if="!fixed" class="nav-icon i-Remove f-r" @click="archiveList"></i>
     </h5>
-    <div :id="'list_' + list.id" class="list-group">
+    <div :id="'list_' + list.name" class="list-group">
       <ListItem
-        v-for="(task, taskindex) in list.tasks"
+        v-for="(task, taskindex) in tasks"
         :key="task.id"
         v-model="list.tasks[taskindex]"
         :priority="task.priority"
@@ -31,6 +32,10 @@ export default {
     updateHandleName: {
       type: String,
       default: ""
+    },
+    fixed: {
+      type: Boolean,
+      deafult: false
     }
   },
   data() {
@@ -43,13 +48,19 @@ export default {
       get() {
         return this.value
       }
+    },
+    tasks() {
+      return this.sortList(this.list.tasks)
     }
   },
   mounted() {
     this.sortableRef = new Sortable(
-      document.getElementById("list_" + this.list.id),
+      document.getElementById("list_" + this.list.name),
       {
-        group: "shared"
+        group: "shared",
+        onAdd: function(task) {
+          console.log(task)
+        }
       }
     )
   },
@@ -58,7 +69,9 @@ export default {
       this.$parent[this.updateHandleName]()
     },
     addTask: function() {
+      console.log("hit")
       this.value.tasks.push({
+        completed: false,
         description: "",
         startdate: this.$store.state.firebase.firestore.Timestamp.fromDate(
           new Date()
@@ -68,7 +81,31 @@ export default {
         ),
         priority: "low"
       })
+    },
+    archiveList: function() {
+      this.value.archived = true
+      this.updateParent()
+    },
+    sortList: function(list) {
+      function compare(a, b) {
+        if (a.index > b.index) return 1
+        if (b.index > a.index) return -1
+
+        return 0
+      }
+      return list.sort(compare)
     }
   }
 }
 </script>
+<style scoped>
+.nav-icon {
+  cursor: pointer;
+}
+input {
+  border: none;
+}
+input:focus {
+  outline: none;
+}
+</style>

@@ -100,17 +100,6 @@ export default {
       projects: state => state.projects.all
     })
   },
-  created() {
-    this.$store.state.db.collection("projects").onSnapshot(projects => {
-      if (projects && projects.docs) {
-        projects.docs.forEach(project =>
-          this.$store.commit("projects/setProject", {
-            project
-          })
-        )
-      }
-    })
-  },
   methods: {
     addProject: function() {
       if (!this.newProjectName) {
@@ -120,19 +109,31 @@ export default {
           duration: 5000
         })
       } else {
-        this.$store.dispatch("projects/insert", {
-          project: { name: this.newProjectName }
-        })
-        this.$bvModal.hide("modal-add-project")
-        this.$toast.success(
-          `${this.newProjectName} has been added as a project`,
-          {
-            theme: "bubble",
-            position: "top-left",
-            duration: 5000
-          }
-        )
-        this.newProjectName = ""
+        this.$store.state.db
+          .collection("projects")
+          .add({ name: this.newProjectName, lists: [] })
+          .then(() => {
+            this.$bvModal.hide("modal-add-project")
+            this.$toast.success(
+              `${this.newProjectName} has been added as a project`,
+              {
+                theme: "bubble",
+                position: "top-left",
+                duration: 5000
+              }
+            )
+            this.newProjectName = ""
+          })
+          .catch(error => {
+            this.$toast.error(
+              `There was an issue adding this project: ${error}`,
+              {
+                theme: "bubble",
+                position: "top-left",
+                duration: 5000
+              }
+            )
+          })
       }
     },
     toLink: function(projectName) {
