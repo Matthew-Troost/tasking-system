@@ -1,23 +1,11 @@
 <template>
   <div>
-    <img :class="{ hide: hideElement }" src="@/assets/images/astronaut.gif" />
+    <img src="@/assets/images/astronaut.gif" />
   </div>
 </template>
 <script>
 export default {
-  name: "Loading",
-  data() {
-    return {
-      hideElement: true
-    }
-  }
-  // mounted() {
-  //   setTimeout(
-  //     // eslint-disable-next-line no-unused-vars
-  //     _ => (this.hideElement = false),
-  //     500
-  //   )
-  // }
+  name: "Loading"
 }
 </script>
 <style scoped>
