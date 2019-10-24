@@ -1,4 +1,4 @@
-image: node:13.0.0
+image: node:11.15.0
 
 stages:
   - format
