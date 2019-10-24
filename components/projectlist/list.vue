@@ -29,9 +29,9 @@ export default {
       type: Object,
       default: null
     },
-    updateHandleName: {
-      type: String,
-      default: ""
+    updateFunction: {
+      type: Function,
+      default: null
     },
     fixed: {
       type: Boolean,
@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     updateParent: function() {
-      this.$parent[this.updateHandleName]()
+      this.updateFunction()
     },
     addTask: function() {
       console.log("hit")

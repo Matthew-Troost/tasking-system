@@ -16,7 +16,7 @@
               v-for="(list, index) in project.lists"
               :key="list.id"
               v-model="project.lists[index]"
-              update-handle-name="updateProject"
+              :update-function="updateProject"
             />
             <b-button variant="outline-light m-1 btn-sm" @click="addList"
               >Add new list</b-button

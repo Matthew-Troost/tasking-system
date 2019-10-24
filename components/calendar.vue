@@ -3,9 +3,13 @@
     default-view="dayGridMonth"
     :header="{ left: 'title', center: '', right: 'prev,next' }"
     :editable="true"
+    :first-day="1"
     height="auto"
     :plugins="calendarPlugins"
     :events="events"
+    :day-render="onDayRender"
+    @eventDrop="onEventAdjusted"
+    @eventResize="onEventAdjusted"
   />
 </template>
 <script>
@@ -58,6 +62,14 @@ export default {
   methods: {
     addDays: function(date, numberOfDays) {
       return date.setDate(date.getDate() + numberOfDays)
+    },
+    onEventAdjusted: function(info) {
+      console.log(info)
+    },
+    onDayRender: function(info) {
+      if (info.date.getDay() == 0 || info.date.getDay() == 6) {
+        info.el.classList.add("fc-weekend")
+      }
     }
   }
 }
