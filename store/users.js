@@ -16,6 +16,9 @@ export const mutations = {
   setCurrentUser(state, { user }) {
     state.current_user = user
   },
+  setUsers(state, { usersList }) {
+    state.users = usersList
+  },
   setUser(state, { user }) {
     state.users = {
       ...state.users,
@@ -36,10 +39,20 @@ export const actions = {
     })
   },
   async getAll(context) {
-    let usersRef = context.rootState.db.collection("users")
-    let users = await usersRef.get()
-
-    users.forEach(user => context.commit("setUser", { user }))
+    context.rootState.db.collection("users").onSnapshot(users => {
+      if (users && users.docs) {
+        let usersList = []
+        users.docs.forEach(user => {
+          usersList = {
+            ...usersList,
+            [user.id]: { ...user.data(), id: user.id }
+          }
+        })
+        context.commit("setUsers", {
+          usersList
+        })
+      }
+    })
   },
   register(context, payload) {
     return new Promise((resolve, reject) => {

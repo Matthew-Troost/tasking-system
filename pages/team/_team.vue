@@ -90,6 +90,10 @@ export default {
   },
   watch: {
     projects() {
+      this.projects.forEach(project => {
+        //Populate userProjects array
+        this.addUserProject(project)
+      })
       this.loading = false
     }
   },
@@ -110,48 +114,6 @@ export default {
         this.name = "Social Media"
         break
     }
-    //fetch users
-    this.$store.state.db.collection("users").onSnapshot(users => {
-      if (users && users.docs) {
-        users.docs.forEach(
-          user => {
-            this.$store.commit("users/setUser", {
-              user
-            })
-          },
-          error => {
-            this.$toast.error(error, {
-              theme: "bubble",
-              position: "top-left",
-              duration: 5000
-            })
-          }
-        )
-      }
-    })
-
-    //fetch projects
-    this.$store.state.db.collection("projects").onSnapshot(
-      projects => {
-        if (projects && projects.docs) {
-          projects.docs.forEach(project => {
-            this.$store.commit("projects/setProject", {
-              project
-            })
-            //Populate userProjects array
-            const projectData = project.data()
-            this.addUserProject(projectData)
-          })
-        }
-      },
-      error => {
-        this.$toast.error(error, {
-          theme: "bubble",
-          position: "top-left",
-          duration: 5000
-        })
-      }
-    )
   },
   mounted() {},
   methods: {
