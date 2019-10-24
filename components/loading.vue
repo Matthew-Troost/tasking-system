@@ -10,14 +10,14 @@ export default {
     return {
       hideElement: true
     }
-  },
-  mounted() {
-    setTimeout(
-      // eslint-disable-next-line no-unused-vars
-      _ => (this.hideElement = false),
-      500
-    )
   }
+  // mounted() {
+  //   setTimeout(
+  //     // eslint-disable-next-line no-unused-vars
+  //     _ => (this.hideElement = false),
+  //     500
+  //   )
+  // }
 }
 </script>
 <style scoped>
