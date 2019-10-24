@@ -40,22 +40,24 @@ small {
   border-color: white !important;
 }
 
-.hide{
+.hide {
   display: none;
 }
 .list-group-item {
-  padding: .55rem 1rem !important;
+  padding: 0.55rem 1rem !important;
 }
-.btn-group-sm>.btn, .btn-sm {
-  padding: .15rem .5rem !important;
+.btn-group-sm > .btn,
+.btn-sm {
+  padding: 0.15rem 0.5rem !important;
 }
-.btn-sm, .dropdown-toggle:after{
+.btn-sm,
+.dropdown-toggle:after {
   content: none !important;
 }
-.datepicker-sm{
+.datepicker-sm {
   display: inline-block;
 }
-.datepicker-sm input{
+.datepicker-sm input {
   font-size: 14px;
   padding: 0;
   border: none;
@@ -63,7 +65,68 @@ small {
   text-align: center;
 }
 
-.datepicker-sm input:focus{
+.datepicker-sm input:focus {
   outline: none !important;
   box-shadow: none !important;
+}
+
+.list-group {
+  margin-bottom: 25px !important;
+}
+
+.btn-icon.rounded-circle-md {
+  width: 32px;
+  height: 32px;
+  margin: 0 !important;
+}
+
+.mb-30{
+  margin-bottom: 30px;
+}
+
+.f-r{
+  float: right
+}
+
+.tab-content {
+  padding: 1rem 0rem !important;
+}
+
+
+
+
+
+.fc-toolbar h2 {
+  font-weight: 100;
+    font-size: 16px !important;
+}
+
+.fc-unthemed td{
+  border-color: #f1f1f1 !important;
+}
+
+th.fc-day-header{
+  font-size: 13px;
+}
+
+.fc-button-primary {
+  color: #000 !important;
+  background-color: #ffffff8f !important;
+  border-color: #ffffff !important;
+}
+
+.fc-button-primary:focus {
+  box-shadow:  none !important;
+}
+
+.fc-button:focus {
+  box-shadow: none !important;
+}
+
+.fc-toolbar.fc-header-toolbar {
+  margin-bottom: 0 !important;
+}
+
+.fc-unthemed td.fc-today {
+  background: #3f51b52e !important;
 }

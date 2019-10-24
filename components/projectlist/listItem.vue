@@ -3,10 +3,22 @@
     <b-row>
       <b-col md="6">
         <label class="checkbox checkbox-primary" style="display: inline">
-          <input type="checkbox" />
+          <input
+            v-model="checked"
+            type="checkbox"
+            :disabled="value.completed"
+            :value="value.completed"
+            @change="update()"
+          />
           <span class="checkmark"></span>
         </label>
-        <input value="testing..." style="padding-right: 20px; width: 100%" />
+        <input
+          ref="description_input"
+          :value="value.description"
+          placeholder="..."
+          style="padding-right: 20px; width: 100%"
+          @input="update()"
+        />
       </b-col>
       <b-col md="6">
         <b-row style="text-align: center">
@@ -16,6 +28,7 @@
           >
             <v-date-picker
               v-model="range"
+              :popover="{ placement: 'top', visibility: 'click' }"
               mode="range"
               title-position="right"
               :masks="{ input: 'DD MMM' }"
@@ -26,13 +39,13 @@
             <b-dropdown
               id="dropdown-1"
               :variant="
-                dropdown == 'high'
+                priority == 'high'
                   ? 'danger'
-                  : dropdown == 'medium'
+                  : priority == 'medium'
                   ? 'warning'
                   : 'success'
               "
-              :text="dropdown + ' priority'"
+              :text="priority + ' priority'"
               size="sm"
             >
               <b-dropdown-item @click="updatePriority('low')"
@@ -46,7 +59,7 @@
               >
             </b-dropdown>
           </b-col>
-          <b-col md="4"> </b-col>
+          <b-col md="4"></b-col>
         </b-row>
       </b-col>
     </b-row>
@@ -55,18 +68,68 @@
 
 <script>
 export default {
+  props: {
+    value: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
     return {
-      dropdown: "low",
+      priority: this.value.priority,
       range: {
-        start: new Date(),
-        end: new Date()
+        start: this.value.startdate.toDate(),
+        end: this.value.enddate.toDate()
+      },
+      checkedProxy: false,
+      updateTimer: null
+    }
+  },
+  computed: {
+    checked: {
+      get() {
+        return this.value.completed
+      },
+      set(val) {
+        this.checkedProxy = val
+      }
+    }
+  },
+  watch: {
+    range: {
+      deep: true,
+      handler() {
+        this.update()
       }
     }
   },
   methods: {
-    updatePriority: function(priority) {
-      this.dropdown = priority
+    update() {
+      this.$emit("input", {
+        completed: this.checkedProxy,
+        description: this.$refs.description_input.value,
+        priority: this.priority,
+        startdate: this.$store.state.firebase.firestore.Timestamp.fromDate(
+          this.range.start
+        ),
+        enddate: this.$store.state.firebase.firestore.Timestamp.fromDate(
+          this.range.end
+        )
+      })
+      this.updateParent()
+    },
+    updatePriority(priority) {
+      this.priority = priority
+      this.update()
+    },
+    updateParent() {
+      //we dont want to update on every keyup, so use a countdown instead
+      if (this.updateTimer != null) {
+        clearTimeout(this.updateTimer)
+      }
+      this.updateTimer = setTimeout(() => {
+        this.$parent.updateParent()
+      }, 5000)
     }
   }
 }

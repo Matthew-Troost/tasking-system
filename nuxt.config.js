@@ -27,7 +27,11 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["@plugins/global.js", "@plugins/authentication.js"],
+  plugins: [
+    "@plugins/global.js",
+    "@plugins/authentication.js",
+    "@plugins/snapshotsubscriptions.js"
+  ],
   /*
    ** Nuxt.js dev-modules
    */

@@ -3,26 +3,23 @@ export const state = () => ({
 })
 
 export const mutations = {
-  setProject(state, { project }) {
-    state.all = {
-      ...state.all,
-      [project.id]: { ...project.data(), id: project.id }
-    }
+  setProjects(state, { projectList }) {
+    state.all = projectList
   }
 }
 
 export const actions = {
-  insert(context, payload) {
-    let projectsRef = context.rootState.db.collection("projects")
-
-    projectsRef.add({
-      name: payload.name
-    })
-  },
   async getAll(context) {
-    let projectsRef = context.rootState.db.collection("projects").where("name")
-    let projects = await projectsRef.get()
-
-    projects.forEach(project => context.commit("setProject", { project }))
+    context.rootState.db.collection("projects").onSnapshot(projects => {
+      if (projects && projects.docs) {
+        let projectList = []
+        projects.docs.forEach(project =>
+          projectList.push({ ...project.data(), id: project.id })
+        )
+        context.commit("setProjects", {
+          projectList
+        })
+      }
+    })
   }
 }
