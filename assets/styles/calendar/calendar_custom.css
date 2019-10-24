@@ -1,0 +1,61 @@
+.fc-toolbar h2 {
+  font-weight: 100;
+  font-size: 16px !important;
+}
+
+.fc-unthemed td {
+  border-color: #f1f1f1 !important;
+}
+
+th.fc-day-header {
+  font-size: 13px;
+}
+
+.fc-button-primary {
+  color: #000 !important;
+  background-color: #ffffff8f !important;
+  border-color: #ffffff !important;
+}
+
+.fc-button-primary:focus {
+  box-shadow: none !important;
+}
+
+.fc-button:focus {
+  box-shadow: none !important;
+}
+
+.fc-toolbar.fc-header-toolbar {
+  margin-bottom: 0 !important;
+}
+
+.fc-unthemed td.fc-today {
+  background: none !important;
+}
+
+.fc-high-priority .fc-content ::before {
+  margin-right: 5px;
+  content: "\1F525 \1F525 \1F525";
+}
+
+.fc-medium-priority .fc-content ::before {
+  margin-right: 5px;
+  content: "\1F525 \1F525";
+}
+
+.fc-low-priority .fc-content ::before {
+  margin-right: 5px;
+  content: "\1F525";
+}
+
+.fc-title {
+  font-weight: bold;
+}
+
+.fc-today > .fc-day-number {
+  background-color: #9d9ea5;
+  color: white;
+  border-radius: 50%;
+  width: 21px;
+  text-align: center;
+}

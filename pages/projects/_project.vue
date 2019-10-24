@@ -28,27 +28,7 @@
             <i class="i-Calendar-4  ul-tab__icon" />
           </template>
           <b-card-text>
-            <FullCalendar
-              default-view="dayGridMonth"
-              :header="{ left: 'title', center: '', right: 'prev,next' }"
-              :editable="true"
-              :plugins="calendarPlugins"
-              :events="[
-                {
-                  title: 'event 1',
-                  start: '2019-10-21',
-                  end: '2019-10-23',
-                  textColor: 'white',
-                  editable: true,
-                  backgroundColor: '#b9b9b9'
-                },
-                {
-                  title: 'event 2',
-                  start: '2019-10-24',
-                  backgroundColor: '#b9b9b9'
-                }
-              ]"
-            />
+            <Calendar v-model="project.lists" />
           </b-card-text>
         </b-tab>
       </b-tabs>
@@ -58,15 +38,9 @@
 <script>
 import Loading from "../../components/loading"
 import List from "../../components/projectlist/list"
+import Calendar from "../../components/calendar"
 import { mapState } from "vuex"
 import Util from "@/utils"
-
-import FullCalendar from "@fullcalendar/vue"
-import interactionPlugin from "@fullcalendar/interaction"
-import dayGridPlugin from "@fullcalendar/daygrid"
-
-import "@fullcalendar/core/main.css"
-import "@fullcalendar/daygrid/main.css"
 
 export default {
   layout: "default",
@@ -74,12 +48,7 @@ export default {
   components: {
     List,
     Loading,
-    FullCalendar
-  },
-  data() {
-    return {
-      calendarPlugins: [dayGridPlugin, interactionPlugin]
-    }
+    Calendar
   },
   computed: {
     ...mapState({
