@@ -1,0 +1,164 @@
+<template>
+  <div class="main-content">
+    <Loading v-if="loading" />
+    <div v-if="!loading">
+      <b-row>
+        <b-col md="8">
+          <h2 class="page-title">{{ name }}</h2>
+        </b-col>
+        <b-col md="4">
+          <b-form-input
+            v-model="searchWord"
+            class="form-control-rounded"
+            type="text"
+            required
+            placeholder="Search..."
+          >
+          </b-form-input>
+        </b-col>
+      </b-row>
+      <keep-alive>
+        <transition-group name="fade" tag="b-row">
+          <b-col
+            v-for="user in users"
+            v-show="
+              user.type && user.type.includes(position) && searchUser(user.id)
+            "
+            :key="user.id"
+            lg="3"
+            sm="6"
+            md="4"
+            class="user-card"
+          >
+            <!-- start::profile -->
+            <b-card class="card-profile-1 mb-30 text-center">
+              <div class="avatar mb-3">
+                <img src="@/assets/images/avatars/matthewt.svg" alt />
+              </div>
+              <h5 class="m-0">
+                {{ !user.nickname ? user.first_name : user.nickname }}
+              </h5>
+
+              <div v-if="userProjects[user.id]">
+                <div
+                  v-for="project in userProjects[user.id].map(x => x)"
+                  :key="project"
+                  class="text-center"
+                >
+                  <b-badge pill variant="outline-dark p-2 m-1"
+                    >{{ project }}
+                  </b-badge>
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-rounded mt-2">
+                {{ !user.nickname ? user.first_name : user.nickname }}'s
+                Schedule
+              </button>
+            </b-card>
+          </b-col>
+        </transition-group>
+      </keep-alive>
+    </div>
+  </div>
+</template>
+<script>
+import { mapState } from "vuex"
+import Util from "@/utils"
+import Loading from "../../components/loading"
+
+export default {
+  layout: "default",
+  components: {
+    Loading
+  },
+  data() {
+    return {
+      name: "",
+      position: "",
+      loading: true,
+      searchWord: ""
+    }
+  },
+  computed: {
+    ...mapState({
+      users: state => state.users.users,
+      projects: state => state.projects.all
+    }),
+    userProjects() {
+      const list = []
+      this.projects.forEach(project => {
+        //Populate userProjects array
+        this.addUserProject(project, list)
+      })
+      return list
+    }
+  },
+  validate({ params }) {
+    return ["developers", "designers", "managing", "socialmedia"].includes(
+      params.team
+    )
+  },
+  created() {
+    this.name = Util.linkToString(this.$route.params.team)
+    switch (this.name.toLowerCase()) {
+      case "developers":
+        this.position = "developer"
+        break
+      case "designers":
+        this.position = "designer"
+        break
+      case "managing":
+        this.position = "management"
+        break
+      case "socialmedia":
+        this.position = "socialmedia"
+        this.name = "Social Media"
+        break
+    }
+    this.loading = false
+  },
+  methods: {
+    searchUser(userId) {
+      const user = this.users[userId]
+      return (
+        (user.first_name &&
+          user.first_name
+            .toLowerCase()
+            .includes(this.searchWord.toLowerCase())) ||
+        (user.last_name &&
+          user.last_name.toLowerCase().includes(this.searchWord.toLowerCase()))
+      )
+    },
+    addUserProject(projectData, array) {
+      if (projectData.lists) {
+        projectData.lists.forEach(list => {
+          if (list.tasks)
+            list.tasks.forEach(task => {
+              if (task.users)
+                task.users.forEach(user => {
+                  if (!array[user.id]) {
+                    array[user.id] = []
+                  }
+                  array[user.id].push(projectData.name)
+                })
+            })
+        })
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+.user-card {
+  margin-bottom: 15px;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>

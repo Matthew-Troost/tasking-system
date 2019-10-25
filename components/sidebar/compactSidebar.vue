@@ -128,13 +128,13 @@
               </nuxt-link>
             </li>
             <li class="nav-item">
-              <nuxt-link tag="a" class to="/app/dashboards/dashboard.v3">
+              <nuxt-link tag="a" class to="/team/managing">
                 <i class="nav-icon i-Management"></i>
                 <span class="item-name">Managing</span>
               </nuxt-link>
             </li>
             <li class="nav-item">
-              <nuxt-link tag="a" class to="/app/dashboards/dashboard.v3">
+              <nuxt-link tag="a" class to="/team/socialmedia">
                 <i class="nav-icon i-Instagram"></i>
                 <span class="item-name">Social Media</span>
               </nuxt-link>
@@ -187,6 +187,7 @@
 <script>
 import { mapMutations, mapGetters } from "vuex"
 import { isMobile } from "mobile-device-detect"
+
 export default {
   data() {
     return {
