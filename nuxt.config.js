@@ -61,17 +61,9 @@ module.exports = {
 
   //Notifications
   toast: {
-    position: "top-center",
-    register: [
-      // Register custom toasts
-      {
-        name: "steves-error",
-        message: "Damn...Something went wrong",
-        options: {
-          type: "error"
-        }
-      }
-    ]
+    theme: "bubble",
+    position: "top-left",
+    duration: 5000
   },
 
   router: {

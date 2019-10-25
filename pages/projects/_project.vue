@@ -62,11 +62,7 @@ export default {
       if (selectedpojects.length > 0) {
         return selectedpojects[0]
       } else {
-        this.$toast.info("Project does not exist", {
-          theme: "bubble",
-          position: "top-left",
-          duration: 5000
-        })
+        this.$toast.info("Project does not exist")
         return this.$router.back()
       }
     },

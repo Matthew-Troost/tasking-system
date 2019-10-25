@@ -91,20 +91,11 @@ export default {
           // eslint-disable-next-line no-unused-vars
           user => {
             this.$toast.success(
-              `Nice ${this.model.first_name}! We have sent you a verification email - please confirm that bad boy.`,
-              {
-                theme: "bubble",
-                position: "top-left",
-                duration: 5000
-              }
+              `Nice ${this.model.first_name}! We have sent you a verification email - please confirm that bad boy.`
             )
           },
           error => {
-            this.$toast.error(error, {
-              theme: "bubble",
-              position: "top-left",
-              duration: 5000
-            })
+            this.$toast.error(error)
           }
         )
       // }

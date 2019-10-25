@@ -77,29 +77,16 @@ export default {
         .then(
           user => {
             if (user.user.emailVerified) {
-              this.$toast.success(`Welcome back!`, {
-                theme: "bubble",
-                position: "top-left",
-                duration: 5000
-              })
+              this.$toast.success(`Welcome back!`)
               this.$router.push("/dashboard")
             } else {
               this.$toast.info(
-                `Mmmm.. you'll need to verify your email address before logging in.`,
-                {
-                  theme: "bubble",
-                  position: "top-left",
-                  duration: 5000
-                }
+                `Mmmm.. you'll need to verify your email address before logging in.`
               )
             }
           },
           error => {
-            this.$toast.error(error, {
-              theme: "bubble",
-              position: "top-left",
-              duration: 5000
-            })
+            this.$toast.error(error)
           }
         )
     }

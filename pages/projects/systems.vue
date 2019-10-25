@@ -107,38 +107,22 @@ export default {
   methods: {
     addProject: function() {
       if (!this.newProjectName) {
-        this.$toast.error("Please enter a project name.", {
-          theme: "bubble",
-          position: "top-left",
-          duration: 5000
-        })
-      } else {
-        this.$store.state.db
-          .collection("projects")
-          .add({ name: this.newProjectName, lists: [] })
-          .then(() => {
-            this.$bvModal.hide("modal-add-project")
-            this.$toast.success(
-              `${this.newProjectName} has been added as a project`,
-              {
-                theme: "bubble",
-                position: "top-left",
-                duration: 5000
-              }
-            )
-            this.newProjectName = ""
-          })
-          .catch(error => {
-            this.$toast.error(
-              `There was an issue adding this project: ${error}`,
-              {
-                theme: "bubble",
-                position: "top-left",
-                duration: 5000
-              }
-            )
-          })
+        return this.$toast.error("Please enter a project name.")
       }
+
+      this.$store.state.db
+        .collection("projects")
+        .add({ name: this.newProjectName, lists: [] })
+        .then(() => {
+          this.$bvModal.hide("modal-add-project")
+          this.$toast.success(
+            `${this.newProjectName} has been added as a project`
+          )
+          this.newProjectName = ""
+        })
+        .catch(error => {
+          this.$toast.error(`There was an issue adding this project: ${error}`)
+        })
     },
     toLink: function(projectName) {
       return Util.stringToLink(projectName)
