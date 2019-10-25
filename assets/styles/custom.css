@@ -63,6 +63,7 @@ small {
   border: none;
   margin-top: 5px;
   text-align: center;
+  background: transparent;
 }
 
 .datepicker-sm input:focus {

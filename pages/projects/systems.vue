@@ -86,6 +86,10 @@ import { mapState } from "vuex"
 export default {
   layout: "default",
   name: "Systems",
+  transition: {
+    name: "test",
+    mode: "out-in"
+  },
   components: {
     ProjectAvatar
   },

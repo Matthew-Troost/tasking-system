@@ -1,12 +1,14 @@
 <template>
-  <div class="list-group-item">
+  <div
+    :class="[{ completed: value.completed }, 'list-group-item']"
+    class="list-group-item"
+  >
     <b-row>
       <b-col md="6">
         <label class="checkbox checkbox-primary" style="display: inline">
           <input
             v-model="checked"
             type="checkbox"
-            :disabled="value.completed"
             :value="value.completed"
             @change="update()"
           />
@@ -153,8 +155,13 @@ export default {
 <style scoped>
 input {
   border: none;
+  background: transparent;
 }
 input:focus {
   outline: none;
+}
+.completed {
+  background-color: #eaeaea;
+  opacity: 0.5;
 }
 </style>

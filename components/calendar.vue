@@ -44,16 +44,18 @@ export default {
 
       this.value.forEach((list, index) => {
         list.tasks.forEach(task => {
-          eventsList.push({
-            title: `${task.description}`,
-            start: task.startdate.toDate(),
-            end: this.addDays(task.enddate.toDate(), 1),
-            textColor: "black",
-            editable: true,
-            backgroundColor: this.colourPalette[index],
-            allDay: true,
-            classNames: [`fc-${task.priority}-priority`]
-          })
+          if (!task.completed) {
+            eventsList.push({
+              title: `${task.description}`,
+              start: task.startdate.toDate(),
+              end: this.addDays(task.enddate.toDate(), 1),
+              textColor: "black",
+              editable: true,
+              backgroundColor: this.colourPalette[index],
+              allDay: true,
+              classNames: [`fc-${task.priority}-priority`]
+            })
+          }
         })
       })
       return eventsList
