@@ -1,63 +1,65 @@
 <template>
-  <div v-if="!loading" class="main-content">
+  <div class="main-content">
     <Loading v-if="loading" />
-
-    <b-row>
-      <b-col md="8">
-        <h2 class="page-title">{{ name }}</h2>
-      </b-col>
-      <b-col md="4">
-        <b-form-input
-          v-model="searchWord"
-          class="form-control-rounded"
-          type="text"
-          required
-          placeholder="Search..."
-        >
-        </b-form-input>
-      </b-col>
-    </b-row>
-    <keep-alive>
-      <transition-group name="fade" tag="b-row">
-        <b-col
-          v-for="user in users"
-          v-show="
-            user.type && user.type.includes(position) && searchUser(user.id)
-          "
-          :key="user.id"
-          lg="3"
-          sm="6"
-          md="4"
-          class="user-card"
-        >
-          <!-- start::profile -->
-          <b-card class="card-profile-1 mb-30 text-center">
-            <div class="avatar mb-3">
-              <img src="@/assets/images/avatars/matthewt.svg" alt />
-            </div>
-            <h5 class="m-0">
-              {{ !user.nickname ? user.first_name : user.nickname }}
-            </h5>
-
-            <div v-if="userProjects[user.id]">
-              <div
-                v-for="project in userProjects[user.id].map(x => x)"
-                :key="project"
-                class="text-center"
-              >
-                <b-badge pill variant="outline-dark p-2 m-1"
-                  >{{ project }}
-                </b-badge>
-              </div>
-            </div>
-
-            <button class="btn btn-primary btn-rounded mt-2">
-              {{ !user.nickname ? user.first_name : user.nickname }}'s Schedule
-            </button>
-          </b-card>
+    <div v-if="!loading">
+      <b-row>
+        <b-col md="8">
+          <h2 class="page-title">{{ name }}</h2>
         </b-col>
-      </transition-group>
-    </keep-alive>
+        <b-col md="4">
+          <b-form-input
+            v-model="searchWord"
+            class="form-control-rounded"
+            type="text"
+            required
+            placeholder="Search..."
+          >
+          </b-form-input>
+        </b-col>
+      </b-row>
+      <keep-alive>
+        <transition-group name="fade" tag="b-row">
+          <b-col
+            v-for="user in users"
+            v-show="
+              user.type && user.type.includes(position) && searchUser(user.id)
+            "
+            :key="user.id"
+            lg="3"
+            sm="6"
+            md="4"
+            class="user-card"
+          >
+            <!-- start::profile -->
+            <b-card class="card-profile-1 mb-30 text-center">
+              <div class="avatar mb-3">
+                <img src="@/assets/images/avatars/matthewt.svg" alt />
+              </div>
+              <h5 class="m-0">
+                {{ !user.nickname ? user.first_name : user.nickname }}
+              </h5>
+
+              <div v-if="userProjects[user.id]">
+                <div
+                  v-for="project in userProjects[user.id].map(x => x)"
+                  :key="project"
+                  class="text-center"
+                >
+                  <b-badge pill variant="outline-dark p-2 m-1"
+                    >{{ project }}
+                  </b-badge>
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-rounded mt-2">
+                {{ !user.nickname ? user.first_name : user.nickname }}'s
+                Schedule
+              </button>
+            </b-card>
+          </b-col>
+        </transition-group>
+      </keep-alive>
+    </div>
   </div>
 </template>
 <script>
@@ -97,7 +99,6 @@ export default {
       params.team
     )
   },
-
   created() {
     this.name = Util.linkToString(this.$route.params.team)
     switch (this.name.toLowerCase()) {
