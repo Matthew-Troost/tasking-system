@@ -154,11 +154,4 @@ export default {
 .user-card {
   margin-bottom: 15px;
 }
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.5s ease;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
 </style>

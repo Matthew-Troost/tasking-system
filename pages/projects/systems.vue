@@ -22,7 +22,7 @@
         ></b-form-input>
       </b-col>
     </b-row>
-    <b-row>
+    <transition-group name="fade" tag="b-row">
       <b-col
         v-for="project in projects"
         v-show="project.name.toLowerCase().includes(searchWord)"
@@ -55,7 +55,7 @@
           </b-row>
         </b-card>
       </b-col>
-    </b-row>
+    </transition-group>
     <b-modal
       id="modal-add-project"
       centered
