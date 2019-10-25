@@ -35,7 +35,9 @@
             <div class="avatar mb-3">
               <img src="@/assets/images/avatars/matthewt.svg" alt />
             </div>
-            <h5 class="m-0">{{ user.first_name }}</h5>
+            <h5 class="m-0">
+              {{ !user.nickname ? user.first_name : user.nickname }}
+            </h5>
 
             <div v-if="userProjects[user.id]">
               <div
@@ -50,7 +52,7 @@
             </div>
 
             <button class="btn btn-primary btn-rounded mt-2">
-              {{ user.first_name }}'s Schedule
+              {{ !user.nickname ? user.first_name : user.nickname }}'s Schedule
             </button>
           </b-card>
         </b-col>
