@@ -104,7 +104,6 @@ export default {
         //Populate userProjects array
         this.addUserProject(project)
       })
-      this.loading = false
     }
   },
   created() {
@@ -124,6 +123,13 @@ export default {
         this.name = "Social Media"
         break
     }
+  },
+  mounted() {
+    this.projects.forEach(project => {
+      //Populate userProjects array
+      this.addUserProject(project)
+    })
+    this.loading = false
   },
   methods: {
     searchUser(userId) {

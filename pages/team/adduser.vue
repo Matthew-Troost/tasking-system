@@ -11,7 +11,7 @@
     <b-row>
       <b-col md="6">
         <b-card title="User Details">
-          <b-form>
+          <b-form @submit.prevent="submitForm">
             <b-form-group label="First Name">
               <b-form-input
                 v-model="first_name"
@@ -86,13 +86,12 @@
             </b-form-group>
             <b-form-group label="Roles">
               <vue-tags-input
-                id="typesInput"
                 v-model="type"
                 class="tag-custom text-14"
                 :tags="types"
                 :autocomplete-items="filteredTypes"
                 placeholder="Type Role Name"
-                @tags-changed="newTags => (autocompleteTags = newTags)"
+                @tags-changed="newTags => (types = newTags)"
               />
               <b-alert
                 v-if="!form.email.valid"
@@ -102,19 +101,30 @@
                 >Email format is incorrect</b-alert
               >
             </b-form-group>
+            <b-button type="submit" class="save-btn" variant="primary"
+              >Save</b-button
+            >
           </b-form>
         </b-card>
       </b-col>
 
       <b-col md="6">
-        <b-card class="card-profile-1 mb-30 text-center">
-          <div class="avatar box-shadow-2 mb-3">
-            <img src="" alt />
-          </div>
-          <h5 class="m-0">{{ first_name }}</h5>
-          <p class="mt-0 text-muted"></p>
-          <p></p>
-        </b-card>
+        <b-col md="10">
+          <b-card class="card-profile-1 mb-30 text-center">
+            <div class="avatar box-shadow-2 mb-3">
+              <img :src="avatarUrl" alt />
+            </div>
+            <h5 class="m-0">
+              {{ display_first_name }} {{ display_last_name }}
+            </h5>
+            <p class="mt-0 text-muted">aka {{ display_nickname }}</p>
+            <p class="mt-0 text-muted">{{ display_email }}</p>
+
+            <p class="mt-0 text-muted">{{ display_types }}</p>
+
+            <p></p>
+          </b-card>
+        </b-col>
       </b-col>
     </b-row>
   </div>
@@ -137,7 +147,7 @@ export default {
       email: "",
       type: "",
       types: [],
-      avatarUrl: "",
+      avatarUrl: require("@../../../assets/images/avatars/blank-profile-picture.png"),
       autocompletetypes: ["Developer", "Management", "SocialMedia", "Designer"],
       reg: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/
     }
@@ -171,6 +181,7 @@ export default {
         },
         email: {
           required: true,
+          validFormat: this.isEmailValid(),
           valid: true
         },
         type: {
@@ -183,6 +194,23 @@ export default {
       return this.autocompletetypes.filter(item => {
         return item.toLowerCase().indexOf(this.type.toLowerCase()) !== -1
       })
+    },
+    display_first_name() {
+      return this.first_name ? this.first_name : "[First Name]"
+    },
+    display_last_name() {
+      return this.last_name ? this.last_name : "[Last Name]"
+    },
+    display_nickname() {
+      return this.nickname ? this.nickname : "[Nickname]"
+    },
+    display_email() {
+      return this.email ? this.email : "[Email]"
+    },
+    display_types() {
+      return this.types && this.types.length
+        ? this.types.map(x => x.text).join(", ")
+        : "[Role/s]"
     }
   },
   created() {
@@ -195,6 +223,18 @@ export default {
     },
     minLength(text, size) {
       return text == "" || text.length >= size
+    },
+    submitForm() {
+      //Form Validation
+      if (!this.form.first_name.minLength.hasMinLength) {
+        this.form.first_name.valid = false
+      }
+      if (!this.form.last_name.minLength.hasMinLength) {
+        this.form.last_name.valid = false
+      }
+      if (!this.form.email.validEmail) {
+        this.form.email.valid = false
+      }
     }
   }
 }
@@ -207,6 +247,16 @@ export default {
 .vue-tags-input {
   max-width: unset !important;
 }
+.card-profile-1 .avatar {
+  width: 20% !important;
+  height: 20% !important;
+}
+
+.save-btn {
+  margin-top: 10px;
+}
+
+/* TODO: tag input styling */
 /* .ti-input {
   background: #f8f9fa;
 }
