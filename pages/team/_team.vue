@@ -73,7 +73,6 @@ export default {
       name: "",
       position: "",
       loading: true,
-      userProjects: [],
       searchWord: ""
     }
   },
@@ -81,22 +80,22 @@ export default {
     ...mapState({
       users: state => state.users.users,
       projects: state => state.projects.all
-    })
+    }),
+    userProjects() {
+      const list = []
+      this.projects.forEach(project => {
+        //Populate userProjects array
+        this.addUserProject(project, list)
+      })
+      return list
+    }
   },
   validate({ params }) {
     return ["developers", "designers", "managing", "socialmedia"].includes(
       params.team
     )
   },
-  watch: {
-    projects() {
-      this.projects.forEach(project => {
-        //Populate userProjects array
-        this.addUserProject(project)
-      })
-      this.loading = false
-    }
-  },
+
   created() {
     this.name = Util.linkToString(this.$route.params.team)
     switch (this.name.toLowerCase()) {
@@ -114,8 +113,8 @@ export default {
         this.name = "Social Media"
         break
     }
+    this.loading = false
   },
-  mounted() {},
   methods: {
     searchUser(userId) {
       const user = this.users[userId]
@@ -128,17 +127,17 @@ export default {
           user.last_name.toLowerCase().includes(this.searchWord.toLowerCase()))
       )
     },
-    addUserProject(projectData) {
+    addUserProject(projectData, array) {
       if (projectData.lists) {
         projectData.lists.forEach(list => {
           if (list.tasks)
             list.tasks.forEach(task => {
               if (task.users)
                 task.users.forEach(user => {
-                  if (!this.userProjects[user.id]) {
-                    this.userProjects[user.id] = []
+                  if (!array[user.id]) {
+                    array[user.id] = []
                   }
-                  this.userProjects[user.id].push(projectData.name)
+                  array[user.id].push(projectData.name)
                 })
             })
         })
