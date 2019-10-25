@@ -46,7 +46,7 @@
                 <b-button
                   pill
                   variant="primary ripple"
-                  :to="'/projects/' + toLink(project.name)"
+                  :to="'/projects/systems/' + toLink(project.name)"
                   nuxt
                   >View tasks</b-button
                 >
@@ -79,17 +79,13 @@
   </div>
 </template>
 <script>
-import ProjectAvatar from "../../components/projectAvatar"
+import ProjectAvatar from "@/components/projectAvatar"
 import Util from "@/utils"
 import { mapState } from "vuex"
 
 export default {
   layout: "default",
-  name: "Systems",
-  transition: {
-    name: "test",
-    mode: "out-in"
-  },
+  name: "Type",
   components: {
     ProjectAvatar
   },
@@ -110,13 +106,23 @@ export default {
         return this.$toast.error("Please enter a project name.")
       }
 
+      if (
+        this.projects.filter(
+          project => project.name == Util.linkToString(this.newProjectName)
+        ).length > 0
+      ) {
+        return this.$toast.error("A project with this name already exists")
+      }
+
       this.$store.state.db
         .collection("projects")
-        .add({ name: this.newProjectName, lists: [] })
+        .add({ name: Util.linkToString(this.newProjectName), lists: [] })
         .then(() => {
           this.$bvModal.hide("modal-add-project")
           this.$toast.success(
-            `${this.newProjectName} has been added as a project`
+            `${Util.linkToString(
+              this.newProjectName
+            )} has been added as a project`
           )
           this.newProjectName = ""
         })

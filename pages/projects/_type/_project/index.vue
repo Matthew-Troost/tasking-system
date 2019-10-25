@@ -36,9 +36,9 @@
   </div>
 </template>
 <script>
-import Loading from "../../components/loading"
-import List from "../../components/projectlist/list"
-import Calendar from "../../components/calendar"
+import Loading from "@/components/loading"
+import List from "@/components/projectlist/list"
+import Calendar from "@/components/calendar"
 import { mapState } from "vuex"
 import Util from "@/utils"
 

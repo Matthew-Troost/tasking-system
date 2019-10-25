@@ -153,7 +153,7 @@
           </header>
           <ul class="childNav" data-parent="projects">
             <li class="nav-item">
-              <nuxt-link tag="a" class to="/app/charts/eChart">
+              <nuxt-link tag="a" class to="/projects/mobile-apps">
                 <i class="nav-icon i-Android"></i>
                 <span class="item-name">Mobile Apps</span>
               </nuxt-link>
@@ -165,7 +165,7 @@
               </nuxt-link>
             </li>
             <li class="nav-item">
-              <nuxt-link tag="a" class to="/app/charts/eChart">
+              <nuxt-link tag="a" class to="/projects/sites">
                 <i class="nav-icon i-Globe"></i>
                 <span class="item-name">Sites</span>
               </nuxt-link>
