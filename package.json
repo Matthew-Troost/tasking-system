@@ -22,6 +22,7 @@
     "@fullcalendar/daygrid": "^4.3.0",
     "@fullcalendar/interaction": "^4.3.0",
     "@fullcalendar/vue": "^4.3.1",
+    "@johmun/vue-tags-input": "^2.1.0",
     "@nuxtjs/auth": "^4.8.4",
     "@nuxtjs/toast": "^3.2.1",
     "bootstrap": "^4.3.1",

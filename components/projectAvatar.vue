@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <img src="@/assets/images/avatars/matthewt.svg" alt />
-    <h6>{{ nickName }}</h6>
+    <img src="@/assets/images/avatars/matthewt.svg" alt :style="styles" />
+    <h6 v-if="!hideNickName">{{ nickName }}</h6>
   </div>
 </template>
 <script>
@@ -16,6 +16,22 @@ export default {
     nickName: {
       type: String,
       default: ""
+    },
+    hideNickName: {
+      type: Boolean,
+      default: false
+    },
+    width: {
+      type: Number,
+      default: 40
+    }
+  },
+  computed: {
+    styles() {
+      return {
+        "max-width": "unset",
+        width: `${this.width}px`
+      }
     }
   }
 }
@@ -26,10 +42,6 @@ export default {
   display: inline-block;
   text-align: center;
   padding: 0;
-}
-img {
-  width: 40px;
-  max-width: unset;
 }
 h6 {
   margin: 0;

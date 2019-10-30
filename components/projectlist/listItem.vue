@@ -4,7 +4,7 @@
     class="list-group-item"
   >
     <b-row>
-      <b-col md="6">
+      <b-col md="6" style="display:inherit">
         <label class="checkbox checkbox-primary" style="display: inline">
           <input
             v-model="checked"
@@ -58,7 +58,34 @@
               <b-dropdown-item @click="priority = 'high'">High</b-dropdown-item>
             </b-dropdown>
           </b-col>
-          <b-col md="4"></b-col>
+          <b-col md="4">
+            <VueTagsInput
+              v-model="tag"
+              :tags="tags"
+              :autocomplete-items="items"
+              class="tags-input list-item-tags-input"
+              placeholder="Assignee"
+              :max-tags="3"
+              @tags-changed="newTags => (tags = newTags)"
+            >
+              <div
+                slot="autocomplete-item"
+                slot-scope="props"
+                class="my-item"
+                @click="props.performAdd(props.item)"
+              >
+                {{ props.item.text }}
+              </div>
+              <div slot="tag-center" class="my-tag-left">
+                <ProjectAvatar
+                  nick-name="Armand"
+                  image-url="@/assets/images/avatars/matthewt.svg"
+                  :hide-nick-name="true"
+                  :width="24"
+                />
+              </div>
+            </VueTagsInput>
+          </b-col>
         </b-row>
       </b-col>
     </b-row>
@@ -66,7 +93,14 @@
 </template>
 
 <script>
+import VueTagsInput from "@johmun/vue-tags-input"
+import ProjectAvatar from "@/components/projectAvatar"
+
 export default {
+  components: {
+    VueTagsInput,
+    ProjectAvatar
+  },
   props: {
     value: {
       type: Object,
@@ -79,7 +113,37 @@ export default {
       checkedProxy: false,
       updateTimer: null,
       startDateProxy: null,
-      endDateProxy: null
+      endDateProxy: null,
+      tag: "",
+      tags: [],
+      icons: [
+        {
+          text: "done",
+          iconColor: "#086A87"
+        },
+        {
+          text: "fingerprint",
+          iconColor: "#8A0886"
+        },
+        {
+          text: "label",
+          iconColor: "#B43104"
+        },
+        {
+          text: "pregnant_woman"
+        },
+        {
+          text: "touch_app",
+          iconColor: "#AC58FA"
+        },
+        {
+          text: "group_work"
+        },
+        {
+          text: "pets",
+          iconColor: "#8A4B08"
+        }
+      ]
     }
   },
   computed: {
@@ -102,6 +166,11 @@ export default {
         this.startDateProxy = val.start
         this.endDateProxy = val.end
       }
+    },
+    items() {
+      return this.icons.filter(i => {
+        return i.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1
+      })
     }
   },
   watch: {
