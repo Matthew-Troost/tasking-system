@@ -71,14 +71,12 @@
               <div
                 slot="autocomplete-item"
                 slot-scope="props"
-                class="my-item"
                 @click="props.performAdd(props.item)"
               >
                 {{ props.item.text }}
               </div>
-              <div slot="tag-center" class="my-tag-left">
+              <div slot="tag-center">
                 <ProjectAvatar
-                  nick-name="Armand"
                   image-url="@/assets/images/avatars/matthewt.svg"
                   :hide-nick-name="true"
                   :width="24"
@@ -95,6 +93,7 @@
 <script>
 import VueTagsInput from "@johmun/vue-tags-input"
 import ProjectAvatar from "@/components/projectAvatar"
+import { mapState } from "vuex"
 
 export default {
   components: {
@@ -168,10 +167,18 @@ export default {
       }
     },
     items() {
-      return this.icons.filter(i => {
-        return i.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1
+      // return this.icons.filter(i => {
+      //   return i.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1
+      // })
+      return this.$store.state.users.users.map(user => {
+        return {
+          text: user.first_name
+        }
       })
-    }
+    },
+    ...mapState({
+      users: state => state.users.all
+    })
   },
   watch: {
     startDateProxy: {

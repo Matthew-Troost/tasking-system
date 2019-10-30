@@ -22,7 +22,7 @@
           <b-col
             v-for="user in users"
             v-show="
-              user.type && user.type.includes(position) && searchUser(user.id)
+              user.type && user.type.includes(position) && searchUser(user)
             "
             :key="user.id"
             lg="3"
@@ -65,7 +65,7 @@
 <script>
 import { mapState } from "vuex"
 import Util from "@/utils"
-import Loading from "../../components/loading"
+import Loading from "@/components/loading"
 
 export default {
   layout: "default",
@@ -82,7 +82,7 @@ export default {
   },
   computed: {
     ...mapState({
-      users: state => state.users.users,
+      users: state => state.users.all,
       projects: state => state.projects.all
     }),
     userProjects() {
@@ -119,8 +119,7 @@ export default {
     this.loading = false
   },
   methods: {
-    searchUser(userId) {
-      const user = this.users[userId]
+    searchUser(user) {
       return (
         (user.first_name &&
           user.first_name
