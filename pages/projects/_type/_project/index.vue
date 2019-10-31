@@ -72,6 +72,7 @@ export default {
   },
   methods: {
     updateProject: function() {
+      console.log("update hit")
       this.$store.state.db
         .collection("projects")
         .doc(this.project.id)

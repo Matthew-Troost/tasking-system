@@ -10,7 +10,7 @@
             v-model="checked"
             type="checkbox"
             :value="value.completed"
-            @change="update()"
+            @change="update"
           />
           <span class="checkmark"></span>
         </label>
@@ -19,7 +19,7 @@
           :value="value.description"
           placeholder="..."
           style="padding-right: 20px; width: 100%"
-          @input="update()"
+          @input="update"
         />
       </b-col>
       <b-col md="6">
@@ -35,7 +35,6 @@
               title-position="right"
               :masks="{ input: 'DD MMM' }"
               class="datepicker-sm"
-              @change="update()"
             />
           </b-col>
           <b-col md="4" style="border-right: 1px solid #cacaca">
@@ -80,6 +79,7 @@
                   image-url="@/assets/images/avatars/matthewt.svg"
                   :hide-nick-name="true"
                   :width="24"
+                  nick-name="Matt"
                 />
               </div>
             </VueTagsInput>
@@ -91,9 +91,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex"
 import VueTagsInput from "@johmun/vue-tags-input"
 import ProjectAvatar from "@/components/projectAvatar"
-import { mapState } from "vuex"
 
 export default {
   components: {
@@ -114,38 +114,13 @@ export default {
       startDateProxy: null,
       endDateProxy: null,
       tag: "",
-      tags: [],
-      icons: [
-        {
-          text: "done",
-          iconColor: "#086A87"
-        },
-        {
-          text: "fingerprint",
-          iconColor: "#8A0886"
-        },
-        {
-          text: "label",
-          iconColor: "#B43104"
-        },
-        {
-          text: "pregnant_woman"
-        },
-        {
-          text: "touch_app",
-          iconColor: "#AC58FA"
-        },
-        {
-          text: "group_work"
-        },
-        {
-          text: "pets",
-          iconColor: "#8A4B08"
-        }
-      ]
+      tagsProxy: []
     }
   },
   computed: {
+    ...mapState({
+      users: state => state.users.all
+    }),
     checked: {
       get() {
         return this.value.completed
@@ -166,32 +141,44 @@ export default {
         this.endDateProxy = val.end
       }
     },
-    items() {
-      // return this.icons.filter(i => {
-      //   return i.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1
-      // })
-      return this.$store.state.users.users.map(user => {
-        return {
-          text: user.first_name
-        }
-      })
+    tags: {
+      get() {
+        let test = []
+        // eslint-disable-next-line no-unused-vars
+        this.value.users.forEach(userid => {
+          test.push({ id: "plR4igHjKHIQVEIJyz1l", text: "Matt" })
+        })
+        // console.log(
+        //   `${this.value.description}, users count: ${this.value.users}`
+        // )
+        return test
+        //return [{ id: "plR4igHjKHIQVEIJyz1l", text: "Matt" }]
+      },
+      set(val) {
+        console.log("setting..")
+        this.tagsProxy = val
+      }
     },
-    ...mapState({
-      users: state => state.users.all
-    })
+    items() {
+      return this.$store.state.users.all
+        .map(user => {
+          return {
+            id: user.id,
+            text: user.nickname
+          }
+        })
+        .filter(i => {
+          return i.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1
+        })
+    }
   },
   watch: {
-    startDateProxy: {
-      handler() {
-        this.update()
-      }
-    },
-    endDateProxy: {
-      handler() {
-        this.update()
-      }
-    },
     priority: {
+      handler() {
+        this.update()
+      }
+    },
+    tagsProxy: {
       handler() {
         this.update()
       }
@@ -208,9 +195,14 @@ export default {
         ),
         enddate: this.$store.state.firebase.firestore.Timestamp.fromDate(
           this.endDateProxy
-        )
+        ),
+        users: this.tagsProxy.map(tag => {
+          return tag.id
+        }),
+        identifier: this.value.identifier
       })
-      this.updateParent()
+      console.log("calling parent update")
+      //this.updateParent()
     },
     updatePriority(priority) {
       this.priority = priority
@@ -222,6 +214,7 @@ export default {
         clearTimeout(this.updateTimer)
       }
       this.updateTimer = setTimeout(() => {
+        //change this to emit and handle on the parent side
         this.$parent.updateParent()
       }, 5000)
     }

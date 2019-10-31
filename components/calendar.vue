@@ -35,7 +35,8 @@ export default {
   data() {
     return {
       calendarPlugins: [dayGridPlugin, interactionPlugin],
-      colourPalette: ["#89C3CA", "#C6EC8E", "#FFCB4B", "#E84583", "#AD33B9"]
+      colourPalette: ["#89C3CA", "#C6EC8E", "#FFCB4B", "#E84583", "#AD33B9"],
+      listsProxy: []
     }
   },
   computed: {
@@ -46,7 +47,8 @@ export default {
         list.tasks.forEach(task => {
           if (!task.completed) {
             eventsList.push({
-              title: `${task.description}`,
+              id: task.identifier,
+              title: task.description,
               start: task.startdate.toDate(),
               end: this.addDays(task.enddate.toDate(), 1),
               textColor: "black",
@@ -66,7 +68,24 @@ export default {
       return date.setDate(date.getDate() + numberOfDays)
     },
     onEventAdjusted: function(info) {
-      console.log(info)
+      const enddate = info.event.end
+      enddate.setDate(enddate.getDate() - 1)
+
+      const updatedLists = this.value
+      updatedLists.forEach(list => {
+        list.tasks.forEach(task => {
+          if (task.identifier == info.event.id) {
+            task.startdate = this.$store.state.firebase.firestore.Timestamp.fromDate(
+              info.event.start
+            )
+            task.enddate = this.$store.state.firebase.firestore.Timestamp.fromDate(
+              enddate
+            )
+          }
+        })
+      })
+
+      this.$emit("input", updatedLists)
     },
     onDayRender: function(info) {
       if (info.date.getDay() == 0 || info.date.getDay() == 6) {
