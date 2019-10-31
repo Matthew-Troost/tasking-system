@@ -1,6 +1,6 @@
 export const state = () => ({
   current_user: null,
-  users: []
+  all: []
 })
 
 export const getters = {
@@ -8,7 +8,7 @@ export const getters = {
     return state.current_user
   },
   users: state => {
-    return state.users
+    return state.all
   }
 }
 
@@ -17,11 +17,11 @@ export const mutations = {
     state.current_user = user
   },
   setUsers(state, { usersList }) {
-    state.users = usersList
+    state.all = usersList
   },
   setUser(state, { user }) {
     state.users = {
-      ...state.users,
+      ...state.all,
       [user.id]: { ...user.data(), id: user.id }
     }
   }

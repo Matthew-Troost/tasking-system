@@ -4,6 +4,7 @@ import Vue from "vue"
 import themeKit from "./theme-kit"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import VueTagsInput from "@johmun/vue-tags-input"
+
 import {
   faChartLine,
   faHandPeace,

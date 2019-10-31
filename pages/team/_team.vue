@@ -7,7 +7,7 @@
         <h2 class="page-title">
           {{ name }}
           <small>
-            <nuxt-link tag="a" class to="/team/adduser">
+            <nuxt-link tag="a" class :to="addUrl">
               <i class="nav-icon i-Add"></i>
               <span class="item-name"> Add New</span>
             </nuxt-link>
@@ -89,9 +89,12 @@ export default {
   },
   computed: {
     ...mapState({
-      users: state => state.users.users,
+      users: state => state.users.all,
       projects: state => state.projects.all
-    })
+    }),
+    addUrl() {
+      return "/team/adduser/" + this.name
+    }
   },
   validate({ params }) {
     return ["developers", "designers", "managing", "socialmedia"].includes(
