@@ -28,7 +28,10 @@
             <i class="i-Calendar-4  ul-tab__icon" />
           </template>
           <b-card-text>
-            <Calendar v-model="project.lists" />
+            <Calendar
+              v-model="project.lists"
+              @events-adjusted="updateProject"
+            />
           </b-card-text>
         </b-tab>
       </b-tabs>

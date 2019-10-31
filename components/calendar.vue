@@ -86,6 +86,7 @@ export default {
       })
 
       this.$emit("input", updatedLists)
+      this.$emit("events-adjusted")
     },
     onDayRender: function(info) {
       if (info.date.getDay() == 0 || info.date.getDay() == 6) {

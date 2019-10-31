@@ -71,10 +71,6 @@ small {
   box-shadow: none !important;
 }
 
-.list-group {
-  margin-bottom: 25px !important;
-}
-
 .btn-icon.rounded-circle-md {
   width: 32px;
   height: 32px;
@@ -132,4 +128,7 @@ small {
 .list-item-tags-input .ti-tag{
   padding: 0 !important;
   margin: 0 !important;
+}
+.tags-input, .tags-input input{
+  background-color: transparent !important;
 }

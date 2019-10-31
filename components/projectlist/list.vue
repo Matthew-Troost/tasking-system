@@ -13,6 +13,15 @@
         :priority="task.priority"
       />
     </div>
+    <div class="list-group-item totals">
+      <b-row>
+        <b-col md="6"></b-col>
+        <b-col md="2">
+          <p>total here</p>
+        </b-col>
+        <b-col md="4"> </b-col>
+      </b-row>
+    </div>
   </div>
 </template>
 <script>
@@ -106,5 +115,19 @@ input {
 }
 input:focus {
   outline: none;
+}
+.list-group {
+  margin-bottom: -2px !important;
+}
+.totals {
+  background-color: #dedede;
+  border-color: #d2d2d2;
+  margin-bottom: 20px !important;
+}
+.totals p {
+  margin: 0;
+}
+.totals [class*="col-"] {
+  text-align: center;
 }
 </style>

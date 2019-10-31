@@ -1,8 +1,5 @@
 <template>
-  <div
-    :class="[{ completed: value.completed }, 'list-group-item']"
-    class="list-group-item"
-  >
+  <div :class="[{ completed: value.completed }, 'list-group-item']">
     <b-row>
       <b-col md="6" style="display:inherit">
         <label class="checkbox checkbox-primary" style="display: inline">
@@ -63,7 +60,7 @@
               :tags="tags"
               :autocomplete-items="items"
               class="tags-input list-item-tags-input"
-              placeholder="Assignee"
+              :placeholder="tags.length ? '' : 'Assignee'"
               :max-tags="3"
               @tags-changed="newTags => (tags = newTags)"
             >
