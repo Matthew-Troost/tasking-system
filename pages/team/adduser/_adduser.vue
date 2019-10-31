@@ -117,7 +117,7 @@
                   :tags="types"
                   :autocomplete-items="filteredTypes"
                   placeholder="Type Role Name"
-                  @tags-changed="newTags => (types = newTags)"
+                  @tags-changed="newTags => (types = newTags.map(x => x.text))"
                 />
                 <transition name="fade">
                   <b-alert
@@ -172,6 +172,7 @@
 // import { mapState } from "vuex"
 import Loading from "@/components/loading"
 import generator from "generate-password"
+// import * as firebase from "firebase"
 
 export default {
   layout: "default",
@@ -185,6 +186,7 @@ export default {
   },
   data() {
     return {
+      valid: false,
       loading: true,
       first_name: "",
       last_name: "",
@@ -208,8 +210,11 @@ export default {
   computed: {
     filteredTypes() {
       return this.autocompletetypes.filter(item => {
-        return item.toLowerCase().indexOf(this.type.toLowerCase()) !== -1
+        return item.toLowerCase().indexOf(this.type) !== -1
       })
+    },
+    lowerCaseTypes() {
+      return this.types.map(x => x.toLowerCase())
     },
     display_first_name() {
       return this.first_name ? this.first_name : "[First Name]"
@@ -248,7 +253,7 @@ export default {
             "Management",
             "SocialMedia",
             "Designer"
-          ].includes(type.text)
+          ].includes(type)
         })
         if (!this.form.type.correctInput) {
           this.form.type.errorMessage =
@@ -304,23 +309,41 @@ export default {
     }
     switch (this.$route.params.adduser) {
       case "Developers":
-        this.types.push({ text: "Developer" })
+        this.types.push("Developer")
         break
       case "Social Media":
-        this.types.push({ text: "SocialMedia" })
+        this.types.push("SocialMedia")
         break
       case "Designers":
-        this.types.push({ text: "Designer" })
+        this.types.push("Designer")
         break
       case "Managing":
-        this.types.push({ text: "Management" })
+        this.types.push("Management")
     }
   },
   created() {
     this.loading = false
   },
   methods: {
-    addUser() {},
+    addUser() {
+      this.$store.state.auth
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then(() => {
+          this.$store.state.db.collection("users").add({
+            first_name: this.first_name,
+            last_name: this.last_name,
+            nickname: this.nickname,
+            type: this.lowerCaseTypes
+          })
+        })
+        .catch(() => {
+          this.$toast.error(`Error Encountered`, {
+            theme: "bubble",
+            position: "top-left",
+            duration: 5000
+          })
+        })
+    },
     isEmailValid() {
       return this.email == "" || this.reg.test(this.email)
     },
@@ -329,21 +352,27 @@ export default {
     },
     submitForm() {
       //Form Validation
+      this.valid = true
       if (!this.form.first_name.minLength.hasMinLength || !this.first_name) {
         this.form.first_name.valid = false
+        this.valid = false
       }
       if (!this.form.last_name.minLength.hasMinLength || !this.last_name) {
         this.form.last_name.valid = false
+        this.valid = false
       }
       if (!this.form.email.validFormat || this.email === "") {
         this.form.email.valid = false
+        this.valid = false
       }
       if (
         this.form.type.required &&
         (!this.form.type.correctInput || this.types.length === 0)
       ) {
+        this.valid = false
         this.form.type.valid = false
       }
+      if (this.valid) this.addUser()
     }
   }
 }
