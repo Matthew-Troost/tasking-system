@@ -197,6 +197,9 @@ export default {
     }
   },
   computed: {
+    avatarSaveUrl() {
+      return "/UserAvatars/" + this.avatar.name
+    },
     filteredTypes() {
       return this.autocompletetypes.filter(item => {
         return item.toLowerCase().indexOf(this.type.toLowerCase()) !== -1
@@ -304,9 +307,10 @@ export default {
           //Add Avatar
           this.$store.state.storage
             .ref()
-            .child("/UserAvatars")
+            .child(this.avatarSaveUrl)
             .put(this.avatar)
             .then(() => {
+              //Add User
               this.$store.state.db.collection("users").add({
                 first_name: this.first_name,
                 last_name: this.last_name,
@@ -315,7 +319,6 @@ export default {
                 avatar: this.avatar.name
               })
             })
-          //Add User
         })
         .catch(() => {
           this.$toast.error(`Error Encountered`, {
