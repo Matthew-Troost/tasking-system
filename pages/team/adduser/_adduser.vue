@@ -9,7 +9,6 @@
           </h2>
         </b-col>
       </b-row>
-
       <b-card title="User Details">
         <b-form @submit.prevent="submitForm">
           <b-row>
@@ -145,37 +144,23 @@
               <b-button type="submit" class="save-btn" variant="primary"
                 >Save</b-button
               >
+              <b-form-file
+                v-model="avatar"
+                type="file"
+                class="upload-btn "
+                variant="primary"
+                value="Upload"
+              />
             </b-col>
           </b-row>
         </b-form>
       </b-card>
-
-      <!-- <b-col md="6">
-        <b-col md="10">
-          <b-card class="card-profile-1 mb-30 text-center">
-            <div class="avatar box-shadow-2 mb-3">
-              <img :src="avatarUrl" alt />
-            </div>
-            <h5 class="m-0">
-              {{ display_first_name }} {{ display_last_name }}
-            </h5>
-            <p class="mt-0 text-muted">aka {{ display_nickname }}</p>
-            <p class="mt-0 text-muted">{{ display_email }}</p>
-
-            <p class="mt-0 text-muted">{{ display_types }}</p>
-
-            <p></p>
-          </b-card>
-        </b-col>
-      </b-col> -->
     </div>
   </div>
 </template>
 <script>
-// import { mapState } from "vuex"
 import Loading from "@/components/loading"
 import generator from "generate-password"
-// import * as firebase from "firebase"
 
 export default {
   layout: "default",
@@ -194,6 +179,7 @@ export default {
       first_name: "",
       last_name: "",
       nickname: "",
+      avatar: null,
       email: "",
       password: generator.generate({
         length: 10,
@@ -218,23 +204,6 @@ export default {
     },
     lowerCaseTypes() {
       return this.types.map(x => x.toLowerCase())
-    },
-    display_first_name() {
-      return this.first_name ? this.first_name : "[First Name]"
-    },
-    display_last_name() {
-      return this.last_name ? this.last_name : "[Last Name]"
-    },
-    display_nickname() {
-      return this.nickname ? this.nickname : "[Nickname]"
-    },
-    display_email() {
-      return this.email ? this.email : "[Email]"
-    },
-    display_types() {
-      return this.types && this.types.length
-        ? this.types.map(x => x.text).join(", ")
-        : "[Role/s]"
     }
   },
   watch: {
@@ -332,12 +301,21 @@ export default {
       this.$store.state.auth
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(() => {
-          this.$store.state.db.collection("users").add({
-            first_name: this.first_name,
-            last_name: this.last_name,
-            nickname: this.nickname,
-            type: this.lowerCaseTypes
-          })
+          //Add Avatar
+          this.$store.state.storage
+            .ref()
+            .child("/UserAvatars")
+            .put(this.avatar)
+            .then(() => {
+              this.$store.state.db.collection("users").add({
+                first_name: this.first_name,
+                last_name: this.last_name,
+                nickname: this.nickname,
+                type: this.lowerCaseTypes,
+                avatar: this.avatar.name
+              })
+            })
+          //Add User
         })
         .catch(() => {
           this.$toast.error(`Error Encountered`, {
@@ -392,27 +370,10 @@ export default {
   width: 20% !important;
   height: 20% !important;
 }
-
 .save-btn {
   margin-top: 10px;
   float: right;
 }
-
-/* TODO: tag input styling */
-/* .ti-input {
-  background: #f8f9fa;
-}
-.ti-new-tag-input {
-  border: 1px solid #ced4da;
-  background: #f8f9fa;
-}
-.ti-tags {
-  background: #f8f9fa;
-}
-.ti-new-tag-input-wraper {
-  background: #f8f9fa;
-} */
-
 .vue-tags-input,
 .tag-custom,
 .text-14 {
@@ -423,27 +384,17 @@ export default {
   border-radius: 0.25rem;
 }
 
-/* .ti-new-tag-input,
-.ti-valid {
-  background: #f8f9fa !important;
-  color: #0b192b !important;
-} */
-
-div ul li,
-#tagInput[type="input"] {
+#tagInput [type="input"] {
   background: #f8f9fa !important;
   color: #0b192b !important;
 }
-
 input {
   background: #f8f9fa !important;
 }
-
 .mt-1,
 .my-1 {
   margin-top: 15px !important;
 }
-
 .add-user-page {
   margin-bottom: 25px;
 }
@@ -454,5 +405,11 @@ input {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+
+.upload-btn {
+  float: right;
+  margin-right: 5px;
+  margin-top: 10px;
 }
 </style>
