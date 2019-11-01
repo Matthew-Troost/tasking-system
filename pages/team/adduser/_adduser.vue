@@ -9,10 +9,11 @@
           </h2>
         </b-col>
       </b-row>
-      <b-row>
-        <b-col md="6">
-          <b-card title="User Details">
-            <b-form @submit.prevent="submitForm">
+
+      <b-card title="User Details">
+        <b-form @submit.prevent="submitForm">
+          <b-row>
+            <b-col md="6">
               <b-form-group label="First Name">
                 <b-form-input
                   v-model="first_name"
@@ -23,7 +24,7 @@
                       !form.first_name.minLength.hasMinLength ||
                       !form.first_name.valid
                   }"
-                  autocomplete="false"
+                  autocomplete="off"
                   label="First Name"
                   placeholder="Enter First Name"
                 >
@@ -48,7 +49,7 @@
                       !form.last_name.minLength.hasMinLength ||
                       !form.last_name.valid
                   }"
-                  autocomplete="false"
+                  autocomplete="off"
                   label="Last Name"
                   placeholder="Enter Last Name"
                 >
@@ -73,7 +74,7 @@
                   class="mb-2"
                   :class="{ error: !form.nickname.minLength.hasMinLength }"
                   label="Nickname"
-                  autocomplete="false"
+                  autocomplete="off"
                   placeholder="Enter Nickname"
                 >
                   <!-- <b-alert
@@ -86,13 +87,15 @@
               > -->
                 </b-form-input>
               </b-form-group>
+            </b-col>
+            <b-col md="6">
               <b-form-group label="Email">
                 <b-form-input
                   v-model="email"
                   class="mb-2"
                   :class="{ error: !isEmailValid() || !form.email.valid }"
                   label="Email"
-                  autocomplete="false"
+                  autocomplete="off"
                   type="email"
                   placeholder="Enter Email"
                 >
@@ -142,11 +145,12 @@
               <b-button type="submit" class="save-btn" variant="primary"
                 >Save</b-button
               >
-            </b-form>
-          </b-card>
-        </b-col>
+            </b-col>
+          </b-row>
+        </b-form>
+      </b-card>
 
-        <!-- <b-col md="6">
+      <!-- <b-col md="6">
         <b-col md="10">
           <b-card class="card-profile-1 mb-30 text-center">
             <div class="avatar box-shadow-2 mb-3">
@@ -164,7 +168,6 @@
           </b-card>
         </b-col>
       </b-col> -->
-      </b-row>
     </div>
   </div>
 </template>
@@ -210,7 +213,7 @@ export default {
   computed: {
     filteredTypes() {
       return this.autocompletetypes.filter(item => {
-        return item.toLowerCase().indexOf(this.type) !== -1
+        return item.toLowerCase().indexOf(this.type.toLowerCase()) !== -1
       })
     },
     lowerCaseTypes() {
@@ -392,6 +395,7 @@ export default {
 
 .save-btn {
   margin-top: 10px;
+  float: right;
 }
 
 /* TODO: tag input styling */
@@ -425,10 +429,14 @@ export default {
   color: #0b192b !important;
 } */
 
-#tagInput,
-input {
+div ul li,
+#tagInput[type="input"] {
   background: #f8f9fa !important;
   color: #0b192b !important;
+}
+
+input {
+  background: #f8f9fa !important;
 }
 
 .mt-1,
