@@ -141,16 +141,18 @@
                 >
                 </b-form-input>
               </b-form-group>
-              <b-button type="submit" class="save-btn" variant="primary"
-                >Save</b-button
-              >
               <b-form-file
                 v-model="avatar"
                 type="file"
-                class="upload-btn "
+                class=""
+                placeholder="Choose or drop avatar here"
+                drop-placeholder="Drop avatar here"
                 variant="primary"
                 value="Upload"
               />
+              <b-button type="submit" class="save-btn" variant="primary"
+                >Save</b-button
+              >
             </b-col>
           </b-row>
         </b-form>
@@ -317,6 +319,21 @@ export default {
                 nickname: this.nickname,
                 type: this.lowerCaseTypes,
                 avatar: this.avatar.name
+              })
+            })
+            .then(() => {
+              this.$toast.success(`User Added`, {
+                theme: "bubble",
+                position: "top-left",
+                duration: 5000
+              })
+            })
+            .finally(() => {
+              this.$router.push({
+                name: "team-team",
+                params: {
+                  team: this.$route.params.adduser.toLowerCase()
+                }
               })
             })
         })

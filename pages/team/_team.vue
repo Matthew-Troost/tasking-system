@@ -1,71 +1,77 @@
 <template>
   <div class="main-content">
     <Loading v-if="loading" />
-
-    <b-row>
-      <b-col md="8">
-        <h2 class="page-title">
-          {{ name }}
-          <small>
-            <nuxt-link tag="a" class :to="addUrl">
-              <i class="nav-icon i-Add"></i>
-              <span class="item-name"> Add New</span>
-            </nuxt-link>
-          </small>
-        </h2>
-      </b-col>
-      <b-col md="4">
-        <b-form-input
-          v-model="searchWord"
-          class="form-control-rounded"
-          type="text"
-          required
-          placeholder="Search..."
-        >
-        </b-form-input>
-      </b-col>
-    </b-row>
-    <keep-alive>
-      <transition-group name="fade" tag="b-row">
-        <b-col
-          v-for="user in users"
-          v-show="
-            user.type && user.type.includes(position) && searchUser(user.id)
-          "
-          :key="user.id"
-          lg="3"
-          sm="6"
-          md="4"
-          class="user-card"
-        >
-          <!-- start::profile -->
-          <b-card class="card-profile-1 mb-30 text-center">
-            <div class="avatar mb-3">
-              <img src="@/assets/images/avatars/matthewt.svg" alt />
-            </div>
-            <h5 class="m-0">
-              {{ !user.nickname ? user.first_name : user.nickname }}
-            </h5>
-
-            <div v-if="userProjects[user.id]">
-              <div
-                v-for="project in userProjects[user.id].map(x => x)"
-                :key="project"
-                class="text-center"
-              >
-                <b-badge pill variant="outline-dark p-2 m-1"
-                  >{{ project }}
-                </b-badge>
-              </div>
-            </div>
-
-            <button class="btn btn-primary btn-rounded mt-2">
-              {{ user.first_name }}'s Schedule
-            </button>
-          </b-card>
+    <div v-if="!loading">
+      <b-row>
+        <b-col md="8">
+          <h2 class="page-title">
+            {{ name }}
+            <small>
+              <nuxt-link tag="a" class :to="addUrl">
+                <i class="nav-icon i-Add"></i>
+                <span class="item-name"> Add New</span>
+              </nuxt-link>
+            </small>
+          </h2>
         </b-col>
-      </transition-group>
-    </keep-alive>
+        <b-col md="4">
+          <b-form-input
+            v-model="searchWord"
+            class="form-control-rounded"
+            type="text"
+            required
+            placeholder="Search..."
+          >
+          </b-form-input>
+        </b-col>
+      </b-row>
+      <keep-alive>
+        <transition-group name="fade" tag="b-row">
+          <b-col
+            v-for="user in users"
+            v-show="
+              user.type && user.type.includes(position) && searchUser(user)
+            "
+            :key="user.id"
+            lg="3"
+            sm="6"
+            md="4"
+            class="user-card"
+          >
+            <b-card class="card-profile-1 mb-30 text-center">
+              <div class="avatar mb-3">
+                <img v-lazy="test[0]" alt class="avatarImage" />
+              </div>
+              <h5 class="m-0">
+                {{ !user.nickname ? user.first_name : user.nickname }}
+              </h5>
+
+              <div v-if="userProjects[user.id]">
+                <div
+                  v-for="project in userProjects[user.id].map(x => x)"
+                  :key="project"
+                  class="text-center"
+                >
+                  <b-badge pill variant="outline-dark p-2 m-1"
+                    >{{ project }}
+                  </b-badge>
+                </div>
+              </div>
+              <div v-else>
+                <div class="text-center">
+                  <b-badge pill variant="outline-dark p-2 m-1"
+                    >No Tasks
+                  </b-badge>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-rounded mt-2">
+                {{ user.first_name }}'s Schedule
+              </button>
+            </b-card>
+          </b-col>
+        </transition-group>
+      </keep-alive>
+    </div>
   </div>
 </template>
 <script>
@@ -83,8 +89,11 @@ export default {
       name: "",
       position: "",
       loading: true,
-      userProjects: [],
-      searchWord: ""
+      searchWord: "",
+      test: [
+        "https://firebasestorage.googleapis.com/v0/b/steve-eaa4c.appspot.com/o/UserAvatars%2Fadrian.svg?alt=media&token=150ece3a-89d0-4fa7-bce0-d2d884ed829c"
+      ],
+      userAvatars1: []
     }
   },
   computed: {
@@ -94,6 +103,29 @@ export default {
     }),
     addUrl() {
       return "/team/adduser/" + this.name
+    },
+    userAvatars() {
+      return this.userAvatars1
+    },
+    userProjects() {
+      let array = []
+      this.projects.forEach(projectData => {
+        if (projectData.lists) {
+          projectData.lists.forEach(list => {
+            if (list.tasks)
+              list.tasks.forEach(task => {
+                if (task.users)
+                  task.users.forEach(user => {
+                    if (!array[user.id]) {
+                      array[user.id] = []
+                    }
+                    array[user.id].push(projectData.name)
+                  })
+              })
+          })
+        }
+      })
+      return array
     }
   },
   validate({ params }) {
@@ -102,11 +134,9 @@ export default {
     )
   },
   watch: {
-    projects() {
-      this.projects.forEach(project => {
-        //Populate userProjects array
-        this.addUserProject(project)
-      })
+    users() {
+      this.userAvatars1 = this.initializeUserAvatars()
+      this.loading = false
     }
   },
   created() {
@@ -127,16 +157,17 @@ export default {
         break
     }
   },
+  beforeUpdate() {},
   mounted() {
-    this.projects.forEach(project => {
-      //Populate userProjects array
-      this.addUserProject(project)
-    })
-    this.loading = false
+    if (this.users) {
+      this.loading = false
+      this.userAvatars1 = this.initializeUserAvatars()
+      this.$forceUpdate()
+    }
+    this.$forceUpdate()
   },
   methods: {
-    searchUser(userId) {
-      const user = this.users[userId]
+    searchUser(user) {
       return (
         (user.first_name &&
           user.first_name
@@ -150,21 +181,22 @@ export default {
           user.nickname.toLowerCase().includes(this.searchWord.toLowerCase()))
       )
     },
-    addUserProject(projectData) {
-      if (projectData.lists) {
-        projectData.lists.forEach(list => {
-          if (list.tasks)
-            list.tasks.forEach(task => {
-              if (task.users)
-                task.users.forEach(user => {
-                  if (!this.userProjects[user.id]) {
-                    this.userProjects[user.id] = []
-                  }
-                  this.userProjects[user.id].push(projectData.name)
-                })
+    initializeUserAvatars() {
+      let avatarArray = []
+      this.users.forEach(user => {
+        if (!user.avatar) {
+          avatarArray[user.id] =
+            "/_nuxt/assets/images/avatars/blank-profile-picture.png"
+        } else {
+          this.$store.state.storage
+            .ref("UserAvatars/" + user.avatar)
+            .getDownloadURL()
+            .then(url => {
+              avatarArray[user.id] = url
             })
-        })
-      }
+        }
+      })
+      return avatarArray
     }
   }
 }

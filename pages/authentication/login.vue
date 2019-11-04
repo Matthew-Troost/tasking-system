@@ -69,11 +69,8 @@ export default {
   },
   methods: {
     login: function() {
-      this.$store
-        .dispatch("users/login", {
-          email: this.model.email,
-          password: this.model.password
-        })
+      this.$store.state.auth
+        .signInWithEmailAndPassword(this.model.email, this.model.password)
         .then(
           user => {
             if (user.user.emailVerified) {

@@ -4,6 +4,7 @@ import Vue from "vue"
 import themeKit from "./theme-kit"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import VueTagsInput from "@johmun/vue-tags-input"
+import VueLazyload from "vue-lazyload"
 
 import {
   faChartLine,
@@ -25,3 +26,7 @@ Vue.component("font-awesome-icon", FontAwesomeIcon)
 Vue.component("loading", Loading)
 Vue.use(themeKit)
 Vue.use(VueTagsInput)
+Vue.use(VueLazyload, {
+  loading: "/_nuxt/assets/images/astronaut.gif",
+  error: "/_nuxt/assets/images/avatars/blank-profile-picture.png"
+})
