@@ -1,12 +1,14 @@
 <template>
-  <div class="list-group-item">
+  <div
+    :class="[{ completed: value.completed }, 'list-group-item']"
+    class="list-group-item"
+  >
     <b-row>
       <b-col md="6">
         <label class="checkbox checkbox-primary" style="display: inline">
           <input
             v-model="checked"
             type="checkbox"
-            :disabled="value.completed"
             :value="value.completed"
             @change="update()"
           />
@@ -33,6 +35,7 @@
               title-position="right"
               :masks="{ input: 'DD MMM' }"
               class="datepicker-sm"
+              @change="update()"
             />
           </b-col>
           <b-col md="4" style="border-right: 1px solid #cacaca">
@@ -48,15 +51,11 @@
               :text="priority + ' priority'"
               size="sm"
             >
-              <b-dropdown-item @click="updatePriority('low')"
-                >Low</b-dropdown-item
-              >
-              <b-dropdown-item @click="updatePriority('medium')"
+              <b-dropdown-item @click="priority = 'low'">Low</b-dropdown-item>
+              <b-dropdown-item @click="priority = 'medium'"
                 >Medium</b-dropdown-item
               >
-              <b-dropdown-item @click="updatePriority('high')"
-                >High</b-dropdown-item
-              >
+              <b-dropdown-item @click="priority = 'high'">High</b-dropdown-item>
             </b-dropdown>
           </b-col>
           <b-col md="4"></b-col>
@@ -77,12 +76,10 @@ export default {
   data() {
     return {
       priority: this.value.priority,
-      range: {
-        start: this.value.startdate.toDate(),
-        end: this.value.enddate.toDate()
-      },
       checkedProxy: false,
-      updateTimer: null
+      updateTimer: null,
+      startDateProxy: null,
+      endDateProxy: null
     }
   },
   computed: {
@@ -93,11 +90,32 @@ export default {
       set(val) {
         this.checkedProxy = val
       }
+    },
+    range: {
+      get() {
+        return {
+          start: this.value.startdate.toDate(),
+          end: this.value.enddate.toDate()
+        }
+      },
+      set(val) {
+        this.startDateProxy = val.start
+        this.endDateProxy = val.end
+      }
     }
   },
   watch: {
-    range: {
-      deep: true,
+    startDateProxy: {
+      handler() {
+        this.update()
+      }
+    },
+    endDateProxy: {
+      handler() {
+        this.update()
+      }
+    },
+    priority: {
       handler() {
         this.update()
       }
@@ -110,10 +128,10 @@ export default {
         description: this.$refs.description_input.value,
         priority: this.priority,
         startdate: this.$store.state.firebase.firestore.Timestamp.fromDate(
-          this.range.start
+          this.startDateProxy
         ),
         enddate: this.$store.state.firebase.firestore.Timestamp.fromDate(
-          this.range.end
+          this.endDateProxy
         )
       })
       this.updateParent()
@@ -137,8 +155,13 @@ export default {
 <style scoped>
 input {
   border: none;
+  background: transparent;
 }
 input:focus {
   outline: none;
+}
+.completed {
+  background-color: #eaeaea;
+  opacity: 0.5;
 }
 </style>

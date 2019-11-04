@@ -22,7 +22,7 @@
         ></b-form-input>
       </b-col>
     </b-row>
-    <b-row>
+    <transition-group name="fade" tag="b-row">
       <b-col
         v-for="project in projects"
         v-show="project.name.toLowerCase().includes(searchWord)"
@@ -46,7 +46,7 @@
                 <b-button
                   pill
                   variant="primary ripple"
-                  :to="'/projects/' + toLink(project.name)"
+                  :to="'/projects/systems/' + toLink(project.name)"
                   nuxt
                   >View tasks</b-button
                 >
@@ -55,7 +55,7 @@
           </b-row>
         </b-card>
       </b-col>
-    </b-row>
+    </transition-group>
     <b-modal
       id="modal-add-project"
       centered
@@ -79,13 +79,13 @@
   </div>
 </template>
 <script>
-import ProjectAvatar from "../../components/projectAvatar"
+import ProjectAvatar from "@/components/projectAvatar"
 import Util from "@/utils"
 import { mapState } from "vuex"
 
 export default {
   layout: "default",
-  name: "Systems",
+  name: "Type",
   components: {
     ProjectAvatar
   },
@@ -103,38 +103,32 @@ export default {
   methods: {
     addProject: function() {
       if (!this.newProjectName) {
-        this.$toast.error("Please enter a project name.", {
-          theme: "bubble",
-          position: "top-left",
-          duration: 5000
-        })
-      } else {
-        this.$store.state.db
-          .collection("projects")
-          .add({ name: this.newProjectName, lists: [] })
-          .then(() => {
-            this.$bvModal.hide("modal-add-project")
-            this.$toast.success(
-              `${this.newProjectName} has been added as a project`,
-              {
-                theme: "bubble",
-                position: "top-left",
-                duration: 5000
-              }
-            )
-            this.newProjectName = ""
-          })
-          .catch(error => {
-            this.$toast.error(
-              `There was an issue adding this project: ${error}`,
-              {
-                theme: "bubble",
-                position: "top-left",
-                duration: 5000
-              }
-            )
-          })
+        return this.$toast.error("Please enter a project name.")
       }
+
+      if (
+        this.projects.filter(
+          project => project.name == Util.linkToString(this.newProjectName)
+        ).length > 0
+      ) {
+        return this.$toast.error("A project with this name already exists")
+      }
+
+      this.$store.state.db
+        .collection("projects")
+        .add({ name: Util.linkToString(this.newProjectName), lists: [] })
+        .then(() => {
+          this.$bvModal.hide("modal-add-project")
+          this.$toast.success(
+            `${Util.linkToString(
+              this.newProjectName
+            )} has been added as a project`
+          )
+          this.newProjectName = ""
+        })
+        .catch(error => {
+          this.$toast.error(`There was an issue adding this project: ${error}`)
+        })
     },
     toLink: function(projectName) {
       return Util.stringToLink(projectName)

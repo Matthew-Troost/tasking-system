@@ -63,6 +63,7 @@ small {
   border: none;
   margin-top: 5px;
   text-align: center;
+  background: transparent;
 }
 
 .datepicker-sm input:focus {
@@ -92,41 +93,10 @@ small {
   padding: 1rem 0rem !important;
 }
 
-
-
-
-
-.fc-toolbar h2 {
-  font-weight: 100;
-    font-size: 16px !important;
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
 }
-
-.fc-unthemed td{
-  border-color: #f1f1f1 !important;
-}
-
-th.fc-day-header{
-  font-size: 13px;
-}
-
-.fc-button-primary {
-  color: #000 !important;
-  background-color: #ffffff8f !important;
-  border-color: #ffffff !important;
-}
-
-.fc-button-primary:focus {
-  box-shadow:  none !important;
-}
-
-.fc-button:focus {
-  box-shadow: none !important;
-}
-
-.fc-toolbar.fc-header-toolbar {
-  margin-bottom: 0 !important;
-}
-
-.fc-unthemed td.fc-today {
-  background: #3f51b52e !important;
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
