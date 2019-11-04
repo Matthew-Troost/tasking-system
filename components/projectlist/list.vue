@@ -80,6 +80,8 @@ export default {
         identifier: Utils.generateGuid(),
         completed: false,
         description: "",
+        difficulty: "easy",
+        hours: 1,
         startdate: this.$store.state.firebase.firestore.Timestamp.fromDate(
           new Date()
         ),

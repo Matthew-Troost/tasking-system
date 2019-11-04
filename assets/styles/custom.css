@@ -132,3 +132,20 @@ small {
 .tags-input, .tags-input input{
   background-color: transparent !important;
 }
+.full-width{
+  width: 100%;
+}
+
+input::placeholder {
+  color: #d0d0d0;
+}
+
+.bd-no-border > button {
+  border: none;
+  padding: 0px !important;
+  background: transparent !important;
+}
+
+.bd-no-border > button:focus, .bd-no-border > button:hover{
+  box-shadow: none !important;
+}
