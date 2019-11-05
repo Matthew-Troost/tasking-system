@@ -312,14 +312,20 @@ export default {
             .child(this.avatarSaveUrl)
             .put(this.avatar)
             .then(() => {
-              //Add User
-              this.$store.state.db.collection("users").add({
-                first_name: this.first_name,
-                last_name: this.last_name,
-                nickname: this.nickname,
-                type: this.lowerCaseTypes,
-                avatar: this.avatar.name
-              })
+              //Get Avatar download url to save against user
+              this.$store.state.storage
+                .ref(this.avatarSaveUrl)
+                .getDownloadURL()
+                .then(url => {
+                  //Add User
+                  this.$store.state.db.collection("users").add({
+                    first_name: this.first_name,
+                    last_name: this.last_name,
+                    nickname: this.nickname,
+                    type: this.lowerCaseTypes,
+                    avatar: url
+                  })
+                })
             })
             .then(() => {
               this.$toast.success(`User Added`, {

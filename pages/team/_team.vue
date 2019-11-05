@@ -40,7 +40,13 @@
           >
             <b-card class="card-profile-1 mb-30 text-center">
               <div class="avatar mb-3">
-                <img v-lazy="test[0]" alt class="avatarImage" />
+                <img
+                  v-if="user.avatar"
+                  v-lazy="user.avatar"
+                  alt
+                  class="avatarImage"
+                />
+                <img v-else v-lazy="defaultAvatar" alt class="avatarImage" />
               </div>
               <h5 class="m-0">
                 {{ !user.nickname ? user.first_name : user.nickname }}
@@ -90,10 +96,7 @@ export default {
       position: "",
       loading: true,
       searchWord: "",
-      test: [
-        "https://firebasestorage.googleapis.com/v0/b/steve-eaa4c.appspot.com/o/UserAvatars%2Fadrian.svg?alt=media&token=150ece3a-89d0-4fa7-bce0-d2d884ed829c"
-      ],
-      userAvatars1: []
+      defaultAvatar: "/_nuxt/assets/images/avatars/blank-profile-picture.png"
     }
   },
   computed: {
@@ -103,9 +106,6 @@ export default {
     }),
     addUrl() {
       return "/team/adduser/" + this.name
-    },
-    userAvatars() {
-      return this.userAvatars1
     },
     userProjects() {
       let array = []
@@ -135,7 +135,6 @@ export default {
   },
   watch: {
     users() {
-      this.userAvatars1 = this.initializeUserAvatars()
       this.loading = false
     }
   },
@@ -157,14 +156,10 @@ export default {
         break
     }
   },
-  beforeUpdate() {},
   mounted() {
     if (this.users) {
       this.loading = false
-      this.userAvatars1 = this.initializeUserAvatars()
-      this.$forceUpdate()
     }
-    this.$forceUpdate()
   },
   methods: {
     searchUser(user) {
@@ -180,23 +175,6 @@ export default {
         (user.nickname &&
           user.nickname.toLowerCase().includes(this.searchWord.toLowerCase()))
       )
-    },
-    initializeUserAvatars() {
-      let avatarArray = []
-      this.users.forEach(user => {
-        if (!user.avatar) {
-          avatarArray[user.id] =
-            "/_nuxt/assets/images/avatars/blank-profile-picture.png"
-        } else {
-          this.$store.state.storage
-            .ref("UserAvatars/" + user.avatar)
-            .getDownloadURL()
-            .then(url => {
-              avatarArray[user.id] = url
-            })
-        }
-      })
-      return avatarArray
     }
   }
 }
