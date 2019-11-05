@@ -133,11 +133,6 @@ export default {
       params.team
     )
   },
-  watch: {
-    users() {
-      this.loading = false
-    }
-  },
   created() {
     this.name = Util.linkToString(this.$route.params.team)
     switch (this.name.toLowerCase()) {
@@ -155,11 +150,10 @@ export default {
         this.name = "Social Media"
         break
     }
+    if (this.$route.params.success) this.addUserSuccess()
   },
   mounted() {
-    if (this.users) {
-      this.loading = false
-    }
+    this.loading = false
   },
   methods: {
     searchUser(user) {
@@ -175,6 +169,13 @@ export default {
         (user.nickname &&
           user.nickname.toLowerCase().includes(this.searchWord.toLowerCase()))
       )
+    },
+    addUserSuccess() {
+      this.$toast.success(`User Added`, {
+        theme: "bubble",
+        position: "top-left",
+        duration: 5000
+      })
     }
   }
 }

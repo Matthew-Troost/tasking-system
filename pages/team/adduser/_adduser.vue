@@ -209,6 +209,18 @@ export default {
     },
     lowerCaseTypes() {
       return this.types.map(x => x.toLowerCase())
+    },
+    teamParameter() {
+      switch (this.types[0].toLowerCase()) {
+        case "designer":
+          return "designers"
+        case "developer":
+          return "developers"
+        case "management":
+          return "managing"
+        default:
+          return this.types[0].toLowerCase()
+      }
     }
   },
   watch: {
@@ -327,18 +339,12 @@ export default {
                   })
                 })
             })
-            .then(() => {
-              this.$toast.success(`User Added`, {
-                theme: "bubble",
-                position: "top-left",
-                duration: 5000
-              })
-            })
             .finally(() => {
               this.$router.push({
                 name: "team-team",
                 params: {
-                  team: this.$route.params.adduser.toLowerCase()
+                  team: this.teamParameter,
+                  success: true
                 }
               })
             })
