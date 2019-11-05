@@ -76,14 +76,6 @@
                   autocomplete="off"
                   placeholder="Enter Nickname"
                 >
-                  <!-- <b-alert
-                v-if="!form.nickname.valid"
-                show
-                variant="danger"
-                class="error col-md-6 mt-1"
-                >Nickname must have at least
-                {{ form.last_name.minLength.length }} letters.</b-alert
-              > -->
                 </b-form-input>
               </b-form-group>
             </b-col>
@@ -144,12 +136,19 @@
               <b-form-file
                 v-model="avatar"
                 type="file"
-                class=""
+                :class="{ fileInputError: !form.avatar.valid }"
                 placeholder="Choose or drop avatar here"
                 drop-placeholder="Drop avatar here"
                 variant="primary"
                 value="Upload"
               />
+              <b-alert
+                v-if="!form.avatar.valid"
+                show
+                variant="danger"
+                class="error col-md-6 mt-1"
+                >Please upload an avatar for this user</b-alert
+              >
               <b-button type="submit" class="save-btn" variant="primary"
                 >Save</b-button
               >
@@ -256,6 +255,9 @@ export default {
     },
     email() {
       this.form.email.valid = this.email !== "" || this.form.email.validFormat
+    },
+    avatar() {
+      this.form.avatar.valid = true
     }
   },
   beforeMount() {
@@ -294,6 +296,9 @@ export default {
         valid: true,
         correctInput: false,
         errorMessage: ""
+      },
+      avatar: {
+        valid: true
       }
     }
     switch (this.$route.params.adduser) {
@@ -324,27 +329,17 @@ export default {
             .child(this.avatarSaveUrl)
             .put(this.avatar)
             .then(() => {
-              //Get Avatar download url to save against user
-              this.$store.state.storage
-                .ref(this.avatarSaveUrl)
-                .getDownloadURL()
-                .then(url => {
-                  //Add User
-                  this.$store.state.db.collection("users").add({
-                    first_name: this.first_name,
-                    last_name: this.last_name,
-                    nickname: this.nickname,
-                    type: this.lowerCaseTypes,
-                    avatar: url
-                  })
-                })
-            })
-            .finally(() => {
               this.$router.push({
                 name: "team-team",
                 params: {
                   team: this.teamParameter,
-                  success: true
+                  userData: {
+                    first_name: this.first_name,
+                    last_name: this.last_name,
+                    nickname: this.nickname,
+                    type: this.lowerCaseTypes,
+                    avatar: this.avatarSaveUrl
+                  }
                 }
               })
             })
@@ -355,6 +350,9 @@ export default {
             position: "top-left",
             duration: 5000
           })
+        })
+        .finally(() => {
+          this.$route.params.userData = null
         })
     },
     isEmailValid() {
@@ -385,6 +383,10 @@ export default {
         this.valid = false
         this.form.type.valid = false
       }
+      if (!this.avatar) {
+        this.valid = false
+        this.form.avatar.valid = false
+      }
       if (this.valid) this.addUser()
     }
   }
@@ -394,6 +396,9 @@ export default {
 .error {
   border-color: #f30000 !important;
   box-shadow: 0 0 0 0.2rem rgba(181, 0, 0, 0.25);
+}
+.fileInputError {
+  box-shadow: 0 0 10px 0.2rem rgba(181, 0, 0, 0.25);
 }
 .vue-tags-input {
   max-width: unset !important;

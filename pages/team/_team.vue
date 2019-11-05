@@ -150,7 +150,7 @@ export default {
         this.name = "Social Media"
         break
     }
-    if (this.$route.params.success) this.addUserSuccess()
+    if (this.$route.params.userData) this.addUser()
   },
   mounted() {
     this.loading = false
@@ -170,12 +170,37 @@ export default {
           user.nickname.toLowerCase().includes(this.searchWord.toLowerCase()))
       )
     },
-    addUserSuccess() {
-      this.$toast.success(`User Added`, {
-        theme: "bubble",
-        position: "top-left",
-        duration: 5000
-      })
+    addUser() {
+      //Get Avatar download url to save against user
+      this.$store.state.storage
+        .ref(this.$route.params.userData.avatar)
+        .getDownloadURL()
+        .then(url => {
+          //Add User
+          this.$store.state.db
+            .collection("users")
+            .add({
+              first_name: this.$route.params.userData.first_name,
+              last_name: this.$route.params.userData.last_name,
+              nickname: this.$route.params.userData.nickname,
+              type: this.$route.params.userData.type,
+              avatar: url
+            })
+            .then(() => {
+              this.$toast.success(`User Added`, {
+                theme: "bubble",
+                position: "top-left",
+                duration: 5000
+              })
+            })
+        })
+        .catch(() => {
+          this.$toast.error(`Error Adding User`, {
+            theme: "bubble",
+            position: "top-left",
+            duration: 5000
+          })
+        })
     }
   }
 }
