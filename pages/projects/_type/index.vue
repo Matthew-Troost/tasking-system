@@ -32,9 +32,7 @@
         <b-card class="mb-30 text-15 w-100" :title="project.name">
           <b-row md="12">
             <b-col
-              v-for="user in projectUsers[project.id].filter(
-                (v, i, a) => a.indexOf(v) === i
-              )"
+              v-for="user in new Set(projectUsers[project.id])"
               :key="user"
               md="2"
             >
