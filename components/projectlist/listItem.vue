@@ -86,12 +86,12 @@
               >
                 {{ props.item.text }}
               </div>
-              <div slot="tag-center">
+              <div slot="tag-center" slot-scope="props">
                 <ProjectAvatar
                   image-url="@/assets/images/avatars/matthewt.svg"
                   :hide-nick-name="true"
                   :width="24"
-                  nick-name="Matt"
+                  :nick-name="props.tag.text"
                 />
               </div>
             </VueTagsInput>
