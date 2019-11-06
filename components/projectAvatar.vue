@@ -1,21 +1,46 @@
 <template>
   <div class="container">
-    <img src="@/assets/images/avatars/matthewt.svg" alt />
-    <h6>{{ nickName }}</h6>
+    <img v-lazy="url" alt />
+    <h6>{{ displayName }}</h6>
   </div>
 </template>
 <script>
+import { mapState } from "vuex"
 export default {
   layout: "default",
   name: "ProjectAvatar",
   props: {
     imageUrl: {
       type: String,
+      default: "/_nuxt/assets/images/avatars/blank-profile-picture.png"
+    },
+    userId: {
+      type: String,
       default: ""
     },
     nickName: {
       type: String,
       default: ""
+    }
+  },
+  computed: {
+    ...mapState({
+      users: state => state.users.all
+    }),
+    user() {
+      return this.users.filter(user => {
+        return user.id == this.userId
+      })
+    },
+    url() {
+      if (this.userId === "") return this.imageUrl
+      if (this.user[0]) return this.user[0].avatar
+      return null
+    },
+    displayName() {
+      if (this.userId === "") return this.nickName
+      if (this.user[0]) return this.user[0].nickname
+      return null
     }
   }
 }

@@ -40,25 +40,24 @@
           >
             <b-card class="card-profile-1 mb-30 text-center">
               <div class="avatar mb-3">
-                <img
-                  v-if="user.avatar"
-                  v-lazy="user.avatar"
-                  alt
-                  class="avatarImage"
-                />
-                <img v-else v-lazy="defaultAvatar" alt class="avatarImage" />
+                <img v-if="user.avatar" v-lazy="user.avatar" alt />
+                <img v-else v-lazy="defaultAvatar" alt />
               </div>
               <h5 class="m-0">
                 {{ !user.nickname ? user.first_name : user.nickname }}
               </h5>
 
-              <div v-if="userProjects[user.id]">
+              <div v-if="projectList[user.id]">
                 <div
-                  v-for="project in userProjects[user.id].map(x => x)"
+                  v-for="project in projectList[user.id]"
                   :key="project"
                   class="text-center"
                 >
-                  <b-badge pill variant="outline-dark p-2 m-1"
+                  <b-badge
+                    pill
+                    variant="outline-dark p-2 m-1"
+                    :to="'/projects/systems/' + toLink(project)"
+                    nuxt
                     >{{ project }}
                   </b-badge>
                 </div>
@@ -107,19 +106,20 @@ export default {
     addUrl() {
       return "/team/adduser/" + this.name
     },
-    userProjects() {
+    projectList() {
       let array = []
-      this.projects.forEach(projectData => {
-        if (projectData.lists) {
-          projectData.lists.forEach(list => {
+      this.projects.forEach(project => {
+        if (project.lists) {
+          project.lists.forEach(list => {
             if (list.tasks)
               list.tasks.forEach(task => {
                 if (task.users)
                   task.users.forEach(user => {
-                    if (!array[user.id]) {
-                      array[user.id] = []
+                    if (!array[user]) {
+                      array[user] = []
                     }
-                    array[user.id].push(projectData.name)
+                    if (user && !array[user].includes(project.name))
+                      array[user].push(project.name)
                   })
               })
           })
@@ -150,7 +150,6 @@ export default {
         this.name = "Social Media"
         break
     }
-    if (this.$route.params.userData) this.addUser()
   },
   mounted() {
     this.loading = false
@@ -170,37 +169,8 @@ export default {
           user.nickname.toLowerCase().includes(this.searchWord.toLowerCase()))
       )
     },
-    addUser() {
-      //Get Avatar download url to save against user
-      this.$store.state.storage
-        .ref(this.$route.params.userData.avatar)
-        .getDownloadURL()
-        .then(url => {
-          //Add User
-          this.$store.state.db
-            .collection("users")
-            .add({
-              first_name: this.$route.params.userData.first_name,
-              last_name: this.$route.params.userData.last_name,
-              nickname: this.$route.params.userData.nickname,
-              type: this.$route.params.userData.type,
-              avatar: url
-            })
-            .then(() => {
-              this.$toast.success(`User Added`, {
-                theme: "bubble",
-                position: "top-left",
-                duration: 5000
-              })
-            })
-        })
-        .catch(() => {
-          this.$toast.error(`Error Adding User`, {
-            theme: "bubble",
-            position: "top-left",
-            duration: 5000
-          })
-        })
+    toLink: function(projectName) {
+      return Util.stringToLink(projectName)
     }
   }
 }
@@ -209,13 +179,5 @@ export default {
 <style scoped>
 .user-card {
   margin-bottom: 15px;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.5s ease;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

@@ -320,40 +320,46 @@ export default {
   },
   methods: {
     addUser() {
-      this.$store.state.auth
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-          //Add Avatar
-          this.$store.state.storage
-            .ref()
-            .child(this.avatarSaveUrl)
-            .put(this.avatar)
-            .then(() => {
-              this.$router.push({
-                name: "team-team",
-                params: {
-                  team: this.teamParameter,
-                  userData: {
-                    first_name: this.first_name,
-                    last_name: this.last_name,
-                    nickname: this.nickname,
-                    type: this.lowerCaseTypes,
-                    avatar: this.avatarSaveUrl
-                  }
-                }
-              })
-            })
+      return new Promise((resolve, reject) => {
+        this.$toast.success(`Adding User`)
+        this.$router.push({
+          name: "team-team",
+          params: {
+            team: this.teamParameter
+          }
         })
-        .catch(() => {
-          this.$toast.error(`Error Encountered`, {
-            theme: "bubble",
-            position: "top-left",
-            duration: 5000
-          })
-        })
-        .finally(() => {
-          this.$route.params.userData = null
-        })
+        this.$store.state.auth
+          .createUserWithEmailAndPassword(this.email, this.password)
+          .then(
+            user => {
+              //Add Avatar
+              console.log("addavatar")
+              this.$store.state.storage
+                .ref(this.avatarSaveUrl)
+                .put(this.avatar)
+                .then(() => {
+                  this.$store.state.storage
+                    .ref(this.avatarSaveUrl)
+                    .getDownloadURL()
+                    .then(url => {
+                      console.log("addUser")
+                      //Add User
+                      this.$store.state.db.collection("users").add({
+                        first_name: this.first_name,
+                        last_name: this.last_name,
+                        nickname: this.nickname,
+                        type: this.lowerCaseTypes,
+                        avatar: url
+                      })
+                    })
+                })
+              resolve(user)
+            },
+            error => {
+              reject(error)
+            }
+          )
+      })
     },
     isEmailValid() {
       return this.email == "" || this.reg.test(this.email)
@@ -387,7 +393,17 @@ export default {
         this.valid = false
         this.form.avatar.valid = false
       }
-      if (this.valid) this.addUser()
+      if (this.valid)
+        this.addUser().then(
+          user => {
+            console.log(user)
+            this.$toast.success("User Successfully Added")
+          },
+          error => {
+            console.log(error)
+            this.$toast.error("Error Encountered")
+          }
+        )
     }
   }
 }
@@ -395,7 +411,9 @@ export default {
 <style scoped>
 .error {
   border-color: #f30000 !important;
-  box-shadow: 0 0 0 0.2rem rgba(181, 0, 0, 0.25);
+  /* border-color: #dc5050 !important; */
+  box-shadow: 0 0 10px 0.2rem rgba(181, 0, 0, 0.25);
+  /* box-shadow: 0 0 0 0.2rem rgba(181, 0, 0, 0.25); */
 }
 .fileInputError {
   box-shadow: 0 0 10px 0.2rem rgba(181, 0, 0, 0.25);
@@ -435,18 +453,26 @@ input {
 .add-user-page {
   margin-bottom: 25px;
 }
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.5s ease;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
 
 .upload-btn {
   float: right;
   margin-right: 5px;
   margin-top: 10px;
+}
+
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #505050;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #505050;
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: #505050;
 }
 </style>

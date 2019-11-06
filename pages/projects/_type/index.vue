@@ -30,17 +30,18 @@
         md="6"
       >
         <b-card class="mb-30 text-15 w-100" :title="project.name">
-          <b-row>
-            <b-col md="6">
-              <ProjectAvatar
-                nick-name="Matt"
-                image-url="@/assets/images/avatars/matthewt.svg"
-              />
-              <ProjectAvatar
-                nick-name="Armand"
-                image-url="@/assets/images/avatars/matthewt.svg"
-              />
+          <b-row md="12">
+            <b-col
+              v-for="user in projectUsers[project.id].filter(
+                (v, i, a) => a.indexOf(v) === i
+              )"
+              :key="user"
+              md="2"
+            >
+              <ProjectAvatar class="avatar" :user-id="user" />
             </b-col>
+          </b-row>
+          <b-row md="12" class="btn-row">
             <b-col md="6" class="text-right">
               <div class="button-container">
                 <b-button
@@ -98,14 +99,32 @@ export default {
   computed: {
     ...mapState({
       projects: state => state.projects.all
-    })
+    }),
+    projectUsers() {
+      let mainArray = []
+      this.projects.forEach(project => {
+        let usersArray = []
+        if (project.lists)
+          project.lists.forEach(list => {
+            if (list.tasks) {
+              list.tasks.forEach(task => {
+                if (task.users !== [] && task.users !== undefined)
+                  usersArray = usersArray.concat(task.users)
+              })
+            }
+          })
+        if (usersArray !== [] && usersArray !== undefined) {
+          mainArray[project.id] = usersArray
+        }
+      })
+      return mainArray
+    }
   },
   methods: {
     addProject: function() {
       if (!this.newProjectName) {
         return this.$toast.error("Please enter a project name.")
       }
-
       if (
         this.projects.filter(
           project => project.name == Util.linkToString(this.newProjectName)
@@ -147,5 +166,9 @@ export default {
 }
 .modal-addition-only input {
   margin-right: 15px;
+}
+.btn-row {
+  /* margin-top: 45px; */
+  float: right;
 }
 </style>
