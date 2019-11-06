@@ -7,7 +7,7 @@
             v-model="checked"
             type="checkbox"
             :value="value.completed"
-            @change="update"
+            @change="modelChange"
           />
           <span class="checkmark"></span>
         </label>
@@ -16,7 +16,7 @@
           :value="value.description"
           placeholder="..."
           style="padding-right: 20px; width: 100%"
-          @input="update"
+          @input="modelChange"
         />
       </b-col>
       <b-col md="6">
@@ -28,7 +28,7 @@
               placeholder="hours"
               type="number"
               :value="value.hours"
-              @input="update"
+              @input="modelChange"
             />
           </b-col>
           <b-col
@@ -160,12 +160,15 @@ export default {
     tags: {
       get() {
         let user_tags = []
-        this.value.users.forEach(userid => {
-          user_tags.push({
-            id: userid,
-            text: this.users.filter(user => user.id == userid)[0].nickname
+        if (this.value.users) {
+          this.value.users.forEach(userid => {
+            user_tags.push({
+              id: userid,
+              text: this.users.filter(user => user.id == userid)[0].nickname
+            })
           })
-        })
+        }
+
         return user_tags
       },
       set(val) {
@@ -190,22 +193,22 @@ export default {
   watch: {
     priorityProxy: {
       handler() {
-        this.update()
+        this.modelChange()
       }
     },
     difficultyProxy: {
       handler() {
-        this.update()
+        this.modelChange()
       }
     },
     tagsProxy: {
       handler() {
-        this.update()
+        this.modelChange()
       }
     }
   },
   methods: {
-    update() {
+    modelChange() {
       this.$emit("input", {
         completed: this.checkedProxy,
         description: this.$refs.description.value,
@@ -214,25 +217,21 @@ export default {
         priority: this.priorityProxy,
         startdate: this.value.startdate,
         enddate: this.value.enddate,
-        users: this.tagsProxy,
+        users: this.tagsProxy == null ? [] : this.tagsProxy,
         identifier: this.value.identifier
       })
       console.log("calling parent update")
-      //this.updateParent()
-    },
-    updatePriority(priority) {
-      this.priority = priority
-      this.update()
-    },
-    updateParent() {
-      //we dont want to update on every keyup, so use a countdown instead
+
       if (this.updateTimer != null) {
         clearTimeout(this.updateTimer)
       }
       this.updateTimer = setTimeout(() => {
-        //change this to emit and handle on the parent side
-        this.$parent.updateParent()
+        this.$emit("item-update")
       }, 5000)
+    },
+    updatePriority(priority) {
+      this.priority = priority
+      this.modelChange()
     }
   }
 }

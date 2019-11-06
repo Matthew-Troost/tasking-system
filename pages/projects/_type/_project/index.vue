@@ -16,7 +16,7 @@
               v-for="(list, index) in project.lists"
               :key="list.id"
               v-model="project.lists[index]"
-              :update-function="updateProject"
+              @list-update="updateProject"
             />
             <b-button variant="outline-light m-1 btn-sm" @click="addList"
               >Add new list</b-button
@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     updateProject: function() {
-      console.log("update hit")
+      console.log(this.project)
       this.$store.state.db
         .collection("projects")
         .doc(this.project.id)

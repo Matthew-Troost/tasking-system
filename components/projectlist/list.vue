@@ -11,6 +11,7 @@
         :key="task.id"
         v-model="list.tasks[taskindex]"
         :priority="task.priority"
+        @item-update="update"
       />
     </div>
     <div class="list-group-item totals">
@@ -72,8 +73,8 @@ export default {
     )
   },
   methods: {
-    updateParent: function() {
-      this.updateFunction()
+    update: function() {
+      this.$emit("list-update")
     },
     addTask: function() {
       this.value.tasks.push({
@@ -91,10 +92,11 @@ export default {
         priority: "low",
         users: []
       })
+      this.update()
     },
     archiveList: function() {
       this.value.archived = true
-      this.updateParent()
+      this.update()
     },
     sortList: function(list) {
       function compare(a, b) {
