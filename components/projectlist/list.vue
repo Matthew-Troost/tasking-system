@@ -5,19 +5,30 @@
       <input :value="list.name" />
       <i v-if="!fixed" class="nav-icon i-Remove f-r" @click="archiveList"></i>
     </h5>
-    <div :id="'list_' + list.name" class="list-group">
+    <div :id="`list_${list.name}`" class="list-group">
       <ListItem
-        v-for="(task, taskindex) in tasks"
+        v-for="(task, taskindex) in list.tasks"
         :key="task.id"
         v-model="list.tasks[taskindex]"
         :priority="task.priority"
+        @item-update="update"
       />
+    </div>
+    <div class="list-group-item totals">
+      <b-row>
+        <b-col md="6"></b-col>
+        <b-col md="2">
+          <p>total here</p>
+        </b-col>
+        <b-col md="4"> </b-col>
+      </b-row>
     </div>
   </div>
 </template>
 <script>
 import ListItem from "./listItem"
 import Sortable from "sortablejs"
+import Utils from "@/utils"
 
 export default {
   name: "List",
@@ -48,9 +59,6 @@ export default {
       get() {
         return this.value
       }
-    },
-    tasks() {
-      return this.sortList(this.list.tasks)
     }
   },
   mounted() {
@@ -65,26 +73,30 @@ export default {
     )
   },
   methods: {
-    updateParent: function() {
-      this.updateFunction()
+    update: function() {
+      this.$emit("list-update")
     },
     addTask: function() {
-      console.log("hit")
       this.value.tasks.push({
+        identifier: Utils.generateGuid(),
         completed: false,
         description: "",
+        difficulty: "easy",
+        hours: 1,
         startdate: this.$store.state.firebase.firestore.Timestamp.fromDate(
           new Date()
         ),
         enddate: this.$store.state.firebase.firestore.Timestamp.fromDate(
           new Date()
         ),
-        priority: "low"
+        priority: "low",
+        users: []
       })
+      this.update()
     },
     archiveList: function() {
       this.value.archived = true
-      this.updateParent()
+      this.update()
     },
     sortList: function(list) {
       function compare(a, b) {
@@ -107,5 +119,19 @@ input {
 }
 input:focus {
   outline: none;
+}
+.list-group {
+  margin-bottom: -2px !important;
+}
+.totals {
+  background-color: #dedede;
+  border-color: #d2d2d2;
+  margin-bottom: 20px !important;
+}
+.totals p {
+  margin: 0;
+}
+.totals [class*="col-"] {
+  text-align: center;
 }
 </style>

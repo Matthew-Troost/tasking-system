@@ -16,7 +16,7 @@
               v-for="(list, index) in project.lists"
               :key="list.id"
               v-model="project.lists[index]"
-              :update-function="updateProject"
+              @list-update="updateProject"
             />
             <b-button variant="outline-light m-1 btn-sm" @click="addList"
               >Add new list</b-button
@@ -28,7 +28,10 @@
             <i class="i-Calendar-4  ul-tab__icon" />
           </template>
           <b-card-text>
-            <Calendar v-model="project.lists" />
+            <Calendar
+              v-model="project.lists"
+              @events-adjusted="updateProject"
+            />
           </b-card-text>
         </b-tab>
       </b-tabs>
@@ -72,6 +75,7 @@ export default {
   },
   methods: {
     updateProject: function() {
+      console.log(this.project)
       this.$store.state.db
         .collection("projects")
         .doc(this.project.id)
