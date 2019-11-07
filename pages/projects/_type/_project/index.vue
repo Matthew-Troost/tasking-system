@@ -16,6 +16,7 @@
               v-for="(list, index) in lists"
               :key="list.id"
               v-model="project.lists[index]"
+              :fixed="list.name == 'Completed'"
               @list-update="updateProject"
               @item-moved="onListShuffled"
             />
@@ -81,7 +82,6 @@ export default {
   },
   methods: {
     updateProject: function() {
-      console.log(this.project)
       this.$store.state.db
         .collection("projects")
         .doc(this.project.id)

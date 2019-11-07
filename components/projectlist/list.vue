@@ -1,10 +1,29 @@
 <template>
   <div>
-    <h5>
-      <i v-if="!fixed" class="nav-icon i-Add" @click="addTask"></i>
-      <input v-model="list.name" @input="callbackUpdate" />
-      <i v-if="!fixed" class="nav-icon i-Remove f-r" @click="archive"></i>
-    </h5>
+    <div class="list-header">
+      <b-row>
+        <b-col md="6">
+          <i v-if="!fixed" class="nav-icon i-Add" @click="addTask"></i>
+          <input v-model="list.name" @input="callbackUpdate" />
+        </b-col>
+        <b-col
+          md="1"
+          class="align-center sort-trigger"
+          @click="sortTasks('hours')"
+        >
+          <i class="nav-icon i-Circular-Point"></i>
+        </b-col>
+        <b-col md="1" class="align-center sort-trigger">
+          <i class="nav-icon i-Circular-Point"></i>
+        </b-col>
+        <b-col md="2" class="align-center sort-trigger">
+          <i class="nav-icon i-Circular-Point"></i>
+        </b-col>
+        <b-col md="2">
+          <i v-if="!fixed" class="nav-icon i-Remove f-r" @click="archive"></i>
+        </b-col>
+      </b-row>
+    </div>
     <div :id="list.identifier" class="list-group">
       <ListItem
         v-for="(task, taskindex) in list.tasks"
@@ -52,7 +71,8 @@ export default {
   data() {
     return {
       sortableRef: null,
-      updateTimer: null
+      updateTimer: null,
+      hourSort: false
     }
   },
   computed: {
@@ -79,6 +99,9 @@ export default {
             listTo: event.to.id,
             taskId: event.item.id
           })
+        },
+        onSort: event => {
+          this.moveTask(event.oldIndex, event.newIndex)
         }
       }
     )
@@ -138,14 +161,45 @@ export default {
       console.log(task)
       return total + task.hours
     },
-    sortList: function(list) {
-      function compare(a, b) {
-        if (a.index > b.index) return 1
-        if (b.index > a.index) return -1
-
-        return 0
+    sortTasks: function(sortProperty) {
+      function compareHours(asc) {
+        return function(a, b) {
+          if (a.hours > b.hours) return asc ? 1 : -1
+          if (b.hours > a.hours) return asc ? -1 : 1
+          return 0
+        }
       }
-      return list.sort(compare)
+      switch (sortProperty) {
+        case "hours":
+          this.hourSort = !this.hourSort
+          return this.list.tasks.sort(compareHours(this.hourSort))
+        case "difficulty":
+          // code block
+          break
+        case "priority":
+          // code block
+          break
+      }
+    },
+    moveTask: function(oldIndex, newIndex) {
+      while (oldIndex < 0) {
+        oldIndex += this.list.tasks.length
+      }
+      while (newIndex < 0) {
+        newIndex += this.list.tasks.length
+      }
+      if (newIndex >= this.list.tasks.length) {
+        var k = newIndex - this.list.tasks.length
+        while (k-- + 1) {
+          this.list.tasks.push(undefined)
+        }
+      }
+      this.list.tasks.splice(
+        newIndex,
+        0,
+        this.list.tasks.splice(oldIndex, 1)[0]
+      )
+      return this.list.tasks
     }
   }
 }
@@ -173,5 +227,16 @@ input:focus {
 }
 .totals [class*="col-"] {
   text-align: center;
+}
+.list-header {
+  font-size: 1.01625rem;
+  margin-bottom: 0.2rem;
+}
+.sort-trigger {
+  opacity: 0;
+  transition: 0.3s;
+}
+.sort-trigger:hover {
+  opacity: 1;
 }
 </style>
