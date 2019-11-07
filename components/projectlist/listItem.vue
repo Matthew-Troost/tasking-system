@@ -21,6 +21,7 @@
           style="padding-right: 20px; width: 100%"
           @input="modelChange"
         />
+        <i v-b-toggle="`extra_${value.identifier}`" class="nav-icon i-Folder" />
       </b-col>
       <b-col md="6">
         <b-row style="text-align: center">
@@ -102,6 +103,48 @@
         </b-row>
       </b-col>
     </b-row>
+    <b-collapse
+      :id="`extra_${value.identifier}`"
+      accordion="tasks"
+      class="extras"
+    >
+      <b-card>
+        <b-tabs
+          active-nav-item-class="nav nav-tabs"
+          content-class="mt-3"
+          :class="`tabs-${priorityProxy}-priority`"
+        >
+          <b-tab title="Notes" active>
+            <VueEditor :editor-toolbar="customToolbar" />
+            <div class="chat-sidebar-container">
+              <div class="chat-content-wrap">
+                <div class="chat-content">
+                  <div class="d-flex mb-30 user">
+                    <ProjectAvatar
+                      image-url="@/assets/images/avatars/matthewt.svg"
+                      :hide-nick-name="true"
+                      :width="35"
+                      nick-name="Matt"
+                      class="m-r-10"
+                    />
+                    <div class="message flex-grow-1">
+                      <div class="d-flex">
+                        <p class="mb-1 text-title text-16 flex-grow-1">
+                          Jhon Doe
+                        </p>
+                        <span class="text-small text-muted">24 min ago</span>
+                      </div>
+                      <p class="m-0">Lorem ipsum dolor sit amet.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </b-tab>
+          <b-tab title="Uploads"> </b-tab>
+        </b-tabs>
+      </b-card>
+    </b-collapse>
   </div>
 </template>
 
@@ -109,11 +152,13 @@
 import { mapState } from "vuex"
 import VueTagsInput from "@johmun/vue-tags-input"
 import ProjectAvatar from "@/components/projectAvatar"
+import { VueEditor } from "vue2-editor"
 
 export default {
   components: {
     VueTagsInput,
-    ProjectAvatar
+    ProjectAvatar,
+    VueEditor
   },
   props: {
     value: {
@@ -128,7 +173,12 @@ export default {
       checkedProxy: this.value.completed,
       updateTimer: null,
       tag: "",
-      tagsProxy: this.value.users
+      tagsProxy: this.value.users,
+      customToolbar: [
+        ["bold", "italic", "underline"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        ["image", "code-block"]
+      ]
     }
   },
   computed: {
@@ -259,5 +309,8 @@ input:focus {
 }
 .zap-difficult::before {
   content: "\26A1 \26A1 \26A1";
+}
+.extras {
+  margin-top: 10px;
 }
 </style>

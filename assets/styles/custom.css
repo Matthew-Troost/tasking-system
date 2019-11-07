@@ -157,3 +157,61 @@ input::placeholder {
 .align-center{
   text-align: center;
 }
+
+.nav-tabs .nav-item .nav-link.active{
+  background: transparent !important;
+}
+
+.ql-toolbar.ql-snow{
+  border: 1px solid #dfdfdf !important;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.ql-container.ql-snow {
+  border: 1px solid #dfdfdf !important;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top: 0 !important;
+}
+
+.quillWrapper .ql-snow.ql-toolbar button svg{
+  width: unset !important;
+  height: unset !important;
+}
+
+.chat-sidebar-container, .chat-sidebar-container .chat-content-wrap .chat-content {
+  height: fit-content !important;
+}
+
+.chat-sidebar-container .chat-content-wrap .chat-content {
+  padding: 1.5rem 0 0 !important;
+}
+
+.m-r-10{
+  margin-right: 10px;
+}
+
+.tabs-low-priority .nav-tabs {
+  border-bottom: 1px solid #4caf50;
+}
+
+.tabs-low-priority .nav-tabs .nav-item .nav-link.active {
+  border-color: #4caf50 #4caf50 #fff;
+}
+
+.tabs-medium-priority .nav-tabs {
+  border-bottom: 1px solid #ffc105;
+}
+
+.tabs-medium-priority .nav-tabs .nav-item .nav-link.active {
+  border-color: #ffc105 #ffc105 #fff;
+}
+
+.tabs-high-priority .nav-tabs {
+  border-bottom: 1px solid #f44336;
+}
+
+.tabs-high-priority .nav-tabs .nav-item .nav-link.active {
+  border-color: #f44336 #f44336 #fff;
+}
