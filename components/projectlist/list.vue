@@ -2,13 +2,13 @@
   <div>
     <h5>
       <i v-if="!fixed" class="nav-icon i-Add" @click="addTask"></i>
-      <input :value="list.name" />
-      <i v-if="!fixed" class="nav-icon i-Remove f-r" @click="archiveList"></i>
+      <input v-model="list.name" @input="callbackUpdate" />
+      <i v-if="!fixed" class="nav-icon i-Remove f-r" @click="archive"></i>
     </h5>
-    <div :id="`list_${list.name}`" class="list-group">
+    <div :id="list.identifier" class="list-group">
       <ListItem
         v-for="(task, taskindex) in list.tasks"
-        :key="task.id"
+        :key="task.identifier"
         v-model="list.tasks[taskindex]"
         :priority="task.priority"
         @item-update="update"
@@ -17,10 +17,10 @@
     <div class="list-group-item totals">
       <b-row>
         <b-col md="6"></b-col>
-        <b-col md="2">
-          <p>total here</p>
+        <b-col md="1">
+          <b>{{ totalHours }}</b>
         </b-col>
-        <b-col md="4"> </b-col>
+        <b-col md="5"> </b-col>
       </b-row>
     </div>
   </div>
@@ -51,7 +51,8 @@ export default {
   },
   data() {
     return {
-      sortableRef: null
+      sortableRef: null,
+      updateTimer: null
     }
   },
   computed: {
@@ -59,15 +60,25 @@ export default {
       get() {
         return this.value
       }
+    },
+    totalHours() {
+      return Object.values(this.list.tasks).reduce(
+        (total, { hours }) => total + hours,
+        0
+      )
     }
   },
   mounted() {
     this.sortableRef = new Sortable(
-      document.getElementById("list_" + this.list.name),
+      document.getElementById(this.list.identifier),
       {
         group: "shared",
-        onAdd: function(task) {
-          console.log(task)
+        onRemove: event => {
+          this.$emit("item-moved", {
+            listFrom: event.from.id,
+            listTo: event.to.id,
+            taskId: event.item.id
+          })
         }
       }
     )
@@ -75,6 +86,14 @@ export default {
   methods: {
     update: function() {
       this.$emit("list-update")
+    },
+    callbackUpdate: function() {
+      if (this.updateTimer != null) {
+        clearTimeout(this.updateTimer)
+      }
+      this.updateTimer = setTimeout(() => {
+        this.update()
+      }, 5000)
     },
     addTask: function() {
       this.value.tasks.push({
@@ -94,9 +113,30 @@ export default {
       })
       this.update()
     },
-    archiveList: function() {
-      this.value.archived = true
-      this.update()
+    archive: function() {
+      this.$dialog({
+        title: "Archive ...",
+        content: "You're about to archive this list?",
+        btns: [
+          {
+            label: "Go ahead",
+            color: "#3f51b5",
+            callback: () => {
+              this.list.archived = true
+              this.update()
+            }
+          },
+          {
+            label: "Cancel",
+            color: "#444",
+            ghost: true
+          }
+        ]
+      })
+    },
+    sumHours: function(total, task) {
+      console.log(task)
+      return total + task.hours
     },
     sortList: function(list) {
       function compare(a, b) {

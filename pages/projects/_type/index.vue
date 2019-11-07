@@ -140,7 +140,7 @@ export default {
           name: Util.linkToString(this.newProjectName),
           lists: [
             { name: "Milestone 1", archived: false, tasks: [] },
-            { name: "Bugs", archived: false, tasks: [] }
+            { name: "Completed", archived: false, tasks: [] }
           ],
           type: this.projectType.toLowerCase()
         })

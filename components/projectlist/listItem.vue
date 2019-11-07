@@ -1,5 +1,8 @@
 <template>
-  <div :class="[{ completed: value.completed }, 'list-group-item']">
+  <div
+    :id="value.identifier"
+    :class="[{ completed: value.completed }, 'list-group-item']"
+  >
     <b-row>
       <b-col md="6" style="display:inherit">
         <label class="checkbox checkbox-primary" style="display: inline">
@@ -212,7 +215,7 @@ export default {
       this.$emit("input", {
         completed: this.checkedProxy,
         description: this.$refs.description.value,
-        hours: this.$refs.hours.value,
+        hours: parseInt(this.$refs.hours.value),
         difficulty: this.difficultyProxy,
         priority: this.priorityProxy,
         startdate: this.value.startdate,
