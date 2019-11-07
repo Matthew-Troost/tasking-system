@@ -39,7 +39,7 @@
       <b-row>
         <b-col md="6"></b-col>
         <b-col md="1">
-          <b>{{ totalHours }}</b>
+          <b class="hours">{{ totalHours }}</b>
         </b-col>
         <b-col md="5"> </b-col>
       </b-row>
@@ -260,6 +260,10 @@ input:focus {
 }
 .totals [class*="col-"] {
   text-align: center;
+}
+.totals .hours {
+  float: right;
+  margin-right: 15px;
 }
 .list-header {
   font-size: 1.01625rem;
