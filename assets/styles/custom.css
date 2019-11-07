@@ -175,6 +175,10 @@ input::placeholder {
   border-top: 0 !important;
 }
 
+.ql-container{
+  font-family: unset !important;
+}
+
 .quillWrapper .ql-snow.ql-toolbar button svg{
   width: unset !important;
   height: unset !important;

@@ -21,7 +21,14 @@
           style="padding-right: 20px; width: 100%"
           @input="modelChange"
         />
-        <i v-b-toggle="`extra_${value.identifier}`" class="nav-icon i-Folder" />
+        <i
+          v-b-toggle="`extra_${value.identifier}`"
+          :class="
+            `${
+              extrasExpanded ? 'extras-trigger-active' : ''
+            } nav-icon i-Folder extras-trigger`
+          "
+        />
       </b-col>
       <b-col md="6">
         <b-row style="text-align: center">
@@ -107,6 +114,8 @@
       :id="`extra_${value.identifier}`"
       accordion="tasks"
       class="extras"
+      @show="onExtrasToggle"
+      @hide="onExtrasToggle"
     >
       <b-card>
         <b-tabs
@@ -174,6 +183,7 @@ export default {
       updateTimer: null,
       tag: "",
       tagsProxy: this.value.users,
+      extrasExpanded: false,
       customToolbar: [
         ["bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
@@ -285,6 +295,9 @@ export default {
     updatePriority(priority) {
       this.priority = priority
       this.modelChange()
+    },
+    onExtrasToggle: function() {
+      this.extrasExpanded = !this.extrasExpanded
     }
   }
 }
@@ -309,6 +322,18 @@ input:focus {
 }
 .zap-difficult::before {
   content: "\26A1 \26A1 \26A1";
+}
+.extras-trigger {
+  cursor: pointer;
+  margin-top: 5px;
+  opacity: 0;
+  transition: 0.3s;
+}
+.extras-trigger:hover {
+  opacity: 1;
+}
+.extras-trigger-active {
+  opacity: 1;
 }
 .extras {
   margin-top: 10px;
