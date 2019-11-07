@@ -6,18 +6,20 @@
           <i v-if="!fixed" class="nav-icon i-Add" @click="addTask"></i>
           <input v-model="list.name" @input="callbackUpdate" />
         </b-col>
-        <b-col
-          md="1"
-          class="align-center sort-trigger"
-          @click="sortTasks('hours')"
-        >
-          <i class="nav-icon i-Circular-Point"></i>
+        <b-col md="1" class="align-center sort-trigger">
+          <i class="nav-icon i-Circular-Point" @click="sortTasks('hours')"></i>
         </b-col>
         <b-col md="1" class="align-center sort-trigger">
-          <i class="nav-icon i-Circular-Point"></i>
+          <i
+            class="nav-icon i-Circular-Point"
+            @click="sortTasks('difficulty')"
+          ></i>
         </b-col>
         <b-col md="2" class="align-center sort-trigger">
-          <i class="nav-icon i-Circular-Point"></i>
+          <i
+            class="nav-icon i-Circular-Point"
+            @click="sortTasks('priority')"
+          ></i>
         </b-col>
         <b-col md="2">
           <i v-if="!fixed" class="nav-icon i-Remove f-r" @click="archive"></i>
@@ -72,7 +74,8 @@ export default {
     return {
       sortableRef: null,
       updateTimer: null,
-      hourSort: false
+      hourSort: false,
+      difficultySort: false
     }
   },
   computed: {
@@ -101,7 +104,7 @@ export default {
           })
         },
         onSort: event => {
-          this.moveTask(event.oldIndex, event.newIndex)
+          this.onTaskMove(event.oldIndex, event.newIndex)
         }
       }
     )
@@ -169,19 +172,49 @@ export default {
           return 0
         }
       }
+      function compareDifficulty(asc) {
+        return function(a, b) {
+          if (
+            (a.difficulty == "easy" ? 1 : a.difficulty == "medium" ? 2 : 3) >
+            (b.difficulty == "easy" ? 1 : b.difficulty == "medium" ? 2 : 3)
+          )
+            return asc ? 1 : -1
+          if (
+            (b.difficulty == "easy" ? 1 : b.difficulty == "medium" ? 2 : 3) >
+            (a.difficulty == "easy" ? 1 : a.difficulty == "medium" ? 2 : 3)
+          )
+            return asc ? -1 : 1
+          return 0
+        }
+      }
+      function comparePriority(asc) {
+        return function(a, b) {
+          if (
+            (a.priority == "low" ? 1 : a.priority == "medium" ? 2 : 3) >
+            (b.priority == "low" ? 1 : b.priority == "medium" ? 2 : 3)
+          )
+            return asc ? 1 : -1
+          if (
+            (b.priority == "low" ? 1 : b.priority == "medium" ? 2 : 3) >
+            (a.priority == "low" ? 1 : a.priority == "medium" ? 2 : 3)
+          )
+            return asc ? -1 : 1
+          return 0
+        }
+      }
       switch (sortProperty) {
         case "hours":
           this.hourSort = !this.hourSort
           return this.list.tasks.sort(compareHours(this.hourSort))
         case "difficulty":
-          // code block
-          break
+          this.difficultySort = !this.difficultySort
+          return this.list.tasks.sort(compareDifficulty(this.difficultySort))
         case "priority":
-          // code block
-          break
+          this.prioritySort = !this.prioritySort
+          return this.list.tasks.sort(comparePriority(this.prioritySort))
       }
     },
-    moveTask: function(oldIndex, newIndex) {
+    onTaskMove: function(oldIndex, newIndex) {
       while (oldIndex < 0) {
         oldIndex += this.list.tasks.length
       }
