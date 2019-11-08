@@ -117,7 +117,7 @@
       @show="onExtrasToggle"
       @hide="onExtrasToggle"
     >
-      <ListItemExtras />
+      <ListItemExtras ref="taskExtras" :taskid="value.identifier" />
     </b-collapse>
   </div>
 </template>
@@ -258,6 +258,9 @@ export default {
     },
     onExtrasToggle: function() {
       this.extrasExpanded = !this.extrasExpanded
+      if (this.extrasExpanded) {
+        this.$refs.taskExtras.initialize()
+      }
     }
   }
 }
