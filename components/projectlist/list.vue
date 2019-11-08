@@ -104,7 +104,9 @@ export default {
           })
         },
         onSort: event => {
-          this.onTaskMove(event.oldIndex, event.newIndex)
+          if (event.from.id == event.to.id) {
+            this.onTaskMove(event.oldIndex, event.newIndex)
+          }
         }
       }
     )
@@ -220,12 +222,6 @@ export default {
       }
       while (newIndex < 0) {
         newIndex += this.list.tasks.length
-      }
-      if (newIndex >= this.list.tasks.length) {
-        var k = newIndex - this.list.tasks.length
-        while (k-- + 1) {
-          this.list.tasks.push(undefined)
-        }
       }
       this.list.tasks.splice(
         newIndex,
