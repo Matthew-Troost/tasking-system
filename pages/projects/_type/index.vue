@@ -27,11 +27,18 @@
       <transition-group name="fade" tag="b-row">
         <b-col
           v-for="project in projects"
-          v-show="project.name.toLowerCase().includes(searchWord)"
+          v-show="
+            project.name.toLowerCase().includes(searchWord) &&
+              project.type.includes(projectType.toLowerCase())
+          "
           :key="project.id"
           md="6"
         >
-          <b-card class="mb-30 text-15 w-100" :title="project.name">
+          <b-card
+            class="mb-30 text-15 w-100"
+            :header="project.name"
+            header-tag="h5"
+          >
             <b-row md="12">
               <b-col
                 v-for="user in new Set(projectUsers[project.id])"

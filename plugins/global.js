@@ -27,6 +27,5 @@ Vue.component("loading", Loading)
 Vue.use(themeKit)
 Vue.use(VueTagsInput)
 Vue.use(VueLazyload, {
-  loading: "/_nuxt/assets/images/astronaut.gif",
-  error: "/_nuxt/assets/images/avatars/blank-profile-picture.png"
+  loading: "/_nuxt/assets/images/astronaut.gif"
 })

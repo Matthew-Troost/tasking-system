@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <img v-lazy="url" alt />
+    <img v-lazy="url" alt :style="styles" />
     <h6 v-if="!hideNickName">{{ displayName }}</h6>
   </div>
 </template>
@@ -25,6 +25,10 @@ export default {
     hideNickName: {
       type: Boolean,
       default: false
+    },
+    width: {
+      type: Number,
+      default: 40
     }
   },
   computed: {
@@ -45,6 +49,12 @@ export default {
       if (this.userId === "") return this.nickName
       if (this.user[0]) return this.user[0].nickname
       return null
+    },
+    styles() {
+      return {
+        "max-width": "unset",
+        width: `${this.width}px`
+      }
     }
   }
 }
