@@ -139,8 +139,18 @@ export default {
         .add({
           name: Util.linkToString(this.newProjectName),
           lists: [
-            { name: "Milestone 1", archived: false, tasks: [] },
-            { name: "Bugs", archived: false, tasks: [] }
+            {
+              name: "Milestone 1",
+              identifier: Util.generateGuid(),
+              archived: false,
+              tasks: []
+            },
+            {
+              name: "Completed",
+              identifier: Util.generateGuid(),
+              archived: false,
+              tasks: []
+            }
           ],
           type: this.projectType.toLowerCase()
         })

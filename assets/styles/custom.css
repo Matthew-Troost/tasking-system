@@ -149,3 +149,11 @@ input::placeholder {
 .bd-no-border > button:focus, .bd-no-border > button:hover{
   box-shadow: none !important;
 }
+
+.dialog .title {
+  margin-top: 10px !important;
+}
+
+.align-center{
+  text-align: center;
+}

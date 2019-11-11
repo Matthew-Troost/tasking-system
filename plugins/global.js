@@ -2,6 +2,7 @@ import Vue from "vue"
 
 //------------ PACKAGE DECLARATIONS
 import themeKit from "./theme-kit"
+import Dialog from "vue-dialog-loading"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import {
   faChartLine,
@@ -22,3 +23,4 @@ Vue.use(VCalendar)
 Vue.component("font-awesome-icon", FontAwesomeIcon)
 Vue.component("loading", Loading)
 Vue.use(themeKit)
+Vue.use(Dialog)
