@@ -13,10 +13,12 @@
           </template>
           <b-card-text>
             <List
-              v-for="(list, index) in project.lists"
+              v-for="(list, index) in lists"
               :key="list.id"
               v-model="project.lists[index]"
-              :update-function="updateProject"
+              :fixed="list.name == 'Completed'"
+              @list-update="updateProject"
+              @item-moved="onListShuffled"
             />
             <b-button variant="outline-light m-1 btn-sm" @click="addList"
               >Add new list</b-button
@@ -28,7 +30,10 @@
             <i class="i-Calendar-4  ul-tab__icon" />
           </template>
           <b-card-text>
-            <Calendar v-model="project.lists" />
+            <Calendar
+              v-model="project.lists"
+              @events-adjusted="updateProject"
+            />
           </b-card-text>
         </b-tab>
       </b-tabs>
@@ -66,6 +71,11 @@ export default {
         return this.$router.back()
       }
     },
+    lists() {
+      return this.project.lists.filter(list => {
+        return !list.archived
+      })
+    },
     loading() {
       return this.project == null
     }
@@ -79,10 +89,29 @@ export default {
     },
     addList: function() {
       this.project.lists.push({
+        identifier: Util.generateGuid(),
         name: "Give it a title...",
         archived: false,
         tasks: []
       })
+      this.updateProject()
+    },
+    onListShuffled: function(parameters) {
+      var fromList = this.project.lists.find(list => {
+        return list.identifier == parameters.listFrom
+      })
+
+      var toList = this.project.lists.find(list => {
+        return list.identifier == parameters.listTo
+      })
+
+      fromList.tasks.forEach((task, index) => {
+        if (task.identifier == parameters.taskId) {
+          toList.tasks.unshift(task)
+          fromList.tasks.splice(index, 1)
+        }
+      })
+
       this.updateProject()
     }
   }

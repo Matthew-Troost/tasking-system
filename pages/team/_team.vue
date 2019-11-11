@@ -81,7 +81,7 @@
 <script>
 import { mapState } from "vuex"
 import Util from "@/utils"
-import Loading from "../../components/loading"
+import Loading from "@/components/loading"
 
 export default {
   layout: "default",

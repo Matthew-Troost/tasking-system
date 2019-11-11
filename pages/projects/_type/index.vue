@@ -54,7 +54,9 @@
                   <b-button
                     pill
                     variant="primary ripple"
-                    :to="'/projects/systems/' + toLink(project.name)"
+                    :to="
+                      `/projects/${toLink(projectType)}/${toLink(project.name)}`
+                    "
                     nuxt
                     >View tasks</b-button
                   >
@@ -89,6 +91,7 @@
 </template>
 <script>
 import ProjectAvatar from "@/components/projectAvatar"
+import Loading from "@/components/loading"
 import Util from "@/utils"
 import { mapState } from "vuex"
 
@@ -96,12 +99,15 @@ export default {
   layout: "default",
   name: "Type",
   components: {
-    ProjectAvatar
+    ProjectAvatar,
+    Loading
   },
   data() {
     return {
+      projectType: "",
       newProjectName: "",
-      searchWord: ""
+      searchWord: "",
+      loading: true
     }
   },
   computed: {
@@ -128,6 +134,10 @@ export default {
       return mainArray
     }
   },
+  created() {
+    this.projectType = Util.linkToString(this.$route.params.type)
+    this.loading = false
+  },
   methods: {
     addProject: function() {
       if (!this.newProjectName) {
@@ -143,7 +153,24 @@ export default {
 
       this.$store.state.db
         .collection("projects")
-        .add({ name: Util.linkToString(this.newProjectName), lists: [] })
+        .add({
+          name: Util.linkToString(this.newProjectName),
+          lists: [
+            {
+              name: "Milestone 1",
+              identifier: Util.generateGuid(),
+              archived: false,
+              tasks: []
+            },
+            {
+              name: "Completed",
+              identifier: Util.generateGuid(),
+              archived: false,
+              tasks: []
+            }
+          ],
+          type: this.projectType.toLowerCase()
+        })
         .then(() => {
           this.$bvModal.hide("modal-add-project")
           this.$toast.success(

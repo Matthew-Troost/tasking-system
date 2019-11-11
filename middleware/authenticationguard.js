@@ -6,7 +6,7 @@ export default function({ store, route, redirect }) {
   ]
 
   if (
-    !store.getters["users/current_user"] &&
+    !store.state.users.current_user &&
     !unauthorized_routes.includes(route.fullPath)
   ) {
     return redirect("/authentication/login")

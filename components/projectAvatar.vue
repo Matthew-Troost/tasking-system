@@ -66,10 +66,6 @@ export default {
   text-align: center;
   padding: 0;
 }
-img {
-  width: 40px;
-  max-width: unset;
-}
 h6 {
   margin: 0;
 }

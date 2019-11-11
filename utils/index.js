@@ -1,3 +1,5 @@
+import guidGenerator from "uuid/v4"
+
 const toggleFullScreen = () => {
   let doc = window.document
   let docEl = doc.documentElement
@@ -38,8 +40,13 @@ function linkToString(toConvert) {
   })
 }
 
+function generateGuid() {
+  return guidGenerator()
+}
+
 export default {
   toggleFullScreen,
   stringToLink,
-  linkToString
+  linkToString,
+  generateGuid
 }

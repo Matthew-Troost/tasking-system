@@ -71,10 +71,6 @@ small {
   box-shadow: none !important;
 }
 
-.list-group {
-  margin-bottom: 25px !important;
-}
-
 .btn-icon.rounded-circle-md {
   width: 32px;
   height: 32px;
@@ -99,4 +95,65 @@ small {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+.ti-tags{
+  flex-wrap: unset !important;
+}
+
+.ti-tag {
+  background-color: transparent !important;
+}
+
+.ti-tag .ti-icon-close {
+  color: black;
+}
+
+.ti-selected-item {
+  background-color: #3f51b5 !important;
+}
+
+.ti-deletion-mark {
+  background-color: #e54d42 !important
+}
+
+.ti-new-tag-input-wrapper input{
+  min-width: unset !important;
+}
+
+.list-item-tags-input .ti-input {
+  border: none !important;
+  padding: 0 !important;
+}
+.list-item-tags-input .ti-tag{
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.tags-input, .tags-input input{
+  background-color: transparent !important;
+}
+.full-width{
+  width: 100%;
+}
+
+input::placeholder {
+  color: #d0d0d0;
+}
+
+.bd-no-border > button {
+  border: none;
+  padding: 0px !important;
+  background: transparent !important;
+}
+
+.bd-no-border > button:focus, .bd-no-border > button:hover{
+  box-shadow: none !important;
+}
+
+.dialog .title {
+  margin-top: 10px !important;
+}
+
+.align-center{
+  text-align: center;
 }
