@@ -332,7 +332,6 @@ export default {
           .then(
             user => {
               //Add Avatar
-              console.log("addavatar")
               this.$store.state.storage
                 .ref(this.avatarSaveUrl)
                 .put(this.avatar)
@@ -341,14 +340,14 @@ export default {
                     .ref(this.avatarSaveUrl)
                     .getDownloadURL()
                     .then(url => {
-                      console.log("addUser")
                       //Add User
                       this.$store.state.db.collection("users").add({
                         first_name: this.first_name,
                         last_name: this.last_name,
                         nickname: this.nickname,
                         type: this.lowerCaseTypes,
-                        avatar: url
+                        avatar: url,
+                        uid: user.user.uid
                       })
                     })
                 })
