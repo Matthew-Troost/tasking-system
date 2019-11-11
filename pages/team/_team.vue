@@ -41,7 +41,6 @@
             <b-card class="card-profile-1 mb-30 text-center">
               <div class="avatar mb-3">
                 <img v-if="user.avatar" v-lazy="user.avatar" alt />
-                <img v-else v-lazy="defaultAvatar" alt />
               </div>
               <h5 class="m-0">
                 {{ !user.nickname ? user.first_name : user.nickname }}
@@ -94,8 +93,7 @@ export default {
       name: "",
       position: "",
       loading: true,
-      searchWord: "",
-      defaultAvatar: "/_nuxt/assets/images/avatars/blank-profile-picture.png"
+      searchWord: ""
     }
   },
   computed: {

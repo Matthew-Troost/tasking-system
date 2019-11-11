@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <img v-lazy="url" alt />
-    <h6>{{ displayName }}</h6>
+    <h6 v-if="!hideNickName">{{ displayName }}</h6>
   </div>
 </template>
 <script>
@@ -12,7 +12,7 @@ export default {
   props: {
     imageUrl: {
       type: String,
-      default: "/_nuxt/assets/images/avatars/blank-profile-picture.png"
+      default: ""
     },
     userId: {
       type: String,
@@ -21,6 +21,10 @@ export default {
     nickName: {
       type: String,
       default: ""
+    },
+    hideNickName: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

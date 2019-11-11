@@ -11,11 +11,7 @@ export const mutations = {
     state.all = usersList
   }
 }
-export const getters = {
-  current_user: state => {
-    return state.current_user
-  }
-}
+
 export const actions = {
   // insert(context, payload) {
   //   let usersRef = context.rootState.db.collection("users")
