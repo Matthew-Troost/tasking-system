@@ -191,7 +191,6 @@ export default {
       }),
       type: "",
       types: [],
-      avatarUrl: require("@../../../assets/images/avatars/blank-profile-picture.png"),
       autocompletetypes: ["Developer", "Management", "SocialMedia", "Designer"],
       reg: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
       form: {}

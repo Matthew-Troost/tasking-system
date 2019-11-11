@@ -13,7 +13,7 @@
     >
       <ul class="navigation-left">
         <div class="logo">
-          <img alt src="@/assets/images/avatars/matthewt.svg" />
+          <img alt src="" />
         </div>
         <li
           :class="{ active: selectedParentMenu == 'dashboards' }"
