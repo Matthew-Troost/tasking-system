@@ -4,7 +4,15 @@
     <div v-if="!loading">
       <b-row>
         <b-col md="8">
-          <h2 class="page-title">{{ name }}</h2>
+          <h2 class="page-title">
+            {{ name }}
+            <small>
+              <nuxt-link tag="a" class :to="addUrl">
+                <i class="nav-icon i-Add"></i>
+                <span class="item-name"> Add New</span>
+              </nuxt-link>
+            </small>
+          </h2>
         </b-col>
         <b-col md="4">
           <b-form-input
@@ -30,30 +38,38 @@
             md="4"
             class="user-card"
           >
-            <!-- start::profile -->
             <b-card class="card-profile-1 mb-30 text-center">
               <div class="avatar mb-3">
-                <img src="@/assets/images/avatars/matthewt.svg" alt />
+                <img v-if="user.avatar" v-lazy="user.avatar" alt />
               </div>
               <h5 class="m-0">
                 {{ !user.nickname ? user.first_name : user.nickname }}
               </h5>
 
-              <div v-if="userProjects[user.id]">
+              <div v-if="projectList[user.id]">
                 <div
-                  v-for="project in userProjects[user.id].map(x => x)"
+                  v-for="project in projectList[user.id]"
                   :key="project"
                   class="text-center"
                 >
-                  <b-badge pill variant="outline-dark p-2 m-1"
+                  <b-badge
+                    pill
+                    variant="outline-dark p-2 m-1"
+                    :to="'/projects/systems/' + toLink(project)"
+                    nuxt
                     >{{ project }}
                   </b-badge>
                 </div>
               </div>
-
+              <div v-else>
+                <div class="text-center">
+                  <b-badge pill variant="outline-dark p-2 m-1"
+                    >No Tasks
+                  </b-badge>
+                </div>
+              </div>
               <button class="btn btn-primary btn-rounded mt-2">
-                {{ !user.nickname ? user.first_name : user.nickname }}'s
-                Schedule
+                {{ user.first_name }}'s Schedule
               </button>
             </b-card>
           </b-col>
@@ -85,13 +101,29 @@ export default {
       users: state => state.users.all,
       projects: state => state.projects.all
     }),
-    userProjects() {
-      const list = []
+    addUrl() {
+      return "/team/adduser/" + this.name
+    },
+    projectList() {
+      let array = []
       this.projects.forEach(project => {
-        //Populate userProjects array
-        this.addUserProject(project, list)
+        if (project.lists) {
+          project.lists.forEach(list => {
+            if (list.tasks)
+              list.tasks.forEach(task => {
+                if (task.users)
+                  task.users.forEach(user => {
+                    if (!array[user]) {
+                      array[user] = []
+                    }
+                    if (user && !array[user].includes(project.name))
+                      array[user].push(project.name)
+                  })
+              })
+          })
+        }
       })
-      return list
+      return array
     }
   },
   validate({ params }) {
@@ -116,6 +148,8 @@ export default {
         this.name = "Social Media"
         break
     }
+  },
+  mounted() {
     this.loading = false
   },
   methods: {
@@ -126,24 +160,15 @@ export default {
             .toLowerCase()
             .includes(this.searchWord.toLowerCase())) ||
         (user.last_name &&
-          user.last_name.toLowerCase().includes(this.searchWord.toLowerCase()))
+          user.last_name
+            .toLowerCase()
+            .includes(this.searchWord.toLowerCase())) ||
+        (user.nickname &&
+          user.nickname.toLowerCase().includes(this.searchWord.toLowerCase()))
       )
     },
-    addUserProject(projectData, array) {
-      if (projectData.lists) {
-        projectData.lists.forEach(list => {
-          if (list.tasks)
-            list.tasks.forEach(task => {
-              if (task.users)
-                task.users.forEach(user => {
-                  if (!array[user.id]) {
-                    array[user.id] = []
-                  }
-                  array[user.id].push(projectData.name)
-                })
-            })
-        })
-      }
+    toLink: function(projectName) {
+      return Util.stringToLink(projectName)
     }
   }
 }
