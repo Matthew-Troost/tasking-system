@@ -100,6 +100,7 @@
               <div slot="tag-center" slot-scope="props">
                 <ProjectAvatar
                   image-url="@/assets/images/avatars/matthewt.svg"
+                  :user-id="props.tag.id"
                   :hide-nick-name="true"
                   :width="24"
                   :nick-name="props.tag.text"

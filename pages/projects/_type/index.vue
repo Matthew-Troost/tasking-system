@@ -34,36 +34,22 @@
           :key="project.id"
           md="6"
         >
-          <b-card
-            class="mb-30 text-15 w-100"
-            :header="project.name"
-            header-tag="h5"
+          <nuxt-link
+            :to="`/projects/${toLink(projectType)}/${toLink(project.name)}`"
           >
-            <b-row md="12">
-              <b-col
+            <b-card
+              class="mb-30 text-15 w-100"
+              :header="project.name"
+              header-tag="h5"
+            >
+              <ProjectAvatar
                 v-for="user in new Set(projectUsers[project.id])"
                 :key="user"
-                md="2"
-              >
-                <ProjectAvatar class="avatar" :user-id="user" />
-              </b-col>
-            </b-row>
-            <b-row md="12" class="btn-row">
-              <b-col md="6" class="text-right">
-                <div class="button-container">
-                  <b-button
-                    pill
-                    variant="primary ripple"
-                    :to="
-                      `/projects/${toLink(projectType)}/${toLink(project.name)}`
-                    "
-                    nuxt
-                    >View tasks</b-button
-                  >
-                </div>
-              </b-col>
-            </b-row>
-          </b-card>
+                class="avatar"
+                :user-id="user"
+              />
+            </b-card>
+          </nuxt-link>
         </b-col>
       </transition-group>
       <b-modal
@@ -192,9 +178,7 @@ export default {
 </script>
 <style scoped>
 .button-container {
-  position: absolute;
-  bottom: 0;
-  right: 15px;
+  text-align: right;
 }
 .modal-addition-only {
   display: flex;
@@ -202,8 +186,7 @@ export default {
 .modal-addition-only input {
   margin-right: 15px;
 }
-.btn-row {
-  /* margin-top: 45px; */
-  float: right;
+.avatar {
+  margin-right: 20px;
 }
 </style>

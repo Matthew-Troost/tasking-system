@@ -23,7 +23,7 @@
                       image-url="@/assets/images/avatars/matthewt.svg"
                       :hide-nick-name="true"
                       :width="35"
-                      nick-name="Matt"
+                      :user-id="note.userid"
                       class="m-r-10"
                     />
                     <div class="message flex-grow-1">

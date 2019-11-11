@@ -143,7 +143,7 @@ export default {
     },
     archive: function() {
       this.$dialog({
-        title: "Archive ...",
+        title: `Archive ${this.list.name}`,
         content: "You're about to archive this list?",
         btns: [
           {
