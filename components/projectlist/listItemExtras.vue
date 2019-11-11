@@ -10,38 +10,39 @@
               >Add note</b-button
             >
           </div>
-          <!-- put the below in a scroll container -->
-          <div class="chat-sidebar-container">
-            <div class="chat-content-wrap">
-              <div class="chat-content">
-                <div
-                  v-for="note in extras.notes"
-                  :key="note.date"
-                  class="d-flex mb-30 user"
-                >
-                  <ProjectAvatar
-                    image-url="@/assets/images/avatars/matthewt.svg"
-                    :hide-nick-name="true"
-                    :width="35"
-                    nick-name="Matt"
-                    class="m-r-10"
-                  />
-                  <div class="message flex-grow-1">
-                    <div class="d-flex">
-                      <p class="mb-1 text-title text-16 flex-grow-1">
-                        {{ getUserName(note.userid) }}
-                      </p>
-                      <span class="text-small text-muted">{{
-                        note.date.toDate() | moment("from", "now")
-                      }}</span>
+          <vue-perfect-scrollbar>
+            <div class="chat-sidebar-container">
+              <div class="chat-content-wrap">
+                <div class="chat-content">
+                  <div
+                    v-for="note in extras.notes"
+                    :key="note.date"
+                    class="d-flex mb-30 user"
+                  >
+                    <ProjectAvatar
+                      image-url="@/assets/images/avatars/matthewt.svg"
+                      :hide-nick-name="true"
+                      :width="35"
+                      nick-name="Matt"
+                      class="m-r-10"
+                    />
+                    <div class="message flex-grow-1">
+                      <div class="d-flex">
+                        <p class="mb-1 text-title text-16 flex-grow-1">
+                          {{ getUserName(note.userid) }}
+                        </p>
+                        <span class="text-small text-muted">{{
+                          note.date.toDate() | moment("from", "now")
+                        }}</span>
+                      </div>
+                      <!-- eslint-disable-next-line vue/no-v-html -->
+                      <p class="m-0" v-html="note.content"></p>
                     </div>
-                    <!-- eslint-disable-next-line vue/no-v-html -->
-                    <p class="m-0" v-html="note.content"></p>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </vue-perfect-scrollbar>
         </b-tab>
         <b-tab title="Uploads"> </b-tab>
       </b-tabs>
