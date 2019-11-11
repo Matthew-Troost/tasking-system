@@ -258,7 +258,11 @@ export default {
     },
     onExtrasToggle: function() {
       this.extrasExpanded = !this.extrasExpanded
+      // document.querySelectorAll("#page-container > *").forEach(child => {
+      //   child.classList.toggle("blur")
+      // })
       if (this.extrasExpanded) {
+        // this.$refs.taskExtras.$el.classList.remove("blur")
         this.$refs.taskExtras.initialize()
       }
     }

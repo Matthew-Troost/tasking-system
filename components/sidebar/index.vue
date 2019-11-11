@@ -9,7 +9,7 @@
       <compactTopbar></compactTopbar>
       <transition name="page" mode="out-in">
         <div>
-          <nuxt style="margin-top: 100px" />
+          <nuxt id="page-container" />
         </div>
       </transition>
     </div>
@@ -41,5 +41,8 @@ img {
   transform: translate(-50%, -50%);
   width: 200px;
   height: 200px;
+}
+#page-container {
+  margin-top: 100px;
 }
 </style>

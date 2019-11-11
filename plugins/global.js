@@ -10,9 +10,7 @@ import {
   faCode
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-
-// ------------ STYLES
-import "../assets/styles/custom.css"
+import VueMoment from "vue-moment"
 
 // ------------ COMPONENTS
 library.add(faChartLine, faHandPeace, faCode)
@@ -24,3 +22,4 @@ Vue.component("font-awesome-icon", FontAwesomeIcon)
 Vue.component("loading", Loading)
 Vue.use(themeKit)
 Vue.use(Dialog)
+Vue.use(VueMoment)
