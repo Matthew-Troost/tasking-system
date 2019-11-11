@@ -4,6 +4,9 @@ import Vue from "vue"
 import themeKit from "./theme-kit"
 import Dialog from "vue-dialog-loading"
 import { library } from "@fortawesome/fontawesome-svg-core"
+import VueTagsInput from "@johmun/vue-tags-input"
+import VueLazyload from "vue-lazyload"
+
 import {
   faChartLine,
   faHandPeace,
@@ -23,4 +26,8 @@ Vue.use(VCalendar)
 Vue.component("font-awesome-icon", FontAwesomeIcon)
 Vue.component("loading", Loading)
 Vue.use(themeKit)
+Vue.use(VueTagsInput)
+Vue.use(VueLazyload, {
+  loading: "/_nuxt/assets/images/astronaut.gif"
+})
 Vue.use(Dialog)
