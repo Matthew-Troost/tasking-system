@@ -1,7 +1,7 @@
 <template>
   <div>
     <loading v-show="loading" :width="100" position="unset" />
-    <div v-if="!loading" class="m-t-25">
+    <div v-if="!loading">
       <b-tabs active-nav-item-class="nav nav-tabs" content-class="mt-3">
         <b-tab title="Notes" active>
           <VueEditor v-model="noteContent" :editor-toolbar="customToolbar" />
@@ -157,15 +157,6 @@ export default {
             this.addingNote = false
           })
       }
-    },
-    orderNotesByDate: function() {
-      // function compareDates(a, b) {
-      //   if (a.date > b.date) return -1
-      //   if (b.date > a.date) return 1
-      //   return 0
-      // }
-      this.lodash.orderBy(this.extras.notes, "date")
-      console.log(this.extras.notes)
     }
   }
 }

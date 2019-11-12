@@ -21,11 +21,18 @@
           style="padding-right: 20px; width: 100%"
           @input="modelChange"
         />
+        <b-badge
+          v-show="extrasCount > 0"
+          class="extrasCount"
+          pill
+          variant="primary"
+          >{{ extrasCount }}</b-badge
+        >
         <i
           v-b-toggle="`extra_${value.identifier}`"
           :class="
             `${
-              extrasExpanded ? 'extras-trigger-active' : ''
+              extrasExpanded || extrasCount > 0 ? 'extras-trigger-active' : ''
             } nav-icon i-Folder extras-trigger`
           "
         />
@@ -85,6 +92,7 @@
               v-model="tag"
               :tags="tags"
               :autocomplete-items="items"
+              :add-only-from-autocomplete="true"
               class="tags-input list-item-tags-input"
               :placeholder="tags.length ? '' : 'assignee'"
               :max-tags="3"
@@ -124,7 +132,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
+import { mapState, mapGetters } from "vuex"
 import VueTagsInput from "@johmun/vue-tags-input"
 import ProjectAvatar from "@/components/projectAvatar"
 import ListItemExtras from "./listItemExtras"
@@ -156,6 +164,13 @@ export default {
     ...mapState({
       users: state => state.users.all
     }),
+    ...mapGetters({
+      getExtras: "taskextras/getForTask"
+    }),
+    extrasCount() {
+      let extras = this.getExtras(this.value.identifier)
+      return extras == null ? 0 : extras.notes.length
+    },
     priority: {
       get() {
         return this.value.priority
@@ -304,5 +319,9 @@ input:focus {
 }
 .extras {
   margin-top: 10px;
+}
+.extrasCount {
+  padding: 3px;
+  height: fit-content;
 }
 </style>

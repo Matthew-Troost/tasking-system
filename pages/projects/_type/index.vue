@@ -33,6 +33,7 @@
           "
           :key="project.id"
           md="6"
+          lg="4"
         >
           <nuxt-link
             :to="`/projects/${toLink(projectType)}/${toLink(project.name)}`"
