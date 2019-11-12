@@ -264,7 +264,6 @@ export default {
       // })
       if (this.extrasExpanded) {
         // this.$refs.taskExtras.$el.classList.remove("blur")
-        this.$refs.taskExtras.initialize()
       }
     }
   }

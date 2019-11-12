@@ -226,3 +226,8 @@ input::placeholder {
 .blur {
   filter: blur(3px);
 }
+
+.spinner-sm{
+  width: 2em !important;
+  height: 2em !important;
+}

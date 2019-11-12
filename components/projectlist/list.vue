@@ -167,13 +167,6 @@ export default {
       return total + task.hours
     },
     sortTasks: function(sortProperty) {
-      function compareHours(asc) {
-        return function(a, b) {
-          if (a.hours > b.hours) return asc ? 1 : -1
-          if (b.hours > a.hours) return asc ? -1 : 1
-          return 0
-        }
-      }
       function compareDifficulty(asc) {
         return function(a, b) {
           if (
@@ -207,7 +200,12 @@ export default {
       switch (sortProperty) {
         case "hours":
           this.hourSort = !this.hourSort
-          return this.list.tasks.sort(compareHours(this.hourSort))
+          this.list.tasks = this.lodash.orderBy(
+            this.list.tasks,
+            "hours",
+            this.hourSort ? "asc" : "desc"
+          )
+          break
         case "difficulty":
           this.difficultySort = !this.difficultySort
           return this.list.tasks.sort(compareDifficulty(this.difficultySort))

@@ -6,6 +6,7 @@ import Dialog from "vue-dialog-loading"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import VueTagsInput from "@johmun/vue-tags-input"
 import VueLazyload from "vue-lazyload"
+import VueLodash from "vue-lodash"
 
 import {
   faChartLine,
@@ -30,3 +31,4 @@ Vue.use(VueLazyload, {
 })
 Vue.use(Dialog)
 Vue.use(VueMoment)
+Vue.use(VueLodash, { name: "lodash" })

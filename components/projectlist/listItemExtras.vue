@@ -6,7 +6,14 @@
         <b-tab title="Notes" active>
           <VueEditor v-model="noteContent" :editor-toolbar="customToolbar" />
           <div class="align-right">
-            <b-button variant="primary m-1 ripple btn-sm" @click="addNote"
+            <div
+              v-show="addingNote"
+              class="spinner spinner-primary spinner-sm"
+            ></div>
+            <b-button
+              v-show="!addingNote"
+              variant="primary m-1 ripple btn-sm"
+              @click="orderNotesByDate"
               >Add note</b-button
             >
           </div>
@@ -15,8 +22,8 @@
               <div class="chat-content-wrap">
                 <div class="chat-content">
                   <div
-                    v-for="note in extras.notes"
-                    :key="note.date"
+                    v-for="note in notes"
+                    :key="note.id"
                     class="d-flex mb-30 user"
                   >
                     <ProjectAvatar
@@ -50,7 +57,7 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex"
+import { mapState, mapGetters } from "vuex"
 import { VueEditor } from "vue2-editor"
 import ProjectAvatar from "@/components/projectAvatar"
 
@@ -68,8 +75,8 @@ export default {
   data() {
     return {
       loading: true,
-      extras: null,
       noteContent: "",
+      addingNote: false,
       customToolbar: [
         ["bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
@@ -80,27 +87,29 @@ export default {
   computed: {
     ...mapState({
       users: state => state.users.all,
-      currentUser: state => state.users.current_user
-    })
+      currentUser: state => state.users.current_user,
+      taskextras: state => state.taskextras.all
+    }),
+    ...mapGetters({
+      getExtras: "taskextras/getForTask"
+    }),
+    extras() {
+      let _extras = this.getExtras(this.taskid)
+      return _extras == null
+        ? {
+            notes: [],
+            taskidentifier: this.taskid
+          }
+        : _extras
+    },
+    notes() {
+      return this.lodash.orderBy(this.extras.notes, "date", "desc")
+    }
+  },
+  mounted() {
+    this.loading = false
   },
   methods: {
-    initialize: function() {
-      if (this.loading) {
-        this.$store.state.db
-          .collection("taskextras")
-          .where("taskidentifier", "==", this.taskid)
-          .limit(1)
-          .onSnapshot(taskextras => {
-            if (taskextras && taskextras.docs) {
-              this.extras = {
-                ...taskextras.docs[0].data(),
-                id: taskextras.docs[0].id
-              }
-            }
-            this.loading = false
-          })
-      }
-    },
     getUserName: function(userid) {
       let user = this.users.find(user => user.id == userid)
       return user ? user.nickname : "[User no longer exists]"
@@ -109,6 +118,8 @@ export default {
       if (this.noteContent.length === 0 || !this.noteContent.trim()) {
         return this.$toast.error("You'll need to enter some content first...")
       }
+
+      this.addingNote = true
 
       this.extras.notes.push({
         date: this.$store.state.firebase.firestore.Timestamp.fromDate(
@@ -120,17 +131,50 @@ export default {
         content: this.noteContent
       })
 
-      this.$store.state.db
-        .collection("taskextras")
-        .doc(this.extras.id)
-        .update(this.extras)
-        .then(() => {
-          this.noteContent = ""
-        })
-        .catch(error => {
-          this.$toast.error(`There was an issue adding your note: ${error}`)
-        })
+      if (this.extras.id) {
+        this.$store.state.db
+          .collection("taskextras")
+          .doc(this.extras.id)
+          .update(this.extras)
+          .then(() => {
+            this.noteContent = ""
+            this.addingNote = false
+          })
+          .catch(error => {
+            this.$toast.error(`There was an issue adding your note: ${error}`)
+            this.addingNote = false
+          })
+      } else {
+        this.$store.state.db
+          .collection("taskextras")
+          .add(this.extras)
+          .then(() => {
+            this.noteContent = ""
+            this.addingNote = false
+          })
+          .catch(error => {
+            this.$toast.error(`There was an issue adding your note: ${error}`)
+            this.addingNote = false
+          })
+      }
+    },
+    orderNotesByDate: function() {
+      // function compareDates(a, b) {
+      //   if (a.date > b.date) return -1
+      //   if (b.date > a.date) return 1
+      //   return 0
+      // }
+      this.lodash.orderBy(this.extras.notes, "date")
+      console.log(this.extras.notes)
     }
   }
 }
 </script>
+<style scoped>
+.spinner {
+  margin: 4px;
+}
+.chat-sidebar-container {
+  max-height: 300px;
+}
+</style>
