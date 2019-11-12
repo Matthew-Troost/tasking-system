@@ -13,7 +13,7 @@
             <b-button
               v-show="!addingNote"
               variant="primary m-1 ripple btn-sm"
-              @click="orderNotesByDate"
+              @click="addNote"
               >Add note</b-button
             >
           </div>
@@ -43,7 +43,10 @@
                         }}</span>
                       </div>
                       <!-- eslint-disable-next-line vue/no-v-html -->
-                      <p class="m-0" v-html="note.content"></p>
+                      <div
+                        class="m-0 note-description"
+                        v-html="note.content"
+                      ></div>
                     </div>
                   </div>
                 </div>
@@ -51,7 +54,23 @@
             </div>
           </vue-perfect-scrollbar>
         </b-tab>
-        <b-tab title="Uploads"> </b-tab>
+        <b-tab title="Uploads">
+          <b-form-file
+            v-model="document"
+            type="file"
+            placeholder="Choose or drop a document here"
+            drop-placeholder="Drop document here"
+            variant="primary"
+            value="Upload"
+          >
+            <template slot="file-name" slot-scope="{ names }">
+              <b-badge variant="dark">{{ names[0] }}</b-badge>
+              <b-badge v-if="names.length > 1" variant="dark" class="ml-1">
+                + {{ names.length - 1 }} More files
+              </b-badge>
+            </template>
+          </b-form-file>
+        </b-tab>
       </b-tabs>
     </div>
   </div>
@@ -75,6 +94,7 @@ export default {
   data() {
     return {
       loading: true,
+      document: null,
       noteContent: "",
       addingNote: false,
       customToolbar: [
