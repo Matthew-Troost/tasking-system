@@ -42,6 +42,7 @@ module.exports = {
   modules: [
     "@nuxtjs/toast",
     "@nuxtjs/auth",
+    "@nuxtjs/axios",
     [
       "nuxt-fontawesome",
       {
@@ -58,6 +59,10 @@ module.exports = {
       }
     ]
   ],
+
+  axios: {
+    // proxyHeaders: false
+  },
 
   //Notifications
   toast: {

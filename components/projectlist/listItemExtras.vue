@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable vue/no-v-html -->
   <div>
     <loading v-show="loading" :width="100" position="unset" />
     <div v-if="!loading">
@@ -12,7 +13,7 @@
             ></div>
             <b-button
               v-show="!addingNote"
-              variant="primary m-1 ripple btn-sm"
+              variant="primary m-1 ripple btn-sm add-note-btn"
               @click="addNote"
               >Add note</b-button
             >
@@ -24,7 +25,7 @@
                   <div
                     v-for="note in notes"
                     :key="note.id"
-                    class="d-flex mb-30 user"
+                    class="d-flex mb-10 user"
                   >
                     <ProjectAvatar
                       image-url="@/assets/images/avatars/matthewt.svg"
@@ -42,7 +43,6 @@
                           note.date.toDate() | moment("from", "now")
                         }}</span>
                       </div>
-                      <!-- eslint-disable-next-line vue/no-v-html -->
                       <div
                         class="m-0 note-description"
                         v-html="note.content"
@@ -55,21 +55,44 @@
           </vue-perfect-scrollbar>
         </b-tab>
         <b-tab title="Uploads">
-          <b-form-file
-            v-model="document"
-            type="file"
-            placeholder="Choose or drop a document here"
-            drop-placeholder="Drop document here"
-            variant="primary"
-            value="Upload"
-          >
-            <template slot="file-name" slot-scope="{ names }">
-              <b-badge variant="dark">{{ names[0] }}</b-badge>
-              <b-badge v-if="names.length > 1" variant="dark" class="ml-1">
-                + {{ names.length - 1 }} More files
-              </b-badge>
-            </template>
-          </b-form-file>
+          <b-row>
+            <b-col :md="uploads.length > 0 ? 6 : 12">
+              <b-form-file
+                v-model="document"
+                type="file"
+                placeholder="Choose or drop a document here"
+                drop-placeholder="Drop document here"
+                variant="primary"
+                value="Upload"
+                @input="saveDoc"
+              >
+                <template slot="file-name" slot-scope="{ names }">
+                  <b-badge variant="dark">{{ names[0] }}</b-badge>
+                  <b-badge v-if="names.length > 1" variant="dark" class="ml-1">
+                    + {{ names.length - 1 }} More files
+                  </b-badge>
+                </template>
+              </b-form-file>
+              <div
+                v-show="uploadingDoc"
+                class="spinner spinner-primary spinner-sm"
+              ></div>
+            </b-col>
+            <b-col v-show="uploads.length > 0" md="6">
+              <b-card>
+                <div
+                  v-for="upload in uploads"
+                  :key="upload.id"
+                  class="upload-item"
+                >
+                  <a :href="upload.storageDownlaodURL" target="_blank">{{
+                    upload.name
+                  }}</a>
+                  <p>{{ upload.date.toDate() | moment("from", "now") }}</p>
+                </div>
+              </b-card>
+            </b-col>
+          </b-row>
         </b-tab>
       </b-tabs>
     </div>
@@ -97,6 +120,7 @@ export default {
       document: null,
       noteContent: "",
       addingNote: false,
+      uploadingDoc: false,
       customToolbar: [
         ["bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
@@ -118,12 +142,16 @@ export default {
       return _extras == null
         ? {
             notes: [],
+            uploads: [],
             taskidentifier: this.taskid
           }
         : _extras
     },
     notes() {
       return this.lodash.orderBy(this.extras.notes, "date", "desc")
+    },
+    uploads() {
+      return this.lodash.orderBy(this.extras.uploads, "date", "desc")
     }
   },
   mounted() {
@@ -133,6 +161,40 @@ export default {
     getUserName: function(userid) {
       let user = this.users.find(user => user.id == userid)
       return user ? user.nickname : "[User no longer exists]"
+    },
+    updateExtras: function(addingNote) {
+      if (this.extras.id) {
+        this.$store.state.db
+          .collection("taskextras")
+          .doc(this.extras.id)
+          .update(this.extras)
+          .then(() => {
+            if (addingNote) {
+              this.noteContent = ""
+            } else {
+              this.document = null
+            }
+
+            this.addingNote = false
+            this.uploadingDoc = false
+          })
+          .catch(error => this.displayPushError(addingNote, error))
+      } else {
+        this.$store.state.db
+          .collection("taskextras")
+          .add(this.extras)
+          .then(() => {
+            if (addingNote) {
+              this.noteContent = ""
+            } else {
+              this.document = null
+            }
+
+            this.addingNote = false
+            this.uploadingDoc = false
+          })
+          .catch(error => this.displayPushError(addingNote, error))
+      }
     },
     addNote: function() {
       if (this.noteContent.length === 0 || !this.noteContent.trim()) {
@@ -151,32 +213,42 @@ export default {
         content: this.noteContent
       })
 
-      if (this.extras.id) {
-        this.$store.state.db
-          .collection("taskextras")
-          .doc(this.extras.id)
-          .update(this.extras)
-          .then(() => {
-            this.noteContent = ""
-            this.addingNote = false
+      this.updateExtras(true)
+    },
+    saveDoc: function() {
+      if (this.document != null) {
+        this.uploadingDoc = true
+
+        this.$store.state.storage
+          .ref(`/TaskDocs/${this.taskid}/${this.document.name}`)
+          .put(this.document)
+          .then(snapshot => {
+            snapshot.ref
+              .getDownloadURL()
+              .then(url => {
+                this.extras.uploads.push({
+                  date: this.$store.state.firebase.firestore.Timestamp.fromDate(
+                    new Date()
+                  ),
+                  name: this.document.name,
+                  storageDownlaodURL: url
+                })
+
+                this.updateExtras(false)
+              })
+              .catch(error => this.displayPushError(false, error))
           })
-          .catch(error => {
-            this.$toast.error(`There was an issue adding your note: ${error}`)
-            this.addingNote = false
-          })
-      } else {
-        this.$store.state.db
-          .collection("taskextras")
-          .add(this.extras)
-          .then(() => {
-            this.noteContent = ""
-            this.addingNote = false
-          })
-          .catch(error => {
-            this.$toast.error(`There was an issue adding your note: ${error}`)
-            this.addingNote = false
-          })
+          .catch(error => this.displayPushError(false, error))
       }
+    },
+    displayPushError: function(addingNote, error) {
+      this.$toast.error(
+        `There was an issue adding your ${
+          addingNote ? "note" : "doc"
+        }: ${error}`
+      )
+      this.addingNote = false
+      this.uploadingDoc = false
     }
   }
 }
@@ -187,5 +259,28 @@ export default {
 }
 .chat-sidebar-container {
   max-height: 300px;
+}
+.text-title {
+  line-height: normal;
+}
+.note-description {
+  font-size: 12px;
+}
+.message {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+.add-note-btn {
+  margin-top: 9px !important;
+  margin-right: 0px !important;
+}
+.upload-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.upload-item p {
+  margin-bottom: 0px;
+  font-size: 10px;
 }
 </style>

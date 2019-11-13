@@ -169,7 +169,7 @@ export default {
     }),
     extrasCount() {
       let extras = this.getExtras(this.value.identifier)
-      return extras == null ? 0 : extras.notes.length
+      return extras == null ? 0 : extras.notes.length + extras.uploads.length
     },
     priority: {
       get() {

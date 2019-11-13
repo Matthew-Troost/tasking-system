@@ -81,6 +81,10 @@ small {
   margin-bottom: 30px;
 }
 
+.mb-10 {
+  margin-bottom: 10px;
+}
+
 .f-r {
   float: right;
 }
@@ -227,7 +231,7 @@ input::placeholder {
   filter: blur(3px);
 }
 
-.spinner-sm{
+.spinner-sm {
   width: 2em !important;
   height: 2em !important;
 }
