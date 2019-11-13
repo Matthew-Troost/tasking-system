@@ -80,7 +80,7 @@
           </header>
           <ul class="childNav" data-parent="dashboards">
             <li class="nav-item">
-              <nuxt-link tag="a" class to="/app/dashboards/dashboard.v1">
+              <nuxt-link tag="a" class to="/overview">
                 <i class="nav-icon i-Pie-Chart-3"></i>
                 <span class="item-name">Overview</span>
               </nuxt-link>

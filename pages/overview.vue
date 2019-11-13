@@ -1,7 +1,10 @@
 <template>
   <div>
-    <h2>Dashboard</h2>
-    <!-- <p v-for="user in users" :key="user.auth_id">{{ user.first_name }}</p> -->
+    <b-row>
+      <b-col md="4">
+        <img v-lazy="url" alt />
+      </b-col>
+    </b-row>
   </div>
 </template>
 <script>
