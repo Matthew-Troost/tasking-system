@@ -4,6 +4,11 @@ export const state = () => ({
 })
 
 export const getters = {
+  getCurrentUser: state => {
+    return state.all.find(user => {
+      return user.uid == state.current_user.uid
+    })
+  },
   getUserByUID: state => uid => {
     return state.all.find(user => {
       return user.uid == uid

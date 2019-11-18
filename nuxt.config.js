@@ -30,7 +30,9 @@ module.exports = {
   plugins: [
     "@plugins/global.js",
     "@plugins/authentication.js",
-    "@plugins/snapshotsubscriptions.js"
+    "@plugins/snapshotsubscriptions.js",
+    "@plugins/echarts.js",
+    "@plugins/bugsnag.js"
   ],
   /*
    ** Nuxt.js dev-modules
@@ -79,9 +81,7 @@ module.exports = {
    ** Build configuration
    */
   build: {
-    /*
-     ** You can extend webpack config here
-     */
+    transpile: ["vue-echarts", "resize-detector"],
     extend(config, ctx) {
       // Run ESLint on save
       if (ctx.isDev && ctx.isClient) {

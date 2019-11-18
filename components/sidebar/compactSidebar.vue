@@ -85,21 +85,23 @@
                 <span class="item-name">Overview</span>
               </nuxt-link>
             </li>
-            <li class="nav-item">
-              <nuxt-link tag="a" class to="/app/dashboards/dashboard.v2">
+            <li
+              v-for="project in getUserProjects(getCurrentUser.id)"
+              :key="project.id"
+              class="nav-item"
+            >
+              <nuxt-link
+                tag="a"
+                class
+                :to="`/projects/${project.type}/${toLink(project.name)}`"
+              >
                 <i class="nav-icon i-Clock-4"></i>
                 <span class="item-name">
-                  Project 1
+                  {{ project.name }}
                   <span class="ml-2 badge badge-pill badge-danger"
                     >3 tasks</span
                   >
                 </span>
-              </nuxt-link>
-            </li>
-            <li class="nav-item">
-              <nuxt-link tag="a" class to="/app/dashboards/dashboard.v3">
-                <i class="nav-icon i-Over-Time"></i>
-                <span class="item-name">Project 2</span>
               </nuxt-link>
             </li>
           </ul>
@@ -187,6 +189,7 @@
 <script>
 import { mapMutations, mapGetters } from "vuex"
 import { isMobile } from "mobile-device-detect"
+import Util from "@/utils"
 
 export default {
   data() {
@@ -199,7 +202,9 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isSideBarOpen: "sidebar/isOpen"
+      isSideBarOpen: "sidebar/isOpen",
+      getUserProjects: "projects/getForUser",
+      getCurrentUser: "users/getCurrentUser"
     })
   },
   mounted() {
@@ -257,7 +262,6 @@ export default {
         this.toggleSelectedParentMenu()
       }
     },
-
     toggleSidebarDropdwon(event) {
       let dropdownMenus = this.$el.querySelectorAll(".dropdown-sidemenu.open")
 
@@ -266,6 +270,9 @@ export default {
       dropdownMenus.forEach(dropdown => {
         dropdown.classList.remove("open")
       })
+    },
+    toLink: function(projectName) {
+      return Util.stringToLink(projectName)
     }
   }
 }
