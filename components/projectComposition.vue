@@ -1,5 +1,9 @@
 <template>
-  <v-chart :options="pie_chart.options" :init-options="pie_chart.initOptions" />
+  <v-chart
+    :options="pie_chart.options"
+    :init-options="pie_chart.initOptions"
+    @legendselectchanged="legendSelectChanged"
+  />
 </template>
 <script>
 export default {
@@ -52,6 +56,10 @@ export default {
     }
   },
   computed: {},
-  methods: {}
+  methods: {
+    legendSelectChanged(e) {
+      console.log(e.selected)
+    }
+  }
 }
 </script>

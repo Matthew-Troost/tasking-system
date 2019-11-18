@@ -12,8 +12,8 @@
       class="sidebar-left rtl-ps-none ps"
     >
       <ul class="navigation-left">
-        <div class="logo">
-          <img alt src="" />
+        <div v-if="!loading" class="logo">
+          <avatar :user-id="getCurrentUser.id" :hide-nick-name="true" />
         </div>
         <li
           :class="{ active: selectedParentMenu == 'dashboards' }"
@@ -63,12 +63,8 @@
       <div ref="sidebarChild">
         <i class="sidebar-close i-Close" @click="compactSideBarToggle"></i>
         <header>
-          <div class="logo">
-            <!-- <img src="@/assets/images/logo-text.png" alt /> -->
-          </div>
+          <div class="logo"></div>
         </header>
-
-        <!-- submenu-dashboards -->
         <div
           class="submenu-area"
           data-parent="dashboards"
@@ -96,11 +92,20 @@
                   class
                   :to="`/projects/${project.type}/${toLink(project.name)}`"
                 >
-                  <i class="nav-icon i-Clock-4"></i>
+                  <i class="nav-icon i-Yes"></i>
                   <span class="item-name">
                     {{ project.name }}
-                    <span class="ml-2 badge badge-pill badge-danger"
-                      >3 tasks</span
+                    <span
+                      :class="
+                        `ml-2 badge badge-pill badge-${
+                          projectTaskCount(project) < 3
+                            ? 'success'
+                            : projectTaskCount(project) < 6
+                            ? 'warning'
+                            : 'danger'
+                        }`
+                      "
+                      >{{ projectTaskCount(project) }} tasks</span
                     >
                   </span>
                 </nuxt-link>
@@ -192,8 +197,12 @@
 import { mapMutations, mapGetters } from "vuex"
 import { isMobile } from "mobile-device-detect"
 import Util from "@/utils"
+import avatar from "@/components/projectAvatar"
 
 export default {
+  components: {
+    avatar
+  },
   data() {
     return {
       isMenuOver: false,
@@ -250,7 +259,9 @@ export default {
         .split("/")
         .filter(x => x !== "")[0]
 
-      if (currentParentUrl !== undefined && currentParentUrl !== null) {
+      if (currentParentUrl == "overview") {
+        this.selectedParentMenu = "dashboards"
+      } else if (currentParentUrl !== undefined && currentParentUrl !== null) {
         this.selectedParentMenu = currentParentUrl.toLowerCase()
       } else {
         this.selectedParentMenu = "dashboards"
@@ -278,6 +289,15 @@ export default {
     },
     toLink: function(projectName) {
       return Util.stringToLink(projectName)
+    },
+    projectTaskCount(project) {
+      let taskCount = 0
+      project.lists.forEach(list => {
+        taskCount += list.tasks.filter(task => {
+          return task.users.includes(this.getCurrentUser.id)
+        }).length
+      })
+      return taskCount
     }
   }
 }

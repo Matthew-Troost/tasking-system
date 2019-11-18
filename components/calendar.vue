@@ -30,6 +30,10 @@ export default {
     value: {
       type: Array,
       default: null
+    },
+    restrictToUserId: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -45,18 +49,22 @@ export default {
 
       this.value.forEach((list, index) => {
         list.tasks.forEach(task => {
-          if (!task.completed) {
-            eventsList.push({
-              id: task.identifier,
-              title: task.description,
-              start: task.startdate.toDate(),
-              end: this.addDays(task.enddate.toDate(), 1),
-              textColor: "black",
-              editable: true,
-              backgroundColor: this.colourPalette[index],
-              allDay: true,
-              classNames: [`fc-${task.priority}-priority`]
-            })
+          let event = {
+            id: task.identifier,
+            title: task.description,
+            start: task.startdate.toDate(),
+            end: this.addDays(task.enddate.toDate(), 1),
+            textColor: "black",
+            editable: true,
+            backgroundColor: this.colourPalette[index],
+            allDay: true,
+            classNames: [`fc-${task.priority}-priority`]
+          }
+          if (this.restrictToUserId) {
+            if (task.users.includes(this.restrictToUserId) && !task.completed)
+              eventsList.push(event)
+          } else if (!task.completed) {
+            eventsList.push(event)
           }
         })
       })

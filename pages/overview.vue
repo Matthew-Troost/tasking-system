@@ -4,7 +4,19 @@
     <div v-if="!loading">
       <div class="avatar">
         <img v-lazy="getCurrentUser.avatar" alt />
-        <h1>{{ getCurrentUser.first_name }} {{ getCurrentUser.last_name }}</h1>
+        <div>
+          <h1>
+            {{ getCurrentUser.first_name }} {{ getCurrentUser.last_name }}
+          </h1>
+          <h4>
+            <span
+              v-for="role in getCurrentUser.type"
+              :key="role.id"
+              class="badge badge-pill badge-primary"
+              >{{ role }}</span
+            >
+          </h4>
+        </div>
       </div>
       <b-row>
         <b-col md="3">
@@ -32,7 +44,10 @@
         </b-col>
         <b-col md="9">
           <b-card class="project-calendar">
-            <Calendar v-model="projectLists" />
+            <Calendar
+              v-model="projectLists"
+              :restrict-to-user-id="getCurrentUser.id"
+            />
           </b-card>
         </b-col>
       </b-row>
@@ -87,7 +102,9 @@ export default {
           let taskCount = 0
           project.lists.forEach(list => {
             taskCount += list.tasks.filter(task => {
-              return task.users.includes(this.getCurrentUser.id)
+              return (
+                task.users.includes(this.getCurrentUser.id) && !task.completed
+              )
             }).length
           })
           composition.push({
@@ -130,11 +147,13 @@ export default {
 .avatar img {
   width: 120px;
 }
-.avatar h1 {
+.avatar div {
   display: inline-block;
-  margin-bottom: 0px;
   margin-left: 50px;
-  font-size: 50px;
+}
+.avatar h1 {
+  margin-bottom: 0px;
+  font-size: 40px;
 }
 .project-progress,
 .project-calendar,

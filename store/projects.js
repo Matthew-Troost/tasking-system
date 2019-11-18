@@ -11,6 +11,7 @@ export const getters = {
         list.tasks.forEach(task => {
           if (
             task.users.includes(userid) &&
+            !task.completed &&
             !projects.includes(state.all[index])
           ) {
             projects.push(state.all[index])

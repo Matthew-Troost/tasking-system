@@ -75,7 +75,7 @@ export default {
           user => {
             if (user.user.emailVerified) {
               this.$toast.success(`Welcome back!`)
-              this.$router.push("/dashboard")
+              this.$router.push("/overview")
             } else {
               this.$toast.info(
                 `Mmmm.. you'll need to verify your email address before logging in.`
