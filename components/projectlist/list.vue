@@ -104,7 +104,9 @@ export default {
           })
         },
         onSort: event => {
-          this.onTaskMove(event.oldIndex, event.newIndex)
+          if (event.from.id == event.to.id) {
+            this.onTaskMove(event.oldIndex, event.newIndex)
+          }
         }
       }
     )
@@ -141,7 +143,7 @@ export default {
     },
     archive: function() {
       this.$dialog({
-        title: "Archive ...",
+        title: `Archive ${this.list.name}`,
         content: "You're about to archive this list?",
         btns: [
           {
@@ -165,13 +167,6 @@ export default {
       return total + task.hours
     },
     sortTasks: function(sortProperty) {
-      function compareHours(asc) {
-        return function(a, b) {
-          if (a.hours > b.hours) return asc ? 1 : -1
-          if (b.hours > a.hours) return asc ? -1 : 1
-          return 0
-        }
-      }
       function compareDifficulty(asc) {
         return function(a, b) {
           if (
@@ -205,7 +200,12 @@ export default {
       switch (sortProperty) {
         case "hours":
           this.hourSort = !this.hourSort
-          return this.list.tasks.sort(compareHours(this.hourSort))
+          this.list.tasks = this.lodash.orderBy(
+            this.list.tasks,
+            "hours",
+            this.hourSort ? "asc" : "desc"
+          )
+          break
         case "difficulty":
           this.difficultySort = !this.difficultySort
           return this.list.tasks.sort(compareDifficulty(this.difficultySort))
@@ -220,12 +220,6 @@ export default {
       }
       while (newIndex < 0) {
         newIndex += this.list.tasks.length
-      }
-      if (newIndex >= this.list.tasks.length) {
-        var k = newIndex - this.list.tasks.length
-        while (k-- + 1) {
-          this.list.tasks.push(undefined)
-        }
       }
       this.list.tasks.splice(
         newIndex,

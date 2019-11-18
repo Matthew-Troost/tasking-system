@@ -6,6 +6,7 @@ import Dialog from "vue-dialog-loading"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import VueTagsInput from "@johmun/vue-tags-input"
 import VueLazyload from "vue-lazyload"
+import VueLodash from "vue-lodash"
 
 import {
   faChartLine,
@@ -13,9 +14,7 @@ import {
   faCode
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-
-// ------------ STYLES
-import "../assets/styles/custom.css"
+import VueMoment from "vue-moment"
 
 // ------------ COMPONENTS
 library.add(faChartLine, faHandPeace, faCode)
@@ -31,3 +30,5 @@ Vue.use(VueLazyload, {
   loading: "/_nuxt/assets/images/astronaut.gif"
 })
 Vue.use(Dialog)
+Vue.use(VueMoment)
+Vue.use(VueLodash, { name: "lodash" })

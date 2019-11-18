@@ -77,12 +77,16 @@ small {
   margin: 0 !important;
 }
 
-.mb-30{
+.mb-30 {
   margin-bottom: 30px;
 }
 
-.f-r{
-  float: right
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.f-r {
+  float: right;
 }
 
 .tab-content {
@@ -97,7 +101,7 @@ small {
   opacity: 0;
 }
 
-.ti-tags{
+.ti-tags {
   flex-wrap: unset !important;
 }
 
@@ -114,10 +118,10 @@ small {
 }
 
 .ti-deletion-mark {
-  background-color: #e54d42 !important
+  background-color: #e54d42 !important;
 }
 
-.ti-new-tag-input-wrapper input{
+.ti-new-tag-input-wrapper input {
   min-width: unset !important;
 }
 
@@ -125,14 +129,15 @@ small {
   border: none !important;
   padding: 0 !important;
 }
-.list-item-tags-input .ti-tag{
+.list-item-tags-input .ti-tag {
   padding: 0 !important;
   margin: 0 !important;
 }
-.tags-input, .tags-input input{
+.tags-input,
+.tags-input input {
   background-color: transparent !important;
 }
-.full-width{
+.full-width {
   width: 100%;
 }
 
@@ -146,7 +151,8 @@ input::placeholder {
   background: transparent !important;
 }
 
-.bd-no-border > button:focus, .bd-no-border > button:hover{
+.bd-no-border > button:focus,
+.bd-no-border > button:hover {
   box-shadow: none !important;
 }
 
@@ -154,6 +160,82 @@ input::placeholder {
   margin-top: 10px !important;
 }
 
-.align-center{
+.align-center {
   text-align: center;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.ql-toolbar.ql-snow {
+  border: 1px solid #dfdfdf !important;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.ql-container.ql-snow {
+  border: 1px solid #dfdfdf !important;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top: 0 !important;
+}
+
+.ql-container {
+  font-family: unset !important;
+}
+
+.ql-editor {
+  min-height: 100px !important;
+  font-size: 12px !important;
+}
+
+.quillWrapper .ql-snow.ql-toolbar button svg {
+  width: unset !important;
+  height: unset !important;
+}
+
+.quillWrapper .ql-snow.ql-toolbar .ql-formats {
+  margin-bottom: 5px !important;
+}
+
+.chat-sidebar-container,
+.chat-sidebar-container .chat-content-wrap .chat-content {
+  height: fit-content !important;
+}
+
+.chat-sidebar-container .chat-content-wrap .chat-content {
+  padding: 5px 0 0 !important;
+}
+
+.m-r-10 {
+  margin-right: 10px !important;
+}
+
+.m-t-25 {
+  margin-top: 25px;
+}
+
+.nav-tabs {
+  border-bottom: 2px solid black !important;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+  background: transparent !important;
+  border: 2px solid transparent !important;
+  border-color: black black #fff !important;
+  margin-bottom: -1px;
+}
+
+.blur {
+  filter: blur(3px);
+}
+
+.spinner-sm {
+  width: 2em !important;
+  height: 2em !important;
+}
+
+.note-description p {
+  margin: 0 !important;
 }

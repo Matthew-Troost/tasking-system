@@ -1,7 +1,16 @@
 <template>
   <div class="container">
-    <img v-lazy="url" alt :style="styles" />
-    <h6 v-if="!hideNickName">{{ displayName }}</h6>
+    <div :id="`pp_${userId}`">
+      <img v-lazy="url" alt :style="styles" />
+      <h6 v-if="!hideNickName">{{ displayName }}</h6>
+    </div>
+    <b-popover
+      v-if="hideNickName"
+      :target="`pp_${userId}`"
+      triggers="hover focus"
+      :content="displayName"
+      placement="top"
+    ></b-popover>
   </div>
 </template>
 <script>
@@ -36,18 +45,18 @@ export default {
       users: state => state.users.all
     }),
     user() {
-      return this.users.filter(user => {
+      return this.users.find(user => {
         return user.id == this.userId
       })
     },
     url() {
       if (this.userId === "") return this.imageUrl
-      if (this.user[0]) return this.user[0].avatar
+      if (this.user) return this.user.avatar
       return null
     },
     displayName() {
       if (this.userId === "") return this.nickName
-      if (this.user[0]) return this.user[0].nickname
+      if (this.user) return this.user.nickname
       return null
     },
     styles() {
@@ -61,7 +70,7 @@ export default {
 </script>
 <style scoped>
 .container {
-  width: min-content;
+  width: fit-content;
   display: inline-block;
   text-align: center;
   padding: 0;

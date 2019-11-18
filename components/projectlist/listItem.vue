@@ -21,6 +21,21 @@
           style="padding-right: 20px; width: 100%"
           @input="modelChange"
         />
+        <b-badge
+          v-show="extrasCount > 0"
+          class="extrasCount"
+          pill
+          variant="primary"
+          >{{ extrasCount }}</b-badge
+        >
+        <i
+          v-b-toggle="`extra_${value.identifier}`"
+          :class="
+            `${
+              extrasExpanded || extrasCount > 0 ? 'extras-trigger-active' : ''
+            } nav-icon i-Folder extras-trigger`
+          "
+        />
       </b-col>
       <b-col md="6">
         <b-row style="text-align: center">
@@ -77,6 +92,7 @@
               v-model="tag"
               :tags="tags"
               :autocomplete-items="items"
+              :add-only-from-autocomplete="true"
               class="tags-input list-item-tags-input"
               :placeholder="tags.length ? '' : 'assignee'"
               :max-tags="3"
@@ -92,6 +108,7 @@
               <div slot="tag-center" slot-scope="props">
                 <ProjectAvatar
                   image-url="@/assets/images/avatars/matthewt.svg"
+                  :user-id="props.tag.id"
                   :hide-nick-name="true"
                   :width="24"
                   :nick-name="props.tag.text"
@@ -102,18 +119,29 @@
         </b-row>
       </b-col>
     </b-row>
+    <b-collapse
+      :id="`extra_${value.identifier}`"
+      accordion="tasks"
+      class="extras"
+      @show="onExtrasToggle"
+      @hide="onExtrasToggle"
+    >
+      <ListItemExtras ref="taskExtras" :taskid="value.identifier" />
+    </b-collapse>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex"
+import { mapState, mapGetters } from "vuex"
 import VueTagsInput from "@johmun/vue-tags-input"
 import ProjectAvatar from "@/components/projectAvatar"
+import ListItemExtras from "./listItemExtras"
 
 export default {
   components: {
     VueTagsInput,
-    ProjectAvatar
+    ProjectAvatar,
+    ListItemExtras
   },
   props: {
     value: {
@@ -128,13 +156,21 @@ export default {
       checkedProxy: this.value.completed,
       updateTimer: null,
       tag: "",
-      tagsProxy: this.value.users
+      tagsProxy: this.value.users,
+      extrasExpanded: false
     }
   },
   computed: {
     ...mapState({
       users: state => state.users.all
     }),
+    ...mapGetters({
+      getExtras: "taskextras/getForTask"
+    }),
+    extrasCount() {
+      let extras = this.getExtras(this.value.identifier)
+      return extras == null ? 0 : extras.notes.length + extras.uploads.length
+    },
     priority: {
       get() {
         return this.value.priority
@@ -235,6 +271,15 @@ export default {
     updatePriority(priority) {
       this.priority = priority
       this.modelChange()
+    },
+    onExtrasToggle: function() {
+      this.extrasExpanded = !this.extrasExpanded
+      // document.querySelectorAll("#page-container > *").forEach(child => {
+      //   child.classList.toggle("blur")
+      // })
+      if (this.extrasExpanded) {
+        // this.$refs.taskExtras.$el.classList.remove("blur")
+      }
     }
   }
 }
@@ -259,5 +304,24 @@ input:focus {
 }
 .zap-difficult::before {
   content: "\26A1 \26A1 \26A1";
+}
+.extras-trigger {
+  cursor: pointer;
+  margin-top: 5px;
+  opacity: 0;
+  transition: 0.3s;
+}
+.extras-trigger:hover {
+  opacity: 1;
+}
+.extras-trigger-active {
+  opacity: 1;
+}
+.extras {
+  margin-top: 10px;
+}
+.extrasCount {
+  padding: 3px;
+  height: fit-content;
 }
 </style>
