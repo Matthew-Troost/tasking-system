@@ -34,20 +34,28 @@ export default {
     restrictToUserId: {
       type: String,
       default: null
+    },
+    colourPalette: {
+      type: Array,
+      default: null
     }
   },
   data() {
     return {
       calendarPlugins: [dayGridPlugin, interactionPlugin],
-      colourPalette: ["#89C3CA", "#C6EC8E", "#FFCB4B", "#E84583", "#AD33B9"],
+      colours: this.colourPalette
+        ? this.colourPalette
+        : ["#89C3CA", "#C6EC8E", "#FFCB4B", "#E84583", "#AD33B9"],
       listsProxy: []
     }
   },
   computed: {
     events() {
       let eventsList = []
+      let usedColours = []
 
       this.value.forEach((list, index) => {
+        var colour = this.colours[usedColours.length]
         list.tasks.forEach(task => {
           let event = {
             id: task.identifier,
@@ -56,15 +64,20 @@ export default {
             end: this.addDays(task.enddate.toDate(), 1),
             textColor: "black",
             editable: true,
-            backgroundColor: this.colourPalette[index],
+            backgroundColor: colour,
             allDay: true,
             classNames: [`fc-${task.priority}-priority`]
           }
           if (this.restrictToUserId) {
-            if (task.users.includes(this.restrictToUserId) && !task.completed)
+            if (task.users.includes(this.restrictToUserId) && !task.completed) {
               eventsList.push(event)
+              if (!usedColours.includes(this.colours[index]))
+                usedColours.push(this.colours[index])
+            }
           } else if (!task.completed) {
             eventsList.push(event)
+            if (!usedColours.includes(this.colours[index]))
+              usedColours.push(this.colours[index])
           }
         })
       })

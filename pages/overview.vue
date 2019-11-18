@@ -47,6 +47,7 @@
             <Calendar
               v-model="projectLists"
               :restrict-to-user-id="getCurrentUser.id"
+              :colour-palette="colourPalette"
             />
           </b-card>
         </b-col>
@@ -70,7 +71,8 @@ export default {
   },
   data() {
     return {
-      projectListsProxy: []
+      projectListsProxy: [],
+      colourPalette: ["#91c7ae", "#c23531", "#2f4554", "#61a0a8", "#d48265"]
     }
   },
   computed: {
