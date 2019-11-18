@@ -85,25 +85,27 @@
                 <span class="item-name">Overview</span>
               </nuxt-link>
             </li>
-            <li
-              v-for="project in getUserProjects(getCurrentUser.id)"
-              :key="project.id"
-              class="nav-item"
-            >
-              <nuxt-link
-                tag="a"
-                class
-                :to="`/projects/${project.type}/${toLink(project.name)}`"
+            <div v-if="!loading">
+              <li
+                v-for="project in getUserProjects(getCurrentUser.id)"
+                :key="project.id"
+                class="nav-item"
               >
-                <i class="nav-icon i-Clock-4"></i>
-                <span class="item-name">
-                  {{ project.name }}
-                  <span class="ml-2 badge badge-pill badge-danger"
-                    >3 tasks</span
-                  >
-                </span>
-              </nuxt-link>
-            </li>
+                <nuxt-link
+                  tag="a"
+                  class
+                  :to="`/projects/${project.type}/${toLink(project.name)}`"
+                >
+                  <i class="nav-icon i-Clock-4"></i>
+                  <span class="item-name">
+                    {{ project.name }}
+                    <span class="ml-2 badge badge-pill badge-danger"
+                      >3 tasks</span
+                    >
+                  </span>
+                </nuxt-link>
+              </li>
+            </div>
           </ul>
         </div>
         <!-- end dashboards -->
@@ -205,7 +207,10 @@ export default {
       isSideBarOpen: "sidebar/isOpen",
       getUserProjects: "projects/getForUser",
       getCurrentUser: "users/getCurrentUser"
-    })
+    }),
+    loading() {
+      return this.getCurrentUser == null
+    }
   },
   mounted() {
     this.toggleSelectedParentMenu()

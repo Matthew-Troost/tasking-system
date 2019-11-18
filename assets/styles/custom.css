@@ -239,3 +239,7 @@ input::placeholder {
 .note-description p {
   margin: 0 !important;
 }
+
+.echarts {
+  width: 100% !important;
+}

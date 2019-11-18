@@ -3,14 +3,14 @@
     <loading v-show="loading" />
     <div v-if="!loading">
       <div class="avatar">
-        <img v-lazy="user.avatar" alt />
-        <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+        <img v-lazy="getCurrentUser.avatar" alt />
+        <h1>{{ getCurrentUser.first_name }} {{ getCurrentUser.last_name }}</h1>
       </div>
       <b-row>
         <b-col md="3">
           <b-card class="project-progress">
             <div
-              v-for="project in getProjectsForUser(user.id)"
+              v-for="project in getProjectsForUser(getCurrentUser.id)"
               :key="project.id"
               class="progress-container"
             >
@@ -26,102 +26,90 @@
               ></b-progress>
             </div>
           </b-card>
-          <b-card>
-            <div class="chart-wrapper" style="height: 300px ; width:100%">
-              <h4>Tickets (coming soon...)</h4>
-            </div>
+          <b-card class="pie-chart">
+            <ProjectComposition :composition="projectComposition" />
           </b-card>
         </b-col>
         <b-col md="9">
-          <b-card class="project-calendar"> <h4>Calendar</h4> </b-card>
-          <b-card> <v-chart :options="polar" /> </b-card>
+          <b-card class="project-calendar">
+            <Calendar v-model="projectLists" />
+          </b-card>
         </b-col>
       </b-row>
     </div>
   </div>
 </template>
 <script>
-import { mapState, mapGetters } from "vuex"
+import { mapGetters } from "vuex"
 import loading from "@/components/loading"
+import Calendar from "@/components/calendar"
+import ProjectComposition from "@/components/projectComposition"
 
 export default {
   layout: "default",
   name: "Dashboard",
   components: {
-    loading
+    loading,
+    Calendar,
+    ProjectComposition
   },
   data() {
-    let data = []
-
-    for (let i = 0; i <= 360; i++) {
-      let t = (i / 180) * Math.PI
-      let r = Math.sin(2 * t) * Math.cos(2 * t)
-      data.push([r, i])
-    }
-
     return {
-      polar: {
-        title: {
-          text: "极坐标双数值轴"
-        },
-        legend: {
-          data: ["line"]
-        },
-        polar: {
-          center: ["50%", "54%"]
-        },
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "cross"
-          }
-        },
-        angleAxis: {
-          type: "value",
-          startAngle: 0
-        },
-        radiusAxis: {
-          min: 0
-        },
-        series: [
-          {
-            coordinateSystem: "polar",
-            name: "line",
-            type: "line",
-            showSymbol: false,
-            data: data
-          }
-        ],
-        animationDuration: 2000
-      }
+      projectListsProxy: []
     }
   },
   computed: {
     ...mapGetters({
-      getUser: "users/getUserByUID",
+      getCurrentUser: "users/getCurrentUser",
       getProjectsForUser: "projects/getForUser"
     }),
-    ...mapState({
-      currentUser: state => state.users.current_user
-    }),
-    user() {
-      return this.getUser(this.currentUser.uid)
-    },
     loading() {
-      return this.user == null
+      return this.getCurrentUser == null
+    },
+    projectLists: {
+      get() {
+        let lists = []
+        if (this.getProjectsForUser(this.getCurrentUser.id)) {
+          this.getProjectsForUser(this.getCurrentUser.id).forEach(project => {
+            lists.push(project.lists)
+          })
+        }
+        return this.lodash.flatten(lists)
+      },
+      set(val) {
+        this.projectListsProxy = val
+      }
+    },
+    projectComposition() {
+      let composition = []
+      if (this.getProjectsForUser(this.getCurrentUser.id)) {
+        this.getProjectsForUser(this.getCurrentUser.id).forEach(project => {
+          let taskCount = 0
+          project.lists.forEach(list => {
+            taskCount += list.tasks.filter(task => {
+              return task.users.includes(this.getCurrentUser.id)
+            }).length
+          })
+          composition.push({
+            value: taskCount,
+            name: project.name
+          })
+        })
+      }
+      return composition
     }
   },
   methods: {
     projectProgressPercent: function(projectid) {
       let allTasks = 0
       let completedTasks = 0
-      this.getProjectsForUser(this.user.id)
+      this.getProjectsForUser(this.getCurrentUser.id)
         .find(project => {
           return project.id == projectid
         })
         .lists.forEach(list => {
           list.tasks.forEach(task => {
-            if (task.users.includes(this.user.id)) {
+            if (task.users.includes(this.getCurrentUser.id)) {
               allTasks++
               if (task.completed) {
                 completedTasks++
@@ -149,7 +137,8 @@ export default {
   font-size: 50px;
 }
 .project-progress,
-.project-calendar {
+.project-calendar,
+.pie-chart {
   margin-bottom: 10px;
 }
 .progress-container {
