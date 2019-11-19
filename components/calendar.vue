@@ -1,17 +1,54 @@
 <template>
-  <FullCalendar
-    default-view="dayGridMonth"
-    :header="{ left: 'title', center: '', right: 'prev,next' }"
-    :editable="true"
-    :first-day="1"
-    height="auto"
-    :plugins="calendarPlugins"
-    :events="events"
-    :event-render="eventRender"
-    :day-render="onDayRender"
-    @eventDrop="onEventAdjusted"
-    @eventResize="onEventAdjusted"
-  />
+  <div>
+    <div v-if="extraInfo.show" class="extraInfo">
+      <p>
+        <span
+          :class="
+            `badge badge-pill badge-${
+              extraInfo.task.priority == 'low'
+                ? 'success'
+                : extraInfo.task.priority == 'medium'
+                ? 'warning'
+                : 'danger'
+            }`
+          "
+          >{{ extraInfo.task.priority }}</span
+        >
+        <span class="list">{{ extraInfo.task.listName }}: </span>
+        <span>{{ extraInfo.task.description }}</span>
+        <span class="hours"
+          >{{ extraInfo.task.hours }} hour{{
+            extraInfo.task.hours == 1 ? "" : "s"
+          }}</span
+        >
+        <span v-show="extraInfo.task.difficulty == 'easy'" class="difficulty"
+          >⚡</span
+        >
+        <span v-show="extraInfo.task.difficulty == 'medium'" class="difficulty"
+          >⚡⚡</span
+        >
+        <span
+          v-show="extraInfo.task.difficulty == 'difficult'"
+          class="difficulty"
+          >⚡⚡⚡</span
+        >
+      </p>
+    </div>
+    <FullCalendar
+      default-view="dayGridMonth"
+      :header="{ left: 'title', center: '', right: 'prev,next' }"
+      :editable="true"
+      :first-day="1"
+      height="auto"
+      :plugins="calendarPlugins"
+      :events="events"
+      :day-render="onDayRender"
+      @eventMouseEnter="eventHoverEnter"
+      @eventMouseLeave="eventHoverLeave"
+      @eventDrop="onEventAdjusted"
+      @eventResize="onEventAdjusted"
+    />
+  </div>
 </template>
 <script>
 import FullCalendar from "@fullcalendar/vue"
@@ -21,8 +58,6 @@ import dayGridPlugin from "@fullcalendar/daygrid"
 import "@fullcalendar/core/main.css"
 import "@fullcalendar/daygrid/main.css"
 import "../assets/styles/calendar/calendar_custom.css"
-import "popper.js"
-import Tooltip from "tooltip.js"
 
 export default {
   name: "Calendar",
@@ -53,7 +88,11 @@ export default {
       colours: this.colourPalette
         ? this.colourPalette
         : ["#89C3CA", "#C6EC8E", "#FFCB4B", "#E84583", "#AD33B9"],
-      listsProxy: []
+      listsProxy: [],
+      extraInfo: {
+        show: false,
+        task: null
+      }
     }
   },
   computed: {
@@ -85,7 +124,11 @@ export default {
             classNames: [
               `fc-${task.priority}-priority`,
               `${list.blurred ? "opacity-20-p" : ""}`
-            ]
+            ],
+            extendedProps: {
+              ...task,
+              listName: list.name
+            }
           }
 
           if (this.restrictToUserId) {
@@ -140,14 +183,39 @@ export default {
         info.el.classList.add("fc-weekend")
       }
     },
-    eventRender(info) {
-      new Tooltip(info.el, {
-        title: info.event.extendedProps.title,
-        placement: "top",
-        trigger: "hover",
-        container: "body"
-      })
+    // eslint-disable-next-line no-unused-vars
+    eventHoverEnter(info) {
+      document.getElementsByClassName("fc-toolbar")[0].style.display = "none"
+      this.extraInfo.task = info.event.extendedProps
+      this.extraInfo.show = true
+    },
+    eventHoverLeave() {
+      document.getElementsByClassName("fc-toolbar")[0].style.display = "flex"
+      this.extraInfo.show = false
     }
   }
 }
 </script>
+<style scoped>
+.extraInfo {
+  background-color: #2f4554;
+  border-radius: 5px;
+  color: white;
+  padding: 2px;
+  margin-bottom: 5px;
+  padding-left: 10px;
+  height: 28px;
+}
+.extraInfo p {
+  margin-bottom: 0px;
+}
+.extraInfo .list {
+  font-weight: bold;
+}
+.extraInfo .hours,
+.extraInfo .difficulty {
+  padding: 0px 2px;
+  float: right;
+  margin: 0px 10px;
+}
+</style>

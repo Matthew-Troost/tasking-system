@@ -78,7 +78,7 @@ export default {
     return {
       projectListsProxy: [],
       blurredProjects: [],
-      colourPalette: ["#91c7ae", "#c23531", "#2f4554", "#61a0a8", "#d48265"]
+      colourPalette: ["#91c7ae", "#c23531", "#61a0a8", "#d48265", "#2f4554"]
     }
   },
   computed: {
