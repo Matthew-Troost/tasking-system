@@ -239,3 +239,12 @@ input::placeholder {
 .note-description p {
   margin: 0 !important;
 }
+
+.echarts {
+  width: 100% !important;
+  max-height: 250px !important;
+}
+
+.opacity-20-p {
+  opacity: 0.2;
+}

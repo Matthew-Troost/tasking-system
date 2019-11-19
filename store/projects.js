@@ -2,6 +2,32 @@ export const state = () => ({
   all: []
 })
 
+export const getters = {
+  getForUser: state => userid => {
+    let projects = []
+
+    state.all.forEach((project, index) => {
+      project.lists.forEach(list => {
+        list.tasks.forEach(task => {
+          if (
+            task.users.includes(userid) &&
+            !task.completed &&
+            !projects.includes(state.all[index])
+          ) {
+            projects.push(state.all[index])
+          }
+        })
+      })
+    })
+    return projects
+  },
+  getByName: state => projectName => {
+    return state.all.find(project => {
+      return project.name === projectName
+    })
+  }
+}
+
 export const mutations = {
   setProjects(state, { projectList }) {
     state.all = projectList
