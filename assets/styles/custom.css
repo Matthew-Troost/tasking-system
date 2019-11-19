@@ -243,3 +243,7 @@ input::placeholder {
 .echarts {
   width: 100% !important;
 }
+
+.opacity-20-p {
+  opacity: 0.2;
+}

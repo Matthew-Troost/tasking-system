@@ -35,6 +35,10 @@ export default {
       type: String,
       default: null
     },
+    colourByProject: {
+      type: Boolean,
+      default: false
+    },
     colourPalette: {
       type: Array,
       default: null
@@ -53,9 +57,18 @@ export default {
     events() {
       let eventsList = []
       let usedColours = []
+      let projectColours = []
 
       this.value.forEach((list, index) => {
-        var colour = this.colours[usedColours.length]
+        var projectColour = projectColours.find(project => {
+          return project.name === list.projectName
+        })
+
+        var colour =
+          this.colourByProject && projectColour
+            ? projectColour.colour
+            : this.colours[usedColours.length]
+
         list.tasks.forEach(task => {
           let event = {
             id: task.identifier,
@@ -66,8 +79,12 @@ export default {
             editable: true,
             backgroundColor: colour,
             allDay: true,
-            classNames: [`fc-${task.priority}-priority`]
+            classNames: [
+              `fc-${task.priority}-priority`,
+              `${list.blurred ? "opacity-20-p" : ""}`
+            ]
           }
+
           if (this.restrictToUserId) {
             if (task.users.includes(this.restrictToUserId) && !task.completed) {
               eventsList.push(event)
@@ -79,6 +96,12 @@ export default {
             if (!usedColours.includes(this.colours[index]))
               usedColours.push(this.colours[index])
           }
+
+          if (this.colourByProject && !projectColour)
+            projectColours.push({
+              name: list.projectName,
+              colour: colour
+            })
         })
       })
       return eventsList

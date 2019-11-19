@@ -98,7 +98,7 @@
                     <span
                       :class="
                         `ml-2 badge badge-pill badge-${
-                          projectTaskCount(project) < 3
+                          projectTaskCount(project) < 4
                             ? 'success'
                             : projectTaskCount(project) < 6
                             ? 'warning'
@@ -294,7 +294,7 @@ export default {
       let taskCount = 0
       project.lists.forEach(list => {
         taskCount += list.tasks.filter(task => {
-          return task.users.includes(this.getCurrentUser.id)
+          return task.users.includes(this.getCurrentUser.id) && !task.completed
         }).length
       })
       return taskCount

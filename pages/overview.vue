@@ -39,7 +39,10 @@
             </div>
           </b-card>
           <b-card class="pie-chart">
-            <ProjectComposition :composition="projectComposition" />
+            <ProjectComposition
+              :composition="projectComposition"
+              @legendSelectChanged="blurCalendarEvents"
+            />
           </b-card>
         </b-col>
         <b-col md="9">
@@ -48,6 +51,7 @@
               v-model="projectLists"
               :restrict-to-user-id="getCurrentUser.id"
               :colour-palette="colourPalette"
+              :colour-by-project="true"
             />
           </b-card>
         </b-col>
@@ -72,6 +76,7 @@ export default {
   data() {
     return {
       projectListsProxy: [],
+      blurredProjects: [],
       colourPalette: ["#91c7ae", "#c23531", "#2f4554", "#61a0a8", "#d48265"]
     }
   },
@@ -88,6 +93,13 @@ export default {
         let lists = []
         if (this.getProjectsForUser(this.getCurrentUser.id)) {
           this.getProjectsForUser(this.getCurrentUser.id).forEach(project => {
+            const blurredProject = this.blurredProjects.find(blurredProject => {
+              return blurredProject.name === project.name
+            })
+            project.lists.forEach(list => {
+              list.projectName = project.name
+              list.blurred = blurredProject ? blurredProject.blur : false
+            })
             lists.push(project.lists)
           })
         }
@@ -119,7 +131,7 @@ export default {
     }
   },
   methods: {
-    projectProgressPercent: function(projectid) {
+    projectProgressPercent(projectid) {
       let allTasks = 0
       let completedTasks = 0
       this.getProjectsForUser(this.getCurrentUser.id)
@@ -138,6 +150,16 @@ export default {
         })
 
       return Math.round((completedTasks / allTasks) * 100)
+    },
+    blurCalendarEvents(selections) {
+      let mappedSelections = []
+      Object.keys(selections).map(function(key) {
+        mappedSelections.push({
+          name: key,
+          blur: !selections[key]
+        })
+      })
+      this.blurredProjects = mappedSelections
     }
   }
 }

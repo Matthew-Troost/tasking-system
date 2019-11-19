@@ -57,8 +57,8 @@ export default {
   },
   computed: {},
   methods: {
-    legendSelectChanged(e) {
-      console.log(e.selected)
+    legendSelectChanged(event) {
+      this.$emit("legendSelectChanged", event.selected)
     }
   }
 }
