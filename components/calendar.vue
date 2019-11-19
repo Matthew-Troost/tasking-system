@@ -7,6 +7,7 @@
     height="auto"
     :plugins="calendarPlugins"
     :events="events"
+    :event-render="eventRender"
     :day-render="onDayRender"
     @eventDrop="onEventAdjusted"
     @eventResize="onEventAdjusted"
@@ -20,6 +21,8 @@ import dayGridPlugin from "@fullcalendar/daygrid"
 import "@fullcalendar/core/main.css"
 import "@fullcalendar/daygrid/main.css"
 import "../assets/styles/calendar/calendar_custom.css"
+import "popper.js"
+import Tooltip from "tooltip.js"
 
 export default {
   name: "Calendar",
@@ -136,6 +139,14 @@ export default {
       if (info.date.getDay() == 0 || info.date.getDay() == 6) {
         info.el.classList.add("fc-weekend")
       }
+    },
+    eventRender(info) {
+      new Tooltip(info.el, {
+        title: info.event.extendedProps.title,
+        placement: "top",
+        trigger: "hover",
+        container: "body"
+      })
     }
   }
 }

@@ -52,6 +52,7 @@
               :restrict-to-user-id="getCurrentUser.id"
               :colour-palette="colourPalette"
               :colour-by-project="true"
+              @events-adjusted="updateProjectLists"
             />
           </b-card>
         </b-col>
@@ -83,7 +84,8 @@ export default {
   computed: {
     ...mapGetters({
       getCurrentUser: "users/getCurrentUser",
-      getProjectsForUser: "projects/getForUser"
+      getProjectsForUser: "projects/getForUser",
+      getProjectByName: "projects/getByName"
     }),
     loading() {
       return this.getCurrentUser == null
@@ -160,6 +162,35 @@ export default {
         })
       })
       this.blurredProjects = mappedSelections
+    },
+    updateProjectLists() {
+      let shapedLists = []
+
+      this.projectListsProxy.forEach(list => {
+        shapedLists.push({ ...list })
+      })
+
+      let groupedLists = this.lodash.groupBy(shapedLists, list => {
+        return list.projectName
+      })
+
+      shapedLists.forEach(list => {
+        delete list.blurred
+        delete list.projectName
+      })
+
+      Object.keys(groupedLists).map(key => {
+        groupedLists[key].forEach(list => {
+          delete list.blurred
+          delete list.projectName
+        })
+        this.$store.state.db
+          .collection("projects")
+          .doc(this.getProjectByName(key).id)
+          .update({
+            lists: groupedLists[key]
+          })
+      })
     }
   }
 }

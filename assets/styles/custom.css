@@ -242,6 +242,7 @@ input::placeholder {
 
 .echarts {
   width: 100% !important;
+  max-height: 250px !important;
 }
 
 .opacity-20-p {

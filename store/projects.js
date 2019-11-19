@@ -20,6 +20,11 @@ export const getters = {
       })
     })
     return projects
+  },
+  getByName: state => projectName => {
+    return state.all.find(project => {
+      return project.name === projectName
+    })
   }
 }
 
