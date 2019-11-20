@@ -18,6 +18,11 @@ export const getters = {
     return state.all.find(user => {
       return `${user.first_name} ${user.last_name}` == fullname
     })
+  },
+  getForRole: state => role => {
+    return state.all.filter(user => {
+      return user.type.includes(role)
+    })
   }
 }
 

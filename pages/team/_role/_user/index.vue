@@ -1,12 +1,16 @@
 <template>
   <div>
     <loading v-if="loading" />
-    <div v-if="!loading">
-      <div class="user-details">
-        <img v-lazy="user.avatar" alt />
-        <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+    <flickity ref="slider" :options="slider.options">
+      <div v-for="_user in usersInRole" :key="_user.id" class="carousel-cell">
+        <div class="user-details">
+          <img v-lazy="_user.avatar" alt />
+          <h1>{{ _user.first_name }} {{ _user.last_name }}</h1>
+        </div>
       </div>
-      <UserDashboard :userid="user.id" />
+    </flickity>
+    <div v-if="!loading">
+      <UserDashboard :userid="selectedUserId" />
     </div>
   </div>
 </template>
@@ -14,27 +18,57 @@
 import { mapGetters } from "vuex"
 import Utils from "@/utils"
 import UserDashboard from "@/components/userdashboard"
+import flickity from "vue-flickity"
 
 export default {
   components: {
-    UserDashboard
+    UserDashboard,
+    flickity
   },
   data() {
     return {
       loading: true,
-      user: null
+      user: null,
+      slider: {
+        options: {
+          pageDots: false,
+          wrapAround: false
+        }
+      },
+      selectedUserId: 0
     }
   },
   computed: {
     ...mapGetters({
-      getUserByFullName: "users/getUserByFullName"
-    })
+      getUserByFullName: "users/getUserByFullName",
+      getForRole: "users/getForRole"
+    }),
+    usersInRole() {
+      switch (this.$route.params.role) {
+        case "developers":
+          return this.getForRole("developer")
+        case "designers":
+          return this.getForRole("designer")
+        case "managing":
+          return this.getForRole("management")
+        case "socialmedia":
+          return this.getForRole("socialmedia")
+        default:
+          return this.getForRole("developer")
+      }
+    }
   },
   created() {
     this.user = this.getUserByFullName(
       Utils.linkToString(this.$route.params.user)
     )
-    console.log(this.user)
+    this.selectedUserId = this.user.id
+  },
+  mounted() {
+    this.$refs.slider.select(this.usersInRole.indexOf(this.user, false, true))
+    this.$refs.slider.on("change", index => {
+      this.selectedUserId = this.usersInRole[index].id
+    })
     this.loading = false
   }
 }
@@ -48,5 +82,10 @@ export default {
 }
 .user-details h1 {
   margin-top: 10px;
+}
+.carousel-cell {
+  width: 50%;
+  height: 165px;
+  margin-right: 10px;
 }
 </style>
