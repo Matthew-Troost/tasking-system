@@ -7,7 +7,11 @@
           <h2 class="page-title">
             {{ name }}
             <small>
-              <nuxt-link tag="a" class :to="addUrl">
+              <nuxt-link
+                tag="a"
+                class
+                :to="`/team/${$route.params.role}/adduser`"
+              >
                 <i class="nav-icon i-Add"></i>
                 <span class="item-name"> Add New</span>
               </nuxt-link>
@@ -81,12 +85,12 @@
 <script>
 import { mapState } from "vuex"
 import Util from "@/utils"
-import Loading from "@/components/loading"
+// import Loading from "@/components/loading"
 
 export default {
   layout: "default",
   components: {
-    Loading
+    // Loading
   },
   data() {
     return {
@@ -101,9 +105,6 @@ export default {
       users: state => state.users.all,
       projects: state => state.projects.all
     }),
-    addUrl() {
-      return "/team/adduser/" + this.name
-    },
     projectList() {
       let array = []
       this.projects.forEach(project => {
@@ -128,11 +129,11 @@ export default {
   },
   validate({ params }) {
     return ["developers", "designers", "managing", "socialmedia"].includes(
-      params.team
+      params.role
     )
   },
   created() {
-    this.name = Util.linkToString(this.$route.params.team)
+    this.name = Util.linkToString(this.$route.params.role)
     switch (this.name.toLowerCase()) {
       case "developers":
         this.position = "developer"

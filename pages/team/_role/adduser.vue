@@ -169,8 +169,8 @@ export default {
     Loading
   },
   validate({ params }) {
-    return ["Developers", "Managing", "Social Media", "Designers"].includes(
-      params.adduser
+    return ["developers", "managing", "socialmedia", "designers"].includes(
+      params.role
     )
   },
   data() {
@@ -300,17 +300,17 @@ export default {
         valid: true
       }
     }
-    switch (this.$route.params.adduser) {
-      case "Developers":
+    switch (this.$route.params.role) {
+      case "developers":
         this.types.push("Developer")
         break
-      case "Social Media":
+      case "socialmedia":
         this.types.push("SocialMedia")
         break
-      case "Designers":
+      case "designers":
         this.types.push("Designer")
         break
-      case "Managing":
+      case "managing":
         this.types.push("Management")
     }
   },
