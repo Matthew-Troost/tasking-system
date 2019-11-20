@@ -7,6 +7,7 @@
         <div>
           <h1>
             {{ getCurrentUser.first_name }} {{ getCurrentUser.last_name }}
+            <small>(me)</small>
           </h1>
           <h4>
             <span
