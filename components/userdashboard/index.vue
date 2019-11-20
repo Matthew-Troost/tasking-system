@@ -1,7 +1,10 @@
 <template>
   <b-row>
     <b-col md="3">
-      <b-card class="project-progress">
+      <b-card
+        v-if="getProjectsForUser(userid).length > 0"
+        class="project-progress"
+      >
         <div
           v-for="project in getProjectsForUser(userid)"
           :key="project.id"
@@ -19,14 +22,14 @@
           ></b-progress>
         </div>
       </b-card>
-      <b-card class="pie-chart">
+      <b-card v-if="projectComposition.length > 1" class="pie-chart">
         <ProjectComposition
           :composition="projectComposition"
           @legendSelectChanged="blurCalendarEvents"
         />
       </b-card>
     </b-col>
-    <b-col md="9">
+    <b-col :md="getProjectsForUser(userid).length == 0 ? 12 : 9">
       <b-card class="project-calendar">
         <Calendar
           v-model="projectLists"

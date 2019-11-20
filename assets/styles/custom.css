@@ -248,3 +248,9 @@ input::placeholder {
 .opacity-20-p {
   opacity: 0.2;
 }
+.flickity-button:disabled {
+  opacity: 0 !important;
+}
+.flickity-slider .is-selected{
+  opacity: 1 !important;
+}

@@ -10,7 +10,7 @@
       </div>
     </flickity>
     <div v-if="!loading">
-      <UserDashboard :userid="selectedUserId" />
+      <UserDashboard :key="selectedUserId" :userid="selectedUserId" />
     </div>
   </div>
 </template>
@@ -87,5 +87,6 @@ export default {
   width: 50%;
   height: 165px;
   margin-right: 10px;
+  opacity: 0.3;
 }
 </style>
