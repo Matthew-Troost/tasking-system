@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <Loading v-if="loading" />
+    <loading v-if="loading" />
     <div v-if="!loading">
       <b-row>
         <b-col md="8">
@@ -72,9 +72,17 @@
                   </b-badge>
                 </div>
               </div>
-              <button class="btn btn-primary btn-rounded mt-2">
-                {{ user.first_name }}'s Schedule
-              </button>
+              <nuxt-link
+                :to="
+                  `/team/${
+                    $route.params.role
+                  }/${user.first_name.toLowerCase()}-${user.last_name.toLowerCase()}`
+                "
+              >
+                <button class="btn btn-primary btn-rounded mt-2">
+                  {{ user.first_name }}'s Schedule
+                </button>
+              </nuxt-link>
             </b-card>
           </b-col>
         </transition-group>
@@ -85,13 +93,9 @@
 <script>
 import { mapState } from "vuex"
 import Util from "@/utils"
-// import Loading from "@/components/loading"
 
 export default {
   layout: "default",
-  components: {
-    // Loading
-  },
   data() {
     return {
       name: "",
