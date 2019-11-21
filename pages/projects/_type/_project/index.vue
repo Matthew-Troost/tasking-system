@@ -17,6 +17,7 @@
               :key="list.id"
               v-model="project.lists[index]"
               :fixed="list.name == 'Completed'"
+              :update-function="updateProject"
               @list-update="updateProject"
               @item-moved="onListShuffled"
             />

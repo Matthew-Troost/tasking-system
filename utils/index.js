@@ -1,4 +1,5 @@
 import guidGenerator from "uuid/v4"
+import chroma from "chroma-js"
 
 const toggleFullScreen = () => {
   let doc = window.document
@@ -44,9 +45,17 @@ function generateGuid() {
   return guidGenerator()
 }
 
+function generateColourPalette() {
+  return chroma
+    .scale(["#8afa6e", "#2A4857"])
+    .mode("lch")
+    .colors(8)
+}
+
 export default {
   toggleFullScreen,
   stringToLink,
   linkToString,
-  generateGuid
+  generateGuid,
+  generateColourPalette
 }

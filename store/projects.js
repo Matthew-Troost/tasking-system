@@ -1,5 +1,6 @@
 export const state = () => ({
-  all: []
+  all: [],
+  test: 0
 })
 
 export const getters = {
@@ -21,6 +22,11 @@ export const getters = {
     })
     return projects
   },
+  getById: state => projectId => {
+    return state.all.find(project => {
+      return project.id === projectId
+    })
+  },
   getByName: state => projectName => {
     return state.all.find(project => {
       return project.name === projectName
@@ -31,6 +37,9 @@ export const getters = {
 export const mutations = {
   setProjects(state, { projectList }) {
     state.all = projectList
+  },
+  setTest(state, value) {
+    state.test = value
   }
 }
 
@@ -47,5 +56,8 @@ export const actions = {
         })
       }
     })
+  },
+  async test(context) {
+    context.commit("setTest", 1)
   }
 }

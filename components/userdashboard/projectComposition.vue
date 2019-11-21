@@ -6,6 +6,8 @@
   />
 </template>
 <script>
+import Utils from "@/utils"
+
 export default {
   props: {
     composition: {
@@ -20,7 +22,7 @@ export default {
           renderer: "svg"
         },
         options: {
-          color: ["#91c7ae", "#c23531", "#2f4554", "#61a0a8", "#d48265"],
+          color: Utils.generateColourPalette(),
           grid: {
             top: 10
           },

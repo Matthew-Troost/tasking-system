@@ -32,6 +32,7 @@
         :key="task.identifier"
         v-model="list.tasks[taskindex]"
         :priority="task.priority"
+        :update-function="updateFunction"
         @item-update="update"
       />
     </div>
