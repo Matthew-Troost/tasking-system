@@ -15,14 +15,17 @@
       v-model="colour"
       class="colour-picker"
     />
-    <nuxt-link :to="`/projects/${toLink(type)}/${toLink(project.name)}`">
-      <ProjectAvatar
-        v-for="user in projectUsers"
-        :key="user"
-        class="avatar"
-        :user-id="user"
-      />
-    </nuxt-link>
+    <ProjectAvatar
+      v-for="user in projectUsers"
+      :key="user"
+      class="avatar"
+      :user-id="user"
+    />
+    <div>
+      <nuxt-link :to="`/projects/${toLink(type)}/${toLink(project.name)}`">
+        <b-button variant="outline-primary m-1 btn-sm f-r">View</b-button>
+      </nuxt-link>
+    </div>
   </b-card>
 </template>
 <script>
@@ -51,11 +54,7 @@ export default {
       project: null,
       loading: true,
       colour: {
-        hex: "#194d33",
-        hsl: { h: 150, s: 0.5, l: 0.2, a: 1 },
-        hsv: { h: 150, s: 0.66, v: 0.3, a: 1 },
-        rgba: { r: 25, g: 77, b: 51, a: 1 },
-        a: 1
+        hex: "#194d33"
       },
       selectColour: false
     }
@@ -86,8 +85,21 @@ export default {
       }
     }
   },
+  watch: {
+    colour: {
+      handler() {
+        if (!this.loading) {
+          this.$emit("colour-changed", {
+            projectid: this.projectId,
+            colour: this.colour.hex
+          })
+        }
+      }
+    }
+  },
   created() {
     this.project = this.getProject(this.projectId)
+    this.colour.hex = this.project.colour
     this.loading = false
   },
   methods: {

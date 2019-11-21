@@ -35,7 +35,11 @@
           md="6"
           lg="4"
         >
-          <project :type="projectType" :project-id="project.id" />
+          <project
+            :type="projectType"
+            :project-id="project.id"
+            @colour-changed="updateColour"
+          />
         </b-col>
       </transition-group>
       <b-modal
@@ -106,6 +110,8 @@ export default {
         .collection("projects")
         .add({
           name: Util.linkToString(this.newProjectName),
+          type: this.projectType.toLowerCase(),
+          colour: "#0062b1",
           lists: [
             {
               name: "Milestone 1",
@@ -119,8 +125,7 @@ export default {
               archived: false,
               tasks: []
             }
-          ],
-          type: this.projectType.toLowerCase()
+          ]
         })
         .then(() => {
           this.$bvModal.hide("modal-add-project")
@@ -133,6 +138,14 @@ export default {
         })
         .catch(error => {
           this.$toast.error(`There was an issue adding this project: ${error}`)
+        })
+    },
+    updateColour(detail) {
+      this.$store.state.db
+        .collection("projects")
+        .doc(detail.projectid)
+        .update({
+          colour: detail.colour
         })
     },
     toLink: function(projectName) {
