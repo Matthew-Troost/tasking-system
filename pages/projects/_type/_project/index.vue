@@ -17,6 +17,7 @@
               :key="list.id"
               v-model="project.lists[index]"
               :fixed="list.name == 'Completed'"
+              :projectid="project.id"
               :update-function="updateProject"
               @list-update="updateProject"
               @item-moved="onListShuffled"
@@ -88,11 +89,11 @@ export default {
     }
   },
   methods: {
-    updateProject: function() {
+    updateProject: function(projectid) {
       this.$store.state.db
         .collection("projects")
-        .doc(this.project.id)
-        .update(this.project)
+        .doc(projectid)
+        .update(this.$store.getters["projects/getById"](projectid))
     },
     addList: function() {
       this.project.lists.push({

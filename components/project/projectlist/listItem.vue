@@ -263,7 +263,7 @@ export default {
         users: this.tagsProxy == null ? [] : this.tagsProxy,
         identifier: this.value.identifier
       })
-      this.queueUpdate()
+      this.$emit("item-update")
     },
     updatePriority(priority) {
       this.priority = priority
@@ -271,19 +271,6 @@ export default {
     },
     onExtrasToggle: function() {
       this.extrasExpanded = !this.extrasExpanded
-    },
-    queueUpdate: async function() {
-      if (this.updateTimer != null) {
-        clearTimeout(this.updateTimer)
-      }
-
-      this.updateTimer = setTimeout(() => {
-        //this.$emit("item-update")
-        //resolve(this.updateFunction())
-        this.$store.dispatch("projects/test")
-
-        //try and send the update function to this action and execute there
-      }, 5000)
     }
   }
 }

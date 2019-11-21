@@ -1,6 +1,5 @@
 export const state = () => ({
-  all: [],
-  test: 0
+  all: []
 })
 
 export const getters = {
@@ -37,9 +36,6 @@ export const getters = {
 export const mutations = {
   setProjects(state, { projectList }) {
     state.all = projectList
-  },
-  setTest(state, value) {
-    state.test = value
   }
 }
 
@@ -56,8 +52,5 @@ export const actions = {
         })
       }
     })
-  },
-  async test(context) {
-    context.commit("setTest", 1)
   }
 }

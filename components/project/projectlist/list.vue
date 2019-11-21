@@ -33,7 +33,7 @@
         v-model="list.tasks[taskindex]"
         :priority="task.priority"
         :update-function="updateFunction"
-        @item-update="update"
+        @item-update="callbackUpdate"
       />
     </div>
     <div class="list-group-item totals">
@@ -64,6 +64,10 @@ export default {
     },
     updateFunction: {
       type: Function,
+      default: null
+    },
+    projectid: {
+      type: String,
       default: null
     },
     fixed: {
@@ -114,7 +118,7 @@ export default {
   },
   methods: {
     update: function() {
-      this.$emit("list-update")
+      this.updateFunction(this.projectid)
     },
     callbackUpdate: function() {
       if (this.updateTimer != null) {
