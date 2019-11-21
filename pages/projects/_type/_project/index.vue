@@ -33,6 +33,7 @@
           <b-card-text>
             <Calendar
               v-model="project.lists"
+              :colour-palette="calendarColourPalette"
               @events-adjusted="updateProject"
             />
           </b-card-text>
@@ -71,6 +72,11 @@ export default {
         this.$toast.info("Project does not exist")
         return this.$router.back()
       }
+    },
+    calendarColourPalette() {
+      if (this.project) {
+        return Util.generateColourPalette(this.project.colour)
+      } else return null
     },
     lists() {
       return this.project.lists.filter(list => {

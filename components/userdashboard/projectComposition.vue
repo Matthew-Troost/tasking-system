@@ -6,12 +6,10 @@
   />
 </template>
 <script>
-import Utils from "@/utils"
-
 export default {
   props: {
     composition: {
-      type: Array,
+      type: Object,
       default: null
     }
   },
@@ -22,7 +20,7 @@ export default {
           renderer: "svg"
         },
         options: {
-          color: Utils.generateColourPalette(),
+          color: this.composition.colours,
           grid: {
             top: 10
           },
@@ -43,7 +41,7 @@ export default {
               label: {
                 show: false
               },
-              data: this.composition,
+              data: this.composition.data,
               itemStyle: {
                 emphasis: {
                   shadowBlur: 10,
@@ -57,7 +55,6 @@ export default {
       }
     }
   },
-  computed: {},
   methods: {
     legendSelectChanged(event) {
       this.$emit("legendSelectChanged", event.selected)

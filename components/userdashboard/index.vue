@@ -1,46 +1,46 @@
 <template>
-  <b-row>
-    <b-col md="3">
-      <b-card
-        v-if="getProjectsForUser(userid).length > 0"
-        class="project-progress"
-      >
-        <div
-          v-for="project in getProjectsForUser(userid)"
-          :key="project.id"
-          class="progress-container"
-        >
-          <div class="d-flex">
-            <span class="text-muted text-12">{{ project.name }}</span>
-            <span class="text-muted text-12 ml-auto">
-              {{ projectProgressPercent(project.id) }}%
-            </span>
+  <div>
+    <b-row v-if="getProjectsForUser(userid).length > 0">
+      <b-col md="3">
+        <b-card class="project-progress">
+          <div
+            v-for="project in getProjectsForUser(userid)"
+            :key="project.id"
+            class="progress-container"
+          >
+            <div class="d-flex">
+              <span class="text-muted text-12">{{ project.name }}</span>
+              <span class="text-muted text-12 ml-auto">
+                {{ projectProgressPercent(project.id) }}%
+              </span>
+            </div>
+            <b-progress
+              height="5px"
+              :value="projectProgressPercent(project.id)"
+            ></b-progress>
           </div>
-          <b-progress
-            height="5px"
-            :value="projectProgressPercent(project.id)"
-          ></b-progress>
-        </div>
-      </b-card>
-      <b-card v-if="projectComposition.length > 1" class="pie-chart">
-        <ProjectComposition
-          :composition="projectComposition"
-          @legendSelectChanged="blurCalendarEvents"
-        />
-      </b-card>
-    </b-col>
-    <b-col :md="getProjectsForUser(userid).length == 0 ? 12 : 9">
-      <b-card class="project-calendar">
-        <Calendar
-          v-model="projectLists"
-          :restrict-to-user-id="userid"
-          :colour-palette="colourPalette"
-          :colour-by-project="true"
-          @events-adjusted="updateProjectLists"
-        />
-      </b-card>
-    </b-col>
-  </b-row>
+        </b-card>
+        <b-card v-if="projectComposition.data.length > 1" class="pie-chart">
+          <ProjectComposition
+            :composition="projectComposition"
+            @legendSelectChanged="blurCalendarEvents"
+          />
+        </b-card>
+      </b-col>
+      <b-col md="9">
+        <b-card class="project-calendar">
+          <Calendar
+            v-model="projectLists"
+            :restrict-to-user-id="userid"
+            :colour-palette="projectComposition.colours"
+            :colour-by-project="true"
+            @events-adjusted="updateProjectLists"
+          />
+        </b-card>
+      </b-col>
+    </b-row>
+    <h3 v-else class="no-projects"><i>No projects just yet...</i></h3>
+  </div>
 </template>
 <script>
 import { mapGetters } from "vuex"
@@ -92,7 +92,10 @@ export default {
       }
     },
     projectComposition() {
-      let composition = []
+      let composition = {
+        data: [],
+        colours: []
+      }
       if (this.getProjectsForUser(this.userid)) {
         this.getProjectsForUser(this.userid).forEach(project => {
           let taskCount = 0
@@ -101,10 +104,11 @@ export default {
               return task.users.includes(this.userid) && !task.completed
             }).length
           })
-          composition.push({
+          composition.data.push({
             value: taskCount,
             name: project.name
           })
+          composition.colours.push(project.colour)
         })
       }
       return composition
@@ -184,5 +188,10 @@ export default {
 }
 .progress-container:last-child {
   margin-bottom: 0 !important;
+}
+.no-projects {
+  text-align: center;
+  margin-top: 50px;
+  color: grey;
 }
 </style>

@@ -35,7 +35,7 @@
           md="6"
           lg="4"
         >
-          <project
+          <projectBlock
             :type="projectType"
             :project-id="project.id"
             @colour-changed="updateColour"
@@ -67,14 +67,14 @@
 </template>
 <script>
 import Util from "@/utils"
-import project from "@/components/project"
+import projectBlock from "@/components/project/projectblock"
 import { mapState } from "vuex"
 
 export default {
   layout: "default",
   name: "Type",
   components: {
-    project
+    projectBlock
   },
   data() {
     return {

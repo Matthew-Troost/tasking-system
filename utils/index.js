@@ -45,11 +45,11 @@ function generateGuid() {
   return guidGenerator()
 }
 
-function generateColourPalette() {
+function generateColourPalette(baseColour) {
   return chroma
-    .scale(["#8afa6e", "#2A4857"])
+    .scale([baseColour, "#000000"])
     .mode("lch")
-    .colors(8)
+    .colors(5)
 }
 
 export default {
