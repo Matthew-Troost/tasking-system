@@ -67,6 +67,7 @@
             type="text"
             required
             placeholder="Enter project name..."
+            @keyup.enter="addProject()"
           ></b-form-input>
           <b-button pill variant="success ripple" @click="addProject()"
             >Save</b-button
@@ -119,6 +120,12 @@ export default {
         }
       })
       return mainArray
+    },
+    projectDescription() {
+      return `A slack channel for communication reguarding the ${this.projectType.substring(
+        0,
+        this.projectType.length - 1
+      )}: ${this.newProjectName}`
     }
   },
   created() {
@@ -137,39 +144,55 @@ export default {
       ) {
         return this.$toast.error("A project with this name already exists")
       }
+      //Adding Slack channel for this project with an appropriate description and saving
+      //..the channel Id to the project
+      else
+        new Promise(() => {
+          this.$slack
+            .addProjectChannel(
+              Util.linkToString(this.newProjectName),
+              this.projectDescription
+            )
+            .then(channel => {
+              this.$store.state.db
+                .collection("projects")
+                .add({
+                  name: Util.linkToString(this.newProjectName),
+                  lists: [
+                    {
+                      name: "Milestone 1",
+                      identifier: Util.generateGuid(),
+                      archived: false,
+                      tasks: []
+                    },
+                    {
+                      name: "Completed",
+                      identifier: Util.generateGuid(),
+                      archived: false,
+                      tasks: []
+                    }
+                  ],
+                  type: this.projectType.toLowerCase(),
+                  channelId: channel.channel.id
+                })
+                .then(() => {
+                  this.$toast.success(
+                    `${Util.linkToString(
+                      this.newProjectName
+                    )} has been added as a project`
+                  )
+                  this.newProjectName = ""
+                })
+            })
+            .catch(error => {
+              this.$toast.error(
+                `There was an issue adding this project: ${error}`
+              )
+            })
+        })
 
-      this.$store.state.db
-        .collection("projects")
-        .add({
-          name: Util.linkToString(this.newProjectName),
-          lists: [
-            {
-              name: "Milestone 1",
-              identifier: Util.generateGuid(),
-              archived: false,
-              tasks: []
-            },
-            {
-              name: "Completed",
-              identifier: Util.generateGuid(),
-              archived: false,
-              tasks: []
-            }
-          ],
-          type: this.projectType.toLowerCase()
-        })
-        .then(() => {
-          this.$bvModal.hide("modal-add-project")
-          this.$toast.success(
-            `${Util.linkToString(
-              this.newProjectName
-            )} has been added as a project`
-          )
-          this.newProjectName = ""
-        })
-        .catch(error => {
-          this.$toast.error(`There was an issue adding this project: ${error}`)
-        })
+      this.$bvModal.hide("modal-add-project")
+      this.$toast.success("Adding project")
     },
     toLink: function(projectName) {
       return Util.stringToLink(projectName)

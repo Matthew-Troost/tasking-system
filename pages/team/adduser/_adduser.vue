@@ -107,7 +107,7 @@
                 <vue-tags-input
                   id="tagInput"
                   v-model="type"
-                  class="tag-custom text-14 test"
+                  class="tag-custom text-14 tag-custom"
                   :tags="types"
                   :autocomplete-items="filteredTypes"
                   placeholder="Type Role Name"
@@ -259,6 +259,9 @@ export default {
       this.form.avatar.valid = true
     }
   },
+  mounted() {
+    document.getElementsByTagName("input").tagInput.classList.add("tag-custom")
+  },
   beforeMount() {
     this.form = {
       first_name: {
@@ -347,7 +350,8 @@ export default {
                         nickname: this.nickname,
                         type: this.lowerCaseTypes,
                         avatar: url,
-                        uid: user.user.uid
+                        uid: user.user.uid,
+                        email: this.email
                       })
                     })
                 })
@@ -427,14 +431,17 @@ export default {
   margin-top: 10px;
   float: right;
 }
-.vue-tags-input,
-.tag-custom,
-.text-14 {
-  background: #f8f9fa;
-  color: #0b192b;
+.ti-tag[data-v-61d92e31] {
+  background: #f8f9fa !important;
+  color: #0b192b !important;
 }
+
 .ti-input {
   border-radius: 0.25rem;
+}
+.tag-custom {
+  background: #f8f9fa !important;
+  color: #0b192b !important;
 }
 
 #tagInput [type="input"] {
@@ -456,21 +463,5 @@ input {
   float: right;
   margin-right: 5px;
   margin-top: 10px;
-}
-
-::placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #505050;
-  opacity: 1; /* Firefox */
-}
-
-:-ms-input-placeholder {
-  /* Internet Explorer 10-11 */
-  color: #505050;
-}
-
-::-ms-input-placeholder {
-  /* Microsoft Edge */
-  color: #505050;
 }
 </style>
