@@ -2,6 +2,24 @@
   <div>
     <b-row v-if="getProjectsForUser(userid).length > 0">
       <b-col md="3">
+        <b-card class="view-toggle">
+          <b-row>
+            <b-col sm="6"
+              ><i
+                class="i-Calendar-4"
+                :class="calendarViewSelected ? 'view-selected' : ''"
+                @click="toggleView"
+              ></i>
+            </b-col>
+            <b-col sm="6">
+              <i
+                class="i-Letter-Open"
+                :class="!calendarViewSelected ? 'view-selected' : ''"
+                @click="toggleView"
+              ></i
+            ></b-col>
+          </b-row>
+        </b-card>
         <b-card class="project-progress">
           <div
             v-for="project in getProjectsForUser(userid)"
@@ -30,12 +48,40 @@
       <b-col md="9">
         <b-card class="project-calendar">
           <Calendar
+            v-show="calendarViewSelected"
+            key="calendar"
             v-model="projectLists"
             :restrict-to-user-id="userid"
             :colour-palette="projectComposition.colours"
             :colour-by-project="true"
             @events-adjusted="updateProjectLists"
           />
+          <div v-show="!calendarViewSelected" key="list">
+            <div
+              v-for="projectName in lodash
+                .uniqBy(projectLists, 'projectName')
+                .map(list => list.projectName)"
+              :key="projectName"
+            >
+              <h4>
+                <b>{{ projectName }}</b>
+              </h4>
+              <List
+                v-for="list in projectLists.filter(list => {
+                  return list.projectName == projectName
+                })"
+                :key="list.id"
+                v-model="projectLists[projectLists.indexOf(list)]"
+                :fixed="list.name == 'Completed'"
+                projectid="sdffhsh"
+                :userid="userid"
+                :update-function="updateProject"
+                class="ml-15"
+                @list-update="updateProject"
+                @item-moved="onListShuffled"
+              />
+            </div>
+          </div>
         </b-card>
       </b-col>
     </b-row>
@@ -46,11 +92,13 @@
 import { mapGetters } from "vuex"
 import Calendar from "@/components/calendar"
 import ProjectComposition from "./projectComposition"
+import List from "@/components/project/projectlist/list"
 
 export default {
   components: {
     Calendar,
-    ProjectComposition
+    ProjectComposition,
+    List
   },
   props: {
     userid: {
@@ -62,7 +110,7 @@ export default {
     return {
       projectListsProxy: [],
       blurredProjects: [],
-      colourPalette: ["#91c7ae", "#c23531", "#61a0a8", "#d48265", "#2f4554"]
+      calendarViewSelected: true
     }
   },
   computed: {
@@ -79,13 +127,17 @@ export default {
               return blurredProject.name === project.name
             })
             project.lists.forEach(list => {
-              list.projectName = project.name
-              list.blurred = blurredProject ? blurredProject.blur : false
+              list.tasks.forEach(task => {
+                if (task.users.includes(this.userid)) {
+                  list.projectName = project.name
+                  list.blurred = blurredProject ? blurredProject.blur : false
+                  if (!lists.includes(list)) lists.push(list)
+                }
+              })
             })
-            lists.push(project.lists)
           })
         }
-        return this.lodash.flatten(lists)
+        return lists
       },
       set(val) {
         this.projectListsProxy = val
@@ -135,6 +187,9 @@ export default {
 
       return Math.round((completedTasks / allTasks) * 100)
     },
+    toggleView() {
+      this.calendarViewSelected = !this.calendarViewSelected
+    },
     blurCalendarEvents(selections) {
       let mappedSelections = []
       Object.keys(selections).map(function(key) {
@@ -180,6 +235,7 @@ export default {
 <style scoped>
 .project-progress,
 .project-calendar,
+.view-toggle,
 .pie-chart {
   margin-bottom: 10px;
 }
@@ -193,5 +249,21 @@ export default {
   text-align: center;
   margin-top: 50px;
   color: grey;
+}
+.view-toggle {
+  text-align: center;
+}
+.view-toggle i:hover {
+  cursor: pointer;
+  border: 0.5px solid #003473;
+  padding: 10px;
+  border-radius: 50%;
+}
+.view-selected {
+  border: 1px solid #003473;
+  padding: 10px;
+  border-radius: 50%;
+  background-color: #003473;
+  color: white;
 }
 </style>

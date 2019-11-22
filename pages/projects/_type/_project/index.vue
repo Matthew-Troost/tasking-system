@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Loading v-if="loading" />
+    <loading v-if="loading" />
     <div v-else>
       <h2 class="page-title">
         {{ project.name }}
@@ -44,7 +44,6 @@
   </div>
 </template>
 <script>
-import Loading from "@/components/loading"
 import List from "@/components/project/projectlist/list"
 import Calendar from "@/components/calendar"
 import { mapState } from "vuex"
@@ -55,7 +54,6 @@ export default {
   name: "Project",
   components: {
     List,
-    Loading,
     Calendar
   },
   computed: {

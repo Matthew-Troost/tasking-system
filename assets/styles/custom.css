@@ -84,6 +84,9 @@ small {
 .mb-10 {
   margin-bottom: 10px;
 }
+.ml-15{
+margin-left: 15px;
+}
 
 .f-r {
   float: right;

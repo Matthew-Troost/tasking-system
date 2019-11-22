@@ -3,7 +3,11 @@
     <div class="list-header">
       <b-row>
         <b-col md="6">
-          <i v-if="!fixed" class="nav-icon i-Add" @click="addTask"></i>
+          <i
+            v-if="!fixed && !userid"
+            class="nav-icon i-Add"
+            @click="addTask"
+          ></i>
           <input v-model="list.name" @input="callbackUpdate" />
         </b-col>
         <b-col md="1" class="align-center sort-trigger">
@@ -22,15 +26,19 @@
           ></i>
         </b-col>
         <b-col md="2">
-          <i v-if="!fixed" class="nav-icon i-Remove f-r" @click="archive"></i>
+          <i
+            v-if="!fixed && !userid"
+            class="nav-icon i-Remove f-r"
+            @click="archive"
+          ></i>
         </b-col>
       </b-row>
     </div>
     <div :id="list.identifier" class="list-group">
       <ListItem
-        v-for="(task, taskindex) in list.tasks"
+        v-for="(task, taskindex) in tasks"
         :key="task.identifier"
-        v-model="list.tasks[taskindex]"
+        v-model="tasks[taskindex]"
         :priority="task.priority"
         :update-function="updateFunction"
         @item-update="callbackUpdate"
@@ -73,6 +81,10 @@ export default {
     fixed: {
       type: Boolean,
       deafult: false
+    },
+    userid: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -80,17 +92,28 @@ export default {
       sortableRef: null,
       updateTimer: null,
       hourSort: false,
-      difficultySort: false
+      difficultySort: false,
+      tasksProxy: []
     }
   },
   computed: {
-    list: {
+    list() {
+      return this.value
+    },
+    tasks: {
       get() {
-        return this.value
+        return this.userid
+          ? this.list.tasks.filter(task => {
+              return task.users.includes(this.userid)
+            })
+          : this.list.tasks
+      },
+      set(val) {
+        this.tasksProxy = val
       }
     },
     totalHours() {
-      return Object.values(this.list.tasks).reduce(
+      return Object.values(this.tasks).reduce(
         (total, { hours }) => total + hours,
         0
       )
@@ -129,7 +152,7 @@ export default {
       }, 5000)
     },
     addTask: function() {
-      this.value.tasks.push({
+      this.tasks.push({
         identifier: Utils.generateGuid(),
         completed: false,
         description: "",
@@ -172,6 +195,13 @@ export default {
       return total + task.hours
     },
     sortTasks: function(sortProperty) {
+      function compareHours(asc) {
+        return function(a, b) {
+          if (a.hours > b.hours) return asc ? 1 : -1
+          if (b.hours > a.hours) return asc ? -1 : 1
+          return 0
+        }
+      }
       function compareDifficulty(asc) {
         return function(a, b) {
           if (
@@ -205,33 +235,25 @@ export default {
       switch (sortProperty) {
         case "hours":
           this.hourSort = !this.hourSort
-          this.list.tasks = this.lodash.orderBy(
-            this.list.tasks,
-            "hours",
-            this.hourSort ? "asc" : "desc"
-          )
+          this.tasks.sort(compareHours(this.hourSort))
           break
         case "difficulty":
           this.difficultySort = !this.difficultySort
-          return this.list.tasks.sort(compareDifficulty(this.difficultySort))
+          return this.tasks.sort(compareDifficulty(this.difficultySort))
         case "priority":
           this.prioritySort = !this.prioritySort
-          return this.list.tasks.sort(comparePriority(this.prioritySort))
+          return this.tasks.sort(comparePriority(this.prioritySort))
       }
     },
     onTaskMove: function(oldIndex, newIndex) {
       while (oldIndex < 0) {
-        oldIndex += this.list.tasks.length
+        oldIndex += this.tasks.length
       }
       while (newIndex < 0) {
-        newIndex += this.list.tasks.length
+        newIndex += this.tasks.length
       }
-      this.list.tasks.splice(
-        newIndex,
-        0,
-        this.list.tasks.splice(oldIndex, 1)[0]
-      )
-      return this.list.tasks
+      this.tasks.splice(newIndex, 0, this.tasks.splice(oldIndex, 1)[0])
+      return this.tasks
     }
   }
 }
