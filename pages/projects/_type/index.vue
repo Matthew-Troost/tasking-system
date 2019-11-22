@@ -6,7 +6,7 @@
         <b-col md="8">
           <h2 class="page-title">
             {{ projectType }}
-            <small>
+            <small v-if="userIsSuperAdmin">
               <a v-b-modal.modal-add-project>
                 <i class="nav-icon i-Add"></i>
                 <span class="item-name"> Add New</span>
@@ -54,6 +54,7 @@
         </b-col>
       </transition-group>
       <b-modal
+        v-if="userIsSuperAdmin"
         id="modal-add-project"
         centered
         :hide-footer="true"
@@ -126,6 +127,18 @@ export default {
         0,
         this.projectType.length - 1
       )}: ${this.newProjectName}`
+    },
+    currentUser() {
+      return this.$store.getters["users/getUserByUID"](
+        this.$store.state.users.current_user.uid
+      )
+    },
+    userIsSuperAdmin() {
+      return (
+        this.currentUser &&
+        this.currentUser.roles &&
+        this.currentUser.roles.includes("SuperAdmin")
+      )
     }
   },
   created() {
