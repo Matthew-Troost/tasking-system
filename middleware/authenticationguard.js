@@ -11,4 +11,9 @@ export default function({ store, route, redirect }) {
   ) {
     return redirect("/authentication/login")
   }
+
+  switch (route.fullPath) {
+    case "/":
+      return redirect("/overview")
+  }
 }

@@ -7,10 +7,8 @@
     <!-- end-leftsidebar -->
     <div class="main-content-wrap d-flex flex-column">
       <compactTopbar></compactTopbar>
-      <transition name="page" mode="out-in">
-        <div>
-          <nuxt id="page-container" />
-        </div>
+      <transition name="fade" mode="out-in">
+        <nuxt id="page-container" />
       </transition>
     </div>
   </div>

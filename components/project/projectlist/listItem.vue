@@ -147,6 +147,10 @@ export default {
     value: {
       type: Object,
       default: null
+    },
+    updateFunction: {
+      type: Function,
+      default: null
     }
   },
   data() {
@@ -259,14 +263,7 @@ export default {
         users: this.tagsProxy == null ? [] : this.tagsProxy,
         identifier: this.value.identifier
       })
-      console.log("calling parent update")
-
-      if (this.updateTimer != null) {
-        clearTimeout(this.updateTimer)
-      }
-      this.updateTimer = setTimeout(() => {
-        this.$emit("item-update")
-      }, 5000)
+      this.$emit("item-update")
     },
     updatePriority(priority) {
       this.priority = priority

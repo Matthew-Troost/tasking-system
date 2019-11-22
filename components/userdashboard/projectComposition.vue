@@ -9,7 +9,7 @@
 export default {
   props: {
     composition: {
-      type: Array,
+      type: Object,
       default: null
     }
   },
@@ -20,7 +20,7 @@ export default {
           renderer: "svg"
         },
         options: {
-          color: ["#91c7ae", "#c23531", "#2f4554", "#61a0a8", "#d48265"],
+          color: this.composition.colours,
           grid: {
             top: 10
           },
@@ -34,14 +34,14 @@ export default {
           },
           series: [
             {
-              name: "Project Composition",
+              name: "Project Composition (hrs)",
               type: "pie",
               radius: "55%",
               center: ["50%", "50%"],
               label: {
                 show: false
               },
-              data: this.composition,
+              data: this.composition.data,
               itemStyle: {
                 emphasis: {
                   shadowBlur: 10,
@@ -55,7 +55,6 @@ export default {
       }
     }
   },
-  computed: {},
   methods: {
     legendSelectChanged(event) {
       this.$emit("legendSelectChanged", event.selected)

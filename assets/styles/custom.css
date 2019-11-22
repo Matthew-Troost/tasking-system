@@ -29,7 +29,7 @@ small {
 
 .modal-content {
   background-color: transparent !important;
-  border: 0px;
+  border: 0px !important;
 }
 .input-extra-large {
   height: 50px !important;
@@ -83,6 +83,9 @@ small {
 
 .mb-10 {
   margin-bottom: 10px;
+}
+.ml-15{
+margin-left: 15px;
 }
 
 .f-r {
@@ -247,4 +250,10 @@ input::placeholder {
 
 .opacity-20-p {
   opacity: 0.2;
+}
+.flickity-button:disabled {
+  opacity: 0 !important;
+}
+.flickity-slider .is-selected{
+  opacity: 1 !important;
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Loading v-if="loading" />
+    <loading v-if="loading" />
     <div v-else>
       <h2 class="page-title">
         {{ project.name }}
@@ -17,6 +17,8 @@
               :key="list.id"
               v-model="project.lists[index]"
               :fixed="list.name == 'Completed'"
+              :projectid="project.id"
+              :update-function="updateProject"
               @list-update="updateProject"
               @item-moved="onListShuffled"
             />
@@ -32,6 +34,7 @@
           <b-card-text>
             <Calendar
               v-model="project.lists"
+              :colour-palette="calendarColourPalette"
               @events-adjusted="updateProject"
             />
           </b-card-text>
@@ -41,8 +44,7 @@
   </div>
 </template>
 <script>
-import Loading from "@/components/loading"
-import List from "@/components/projectlist/list"
+import List from "@/components/project/projectlist/list"
 import Calendar from "@/components/calendar"
 import { mapState } from "vuex"
 import Util from "@/utils"
@@ -52,7 +54,6 @@ export default {
   name: "Project",
   components: {
     List,
-    Loading,
     Calendar
   },
   computed: {
@@ -71,6 +72,11 @@ export default {
         return this.$router.back()
       }
     },
+    calendarColourPalette() {
+      if (this.project) {
+        return Util.generateColourPalette(this.project.colour)
+      } else return null
+    },
     lists() {
       return this.project.lists.filter(list => {
         return !list.archived
@@ -81,11 +87,12 @@ export default {
     }
   },
   methods: {
-    updateProject: function() {
+    updateProject: function(projectid) {
+      projectid = projectid === undefined ? this.project.id : projectid
       this.$store.state.db
         .collection("projects")
-        .doc(this.project.id)
-        .update(this.project)
+        .doc(projectid)
+        .update(this.$store.getters["projects/getById"](projectid))
     },
     addList: function() {
       this.project.lists.push({

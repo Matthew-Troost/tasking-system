@@ -1,13 +1,17 @@
 <template>
   <div class="main-content">
-    <Loading v-if="loading" />
+    <loading v-if="loading" />
     <div v-if="!loading">
       <b-row>
         <b-col md="8">
           <h2 class="page-title">
             {{ name }}
             <small>
-              <nuxt-link tag="a" class :to="addUrl">
+              <nuxt-link
+                tag="a"
+                class
+                :to="`/team/${$route.params.role}/adduser`"
+              >
                 <i class="nav-icon i-Add"></i>
                 <span class="item-name"> Add New</span>
               </nuxt-link>
@@ -68,9 +72,17 @@
                   </b-badge>
                 </div>
               </div>
-              <button class="btn btn-primary btn-rounded mt-2">
-                {{ user.first_name }}'s Schedule
-              </button>
+              <nuxt-link
+                :to="
+                  `/team/${
+                    $route.params.role
+                  }/${user.first_name.toLowerCase()}-${user.last_name.toLowerCase()}`
+                "
+              >
+                <button class="btn btn-primary btn-rounded mt-2">
+                  {{ user.first_name }}'s Schedule
+                </button>
+              </nuxt-link>
             </b-card>
           </b-col>
         </transition-group>
@@ -81,13 +93,9 @@
 <script>
 import { mapState } from "vuex"
 import Util from "@/utils"
-import Loading from "@/components/loading"
 
 export default {
   layout: "default",
-  components: {
-    Loading
-  },
   data() {
     return {
       name: "",
@@ -101,9 +109,6 @@ export default {
       users: state => state.users.all,
       projects: state => state.projects.all
     }),
-    addUrl() {
-      return "/team/adduser/" + this.name
-    },
     projectList() {
       let array = []
       this.projects.forEach(project => {
@@ -128,11 +133,11 @@ export default {
   },
   validate({ params }) {
     return ["developers", "designers", "managing", "socialmedia"].includes(
-      params.team
+      params.role
     )
   },
   created() {
-    this.name = Util.linkToString(this.$route.params.team)
+    this.name = Util.linkToString(this.$route.params.role)
     switch (this.name.toLowerCase()) {
       case "developers":
         this.position = "developer"

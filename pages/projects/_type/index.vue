@@ -1,6 +1,6 @@
 <template>
   <div class="main-content">
-    <Loading v-show="loading" />
+    <loading v-show="loading" />
     <div v-show="!loading">
       <b-row>
         <b-col md="8">
@@ -35,22 +35,11 @@
           md="6"
           lg="4"
         >
-          <nuxt-link
-            :to="`/projects/${toLink(projectType)}/${toLink(project.name)}`"
-          >
-            <b-card
-              class="mb-30 text-15 w-100"
-              :header="project.name"
-              header-tag="h5"
-            >
-              <ProjectAvatar
-                v-for="user in new Set(projectUsers[project.id])"
-                :key="user"
-                class="avatar"
-                :user-id="user"
-              />
-            </b-card>
-          </nuxt-link>
+          <projectBlock
+            :type="projectType"
+            :project-id="project.id"
+            @colour-changed="updateColour"
+          />
         </b-col>
       </transition-group>
       <b-modal
@@ -77,17 +66,15 @@
   </div>
 </template>
 <script>
-import ProjectAvatar from "@/components/projectAvatar"
-import Loading from "@/components/loading"
 import Util from "@/utils"
+import projectBlock from "@/components/project/projectblock"
 import { mapState } from "vuex"
 
 export default {
   layout: "default",
   name: "Type",
   components: {
-    ProjectAvatar,
-    Loading
+    projectBlock
   },
   data() {
     return {
@@ -100,26 +87,7 @@ export default {
   computed: {
     ...mapState({
       projects: state => state.projects.all
-    }),
-    projectUsers() {
-      let mainArray = []
-      this.projects.forEach(project => {
-        let usersArray = []
-        if (project.lists)
-          project.lists.forEach(list => {
-            if (list.tasks) {
-              list.tasks.forEach(task => {
-                if (task.users !== [] && task.users !== undefined)
-                  usersArray = usersArray.concat(task.users)
-              })
-            }
-          })
-        if (usersArray !== [] && usersArray !== undefined) {
-          mainArray[project.id] = usersArray
-        }
-      })
-      return mainArray
-    }
+    })
   },
   created() {
     this.projectType = Util.linkToString(this.$route.params.type)
@@ -142,6 +110,8 @@ export default {
         .collection("projects")
         .add({
           name: Util.linkToString(this.newProjectName),
+          type: this.projectType.toLowerCase(),
+          colour: "#0062b1",
           lists: [
             {
               name: "Milestone 1",
@@ -155,8 +125,7 @@ export default {
               archived: false,
               tasks: []
             }
-          ],
-          type: this.projectType.toLowerCase()
+          ]
         })
         .then(() => {
           this.$bvModal.hide("modal-add-project")
@@ -169,6 +138,14 @@ export default {
         })
         .catch(error => {
           this.$toast.error(`There was an issue adding this project: ${error}`)
+        })
+    },
+    updateColour(detail) {
+      this.$store.state.db
+        .collection("projects")
+        .doc(detail.projectid)
+        .update({
+          colour: detail.colour
         })
     },
     toLink: function(projectName) {
@@ -186,8 +163,5 @@ export default {
 }
 .modal-addition-only input {
   margin-right: 15px;
-}
-.avatar {
-  margin-right: 20px;
 }
 </style>
