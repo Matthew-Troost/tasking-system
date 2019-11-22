@@ -68,16 +68,19 @@
               </h4>
               <List
                 v-for="list in projectLists.filter(list => {
-                  return list.projectName == projectName
+                  return (
+                    list.projectName == projectName &&
+                    projectListApplicableToUser(list)
+                  )
                 })"
-                :key="list.id"
+                :key="list.identifier"
                 v-model="projectLists[projectLists.indexOf(list)]"
-                :fixed="list.name == 'Completed'"
-                projectid="sdffhsh"
+                :fixed="true"
+                :projectid="getProjectByName(list.projectName).id"
                 :userid="userid"
-                :update-function="updateProject"
+                :update-function="updateProjectLists"
                 class="ml-15"
-                @list-update="updateProject"
+                @list-update="updateProjectLists"
                 @item-moved="onListShuffled"
               />
             </div>
@@ -127,13 +130,9 @@ export default {
               return blurredProject.name === project.name
             })
             project.lists.forEach(list => {
-              list.tasks.forEach(task => {
-                if (task.users.includes(this.userid)) {
-                  list.projectName = project.name
-                  list.blurred = blurredProject ? blurredProject.blur : false
-                  if (!lists.includes(list)) lists.push(list)
-                }
-              })
+              list.projectName = project.name
+              list.blurred = blurredProject ? blurredProject.blur : false
+              lists.push(list)
             })
           })
         }
@@ -187,6 +186,15 @@ export default {
 
       return Math.round((completedTasks / allTasks) * 100)
     },
+    projectListApplicableToUser(list) {
+      let result = false
+      list.tasks.forEach(task => {
+        if (task.users.includes(this.userid)) {
+          result = true
+        }
+      })
+      return result
+    },
     toggleView() {
       this.calendarViewSelected = !this.calendarViewSelected
     },
@@ -200,10 +208,29 @@ export default {
       })
       this.blurredProjects = mappedSelections
     },
+    onListShuffled: function(parameters) {
+      var fromList = this.projectLists.find(list => {
+        return list.identifier == parameters.listFrom
+      })
+
+      var toList = this.projectLists.find(list => {
+        return list.identifier == parameters.listTo
+      })
+
+      fromList.tasks.forEach((task, index) => {
+        if (task.identifier == parameters.taskId) {
+          toList.tasks.unshift(task)
+          fromList.tasks.splice(index, 1)
+        }
+      })
+
+      this.updateProjectLists()
+    },
     updateProjectLists() {
+      console.log("updating project lists")
       let shapedLists = []
 
-      this.projectListsProxy.forEach(list => {
+      this.projectLists.forEach(list => {
         shapedLists.push({ ...list })
       })
 
@@ -215,12 +242,12 @@ export default {
         delete list.blurred
         delete list.projectName
       })
-
       Object.keys(groupedLists).map(key => {
         groupedLists[key].forEach(list => {
           delete list.blurred
           delete list.projectName
         })
+
         this.$store.state.db
           .collection("projects")
           .doc(this.getProjectByName(key).id)

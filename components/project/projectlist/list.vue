@@ -3,11 +3,7 @@
     <div class="list-header">
       <b-row>
         <b-col md="6">
-          <i
-            v-if="!fixed && !userid"
-            class="nav-icon i-Add"
-            @click="addTask"
-          ></i>
+          <i v-if="!fixed" class="nav-icon i-Add" @click="addTask"></i>
           <input v-model="list.name" @input="callbackUpdate" />
         </b-col>
         <b-col md="1" class="align-center sort-trigger">
@@ -26,11 +22,7 @@
           ></i>
         </b-col>
         <b-col md="2">
-          <i
-            v-if="!fixed && !userid"
-            class="nav-icon i-Remove f-r"
-            @click="archive"
-          ></i>
+          <i v-if="!fixed" class="nav-icon i-Remove f-r" @click="archive"></i>
         </b-col>
       </b-row>
     </div>
@@ -102,11 +94,7 @@ export default {
     },
     tasks: {
       get() {
-        return this.userid
-          ? this.list.tasks.filter(task => {
-              return task.users.includes(this.userid)
-            })
-          : this.list.tasks
+        return this.list.tasks
       },
       set(val) {
         this.tasksProxy = val
@@ -123,7 +111,7 @@ export default {
     this.sortableRef = new Sortable(
       document.getElementById(this.list.identifier),
       {
-        group: "shared",
+        group: this.projectid,
         onRemove: event => {
           this.$emit("item-moved", {
             listFrom: event.from.id,
