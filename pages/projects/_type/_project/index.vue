@@ -88,6 +88,7 @@ export default {
   },
   methods: {
     updateProject: function(projectid) {
+      projectid = projectid === undefined ? this.project.id : projectid
       this.$store.state.db
         .collection("projects")
         .doc(projectid)
