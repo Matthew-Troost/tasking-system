@@ -34,7 +34,7 @@ export default {
           },
           series: [
             {
-              name: "Project Composition",
+              name: "Project Composition (hrs)",
               type: "pie",
               radius: "55%",
               center: ["50%", "50%"],

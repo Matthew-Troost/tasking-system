@@ -149,14 +149,15 @@ export default {
       }
       if (this.getProjectsForUser(this.userid)) {
         this.getProjectsForUser(this.userid).forEach(project => {
-          let taskCount = 0
+          let hourCount = 0
           project.lists.forEach(list => {
-            taskCount += list.tasks.filter(task => {
-              return task.users.includes(this.userid) && !task.completed
-            }).length
+            list.tasks.forEach(task => {
+              if (task.users.includes(this.userid) && !task.completed)
+                hourCount += task.hours
+            })
           })
           composition.data.push({
-            value: taskCount,
+            value: hourCount,
             name: project.name
           })
           composition.colours.push(project.colour)

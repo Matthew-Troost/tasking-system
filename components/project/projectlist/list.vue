@@ -28,9 +28,11 @@
     </div>
     <div :id="list.identifier" class="list-group">
       <ListItem
-        v-for="(task, taskindex) in tasks"
+        v-for="task in tasks.filter(task => {
+          return applicable(task)
+        })"
         :key="task.identifier"
-        v-model="tasks[taskindex]"
+        v-model="tasks[tasks.indexOf(task)]"
         :priority="task.priority"
         :update-function="updateFunction"
         @item-update="callbackUpdate"
@@ -101,10 +103,11 @@ export default {
       }
     },
     totalHours() {
-      return Object.values(this.tasks).reduce(
-        (total, { hours }) => total + hours,
-        0
-      )
+      let total = 0
+      this.tasks.forEach(task => {
+        if (this.applicable(task)) total += task.hours
+      })
+      return total
     }
   },
   mounted() {
@@ -128,6 +131,13 @@ export default {
     )
   },
   methods: {
+    applicable(task) {
+      if (this.userid) {
+        if (task.users.includes(this.userid)) return true
+        else return false
+      }
+      return true
+    },
     update: function() {
       this.updateFunction(this.projectid)
     },
