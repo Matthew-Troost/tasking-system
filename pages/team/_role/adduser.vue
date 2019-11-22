@@ -103,14 +103,14 @@
                   >
                 </transition>
               </b-form-group>
-              <b-form-group label="Roles">
+              <b-form-group label="Positions">
                 <vue-tags-input
                   id="tagInput"
                   v-model="type"
-                  class="tag-custom text-14 test"
+                  class="tag-custom text-14 tag-custom"
                   :tags="types"
                   :autocomplete-items="filteredTypes"
-                  placeholder="Type Role Name"
+                  placeholder="Type Position Name"
                   @tags-changed="newTags => (types = newTags.map(x => x.text))"
                 />
                 <transition name="fade">
@@ -122,6 +122,19 @@
                     >{{ form.type.errorMessage }}</b-alert
                   >
                 </transition>
+              </b-form-group>
+              <b-form-group label="Roles">
+                <vue-tags-input
+                  id="roleInput"
+                  v-model="role"
+                  class="tag-custom text-14 tag-custom"
+                  :tags="roles"
+                  :autocomplete-items="filteredRoles"
+                  placeholder="Type Role Name"
+                  @tags-changed="
+                    newRoles => (roles = newRoles.map(x => x.text))
+                  "
+                />
               </b-form-group>
               <b-form-group label="Password">
                 <b-form-input
@@ -187,11 +200,14 @@ export default {
         numbers: true,
         uppercase: true,
         strict: true,
-        symbols: true
+        symbols: false
       }),
       type: "",
       types: [],
       autocompletetypes: ["Developer", "Management", "SocialMedia", "Designer"],
+      role: "",
+      roles: [],
+      autocompleteRoles: ["SuperAdmin", "User"],
       reg: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
       form: {}
     }
@@ -203,6 +219,11 @@ export default {
     filteredTypes() {
       return this.autocompletetypes.filter(item => {
         return item.toLowerCase().indexOf(this.type.toLowerCase()) !== -1
+      })
+    },
+    filteredRoles() {
+      return this.autocompleteRoles.filter(item => {
+        return item.toLowerCase().indexOf(this.role.toLowerCase()) !== -1
       })
     },
     lowerCaseTypes() {
@@ -219,6 +240,18 @@ export default {
         default:
           return this.types[0].toLowerCase()
       }
+    },
+    currentUser() {
+      return this.$store.getters["users/getUserByUID"](
+        this.$store.state.users.current_user.uid
+      )
+    },
+    userIsSuperAdmin() {
+      return (
+        this.currentUser &&
+        this.currentUser.roles &&
+        this.currentUser.roles.includes("SuperAdmin")
+      )
     }
   },
   watch: {
@@ -258,6 +291,10 @@ export default {
     avatar() {
       this.form.avatar.valid = true
     }
+  },
+  mounted() {
+    document.getElementsByTagName("input").tagInput.classList.add("tag-custom")
+    document.getElementsByTagName("input").roleInput.classList.add("tag-custom")
   },
   beforeMount() {
     this.form = {
@@ -346,8 +383,10 @@ export default {
                         last_name: this.last_name,
                         nickname: this.nickname,
                         type: this.lowerCaseTypes,
+                        roles: this.roles || ["User"],
                         avatar: url,
-                        uid: user.user.uid
+                        uid: user.user.uid,
+                        email: this.email
                       })
                     })
                 })
@@ -427,17 +466,24 @@ export default {
   margin-top: 10px;
   float: right;
 }
-.vue-tags-input,
-.tag-custom,
-.text-14 {
-  background: #f8f9fa;
-  color: #0b192b;
+.ti-tag[data-v-61d92e31] {
+  background: #f8f9fa !important;
+  color: #0b192b !important;
 }
+
 .ti-input {
   border-radius: 0.25rem;
 }
+.tag-custom {
+  background: #f8f9fa !important;
+  color: #0b192b !important;
+}
 
 #tagInput [type="input"] {
+  background: #f8f9fa !important;
+  color: #0b192b !important;
+}
+#roleInput [type="input"] {
   background: #f8f9fa !important;
   color: #0b192b !important;
 }
@@ -456,21 +502,5 @@ input {
   float: right;
   margin-right: 5px;
   margin-top: 10px;
-}
-
-::placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #505050;
-  opacity: 1; /* Firefox */
-}
-
-:-ms-input-placeholder {
-  /* Internet Explorer 10-11 */
-  color: #505050;
-}
-
-::-ms-input-placeholder {
-  /* Microsoft Edge */
-  color: #505050;
 }
 </style>

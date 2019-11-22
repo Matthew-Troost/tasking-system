@@ -129,6 +129,18 @@ export default {
         }
       })
       return array
+    },
+    currentUser() {
+      return this.$store.getters["users/getUserByUID"](
+        this.$store.state.users.current_user.uid
+      )
+    },
+    userIsSuperAdmin() {
+      return (
+        this.currentUser &&
+        this.currentUser.roles &&
+        this.currentUser.roles.includes("SuperAdmin")
+      )
     }
   },
   validate({ params }) {

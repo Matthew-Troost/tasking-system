@@ -6,7 +6,7 @@
         <b-col md="8">
           <h2 class="page-title">
             {{ projectType }}
-            <small>
+            <small v-if="userIsSuperAdmin">
               <a v-b-modal.modal-add-project>
                 <i class="nav-icon i-Add"></i>
                 <span class="item-name"> Add New</span>
@@ -43,6 +43,7 @@
         </b-col>
       </transition-group>
       <b-modal
+        v-if="userIsSuperAdmin"
         id="modal-add-project"
         centered
         :hide-footer="true"
@@ -56,6 +57,7 @@
             type="text"
             required
             placeholder="Enter project name..."
+            @keyup.enter="addProject()"
           ></b-form-input>
           <b-button pill variant="success ripple" @click="addProject()"
             >Save</b-button
@@ -87,7 +89,25 @@ export default {
   computed: {
     ...mapState({
       projects: state => state.projects.all
-    })
+    }),
+    projectDescription() {
+      return `A slack channel for communication reguarding the ${this.projectType.substring(
+        0,
+        this.projectType.length - 1
+      )}: ${this.newProjectName}`
+    },
+    currentUser() {
+      return this.$store.getters["users/getUserByUID"](
+        this.$store.state.users.current_user.uid
+      )
+    },
+    userIsSuperAdmin() {
+      return (
+        this.currentUser &&
+        this.currentUser.roles &&
+        this.currentUser.roles.includes("SuperAdmin")
+      )
+    }
   },
   created() {
     this.projectType = Util.linkToString(this.$route.params.type)
@@ -105,40 +125,55 @@ export default {
       ) {
         return this.$toast.error("A project with this name already exists")
       }
+      //Adding Slack channel for this project with an appropriate description and saving
+      //..the channel Id to the project
+      else
+        new Promise(() => {
+          this.$slack
+            .addProjectChannel(
+              Util.linkToString(this.newProjectName),
+              this.projectDescription
+            )
+            .then(channel => {
+              this.$store.state.db
+                .collection("projects")
+                .add({
+                  name: Util.linkToString(this.newProjectName),
+                  lists: [
+                    {
+                      name: "Milestone 1",
+                      identifier: Util.generateGuid(),
+                      archived: false,
+                      tasks: []
+                    },
+                    {
+                      name: "Completed",
+                      identifier: Util.generateGuid(),
+                      archived: false,
+                      tasks: []
+                    }
+                  ],
+                  type: this.projectType.toLowerCase(),
+                  channelId: channel.channel.id
+                })
+                .then(() => {
+                  this.$toast.success(
+                    `${Util.linkToString(
+                      this.newProjectName
+                    )} has been added as a project`
+                  )
+                  this.newProjectName = ""
+                })
+            })
+            .catch(error => {
+              this.$toast.error(
+                `There was an issue adding this project: ${error}`
+              )
+            })
+        })
 
-      this.$store.state.db
-        .collection("projects")
-        .add({
-          name: Util.linkToString(this.newProjectName),
-          type: this.projectType.toLowerCase(),
-          colour: "#0062b1",
-          lists: [
-            {
-              name: "Milestone 1",
-              identifier: Util.generateGuid(),
-              archived: false,
-              tasks: []
-            },
-            {
-              name: "Completed",
-              identifier: Util.generateGuid(),
-              archived: false,
-              tasks: []
-            }
-          ]
-        })
-        .then(() => {
-          this.$bvModal.hide("modal-add-project")
-          this.$toast.success(
-            `${Util.linkToString(
-              this.newProjectName
-            )} has been added as a project`
-          )
-          this.newProjectName = ""
-        })
-        .catch(error => {
-          this.$toast.error(`There was an issue adding this project: ${error}`)
-        })
+      this.$bvModal.hide("modal-add-project")
+      this.$toast.success("Adding project")
     },
     updateColour(detail) {
       this.$store.state.db

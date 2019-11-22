@@ -1,6 +1,7 @@
 <template>
   <!-- eslint-disable vue/no-v-html -->
   <div>
+    <p id="test" hidden :v-html="noteContent"></p>
     <loading v-show="loading" :width="100" position="unset" />
     <div v-if="!loading">
       <b-tabs active-nav-item-class="nav nav-tabs" content-class="mt-3">
@@ -125,7 +126,11 @@ export default {
         ["bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
         ["code-block"]
-      ]
+      ],
+      project: "",
+      listName: "",
+      task: "",
+      currentUserInfo: ""
     }
   },
   computed: {
@@ -152,10 +157,25 @@ export default {
     },
     uploads() {
       return this.lodash.orderBy(this.extras.uploads, "date", "desc")
+    },
+    taskUserEmails() {
+      return this.$store.state.users.all
+        .filter(x => this.task.users.includes(x.id))
+        .map(t => t.email)
     }
   },
   mounted() {
     this.loading = false
+  },
+  created() {
+    this.currentUserInfo = this.$store.getters["users/getUserByUID"](
+      this.$store.state.users.current_user.uid
+    )
+    this.task = this.$parent.$parent.value
+
+    this.listName = this.$parent.$parent.listName
+
+    this.project = this.$parent.$parent.$parent.$parent.$parent.$parent.project
   },
   methods: {
     getUserName: function(userid) {
@@ -203,13 +223,24 @@ export default {
 
       this.addingNote = true
 
+      //Sending Slack message to people on this task that a new note was added
+      new Promise(() => {
+        this.$slack.sendTaskNoteNotification(
+          this.currentUserInfo,
+          this.task.description,
+          this.project.name,
+          this.taskUserEmails,
+          this.listName
+        )
+      }).catch(error => {
+        console.log(error)
+      })
+
       this.extras.notes.push({
         date: this.$store.state.firebase.firestore.Timestamp.fromDate(
           new Date()
         ),
-        userid: this.users.find(user => {
-          return user.uid == this.currentUser.uid
-        }).id,
+        userid: this.currentUser.id,
         content: this.noteContent
       })
 
@@ -218,6 +249,19 @@ export default {
     saveDoc: function() {
       if (this.document != null) {
         this.uploadingDoc = true
+
+        //Sending Slack message to people on this task that a new document was uploaded
+        new Promise(() => {
+          this.$slack.sendTaskUploadNotification(
+            this.currentUserInfo,
+            this.task.description,
+            this.project.name,
+            this.taskUserEmails,
+            this.listName
+          )
+        }).catch(error => {
+          console.log(error)
+        })
 
         this.$store.state.storage
           .ref(`/TaskDocs/${this.taskid}/${this.document.name}`)

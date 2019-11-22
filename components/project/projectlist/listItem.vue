@@ -161,9 +161,12 @@ export default {
       updateTimer: null,
       tag: "",
       tagsProxy: this.value.users,
-      extrasExpanded: false
+      extrasExpanded: false,
+      currentUser: "",
+      listName: ""
     }
   },
+
   computed: {
     ...mapState({
       users: state => state.users.all
@@ -189,6 +192,20 @@ export default {
         return this.value.completed
       },
       set(val) {
+        new Promise(() => {
+          if (val) {
+            this.$slack.sendTaskCompletedMessage(
+              this.$parent.$parent.$parent.$parent.project,
+              this.value,
+              this.currentUser,
+              this.listName
+            )
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+
+        //end test
         this.checkedProxy = val
       }
     },
@@ -211,10 +228,26 @@ export default {
             })
           })
         }
-
         return user_tags
       },
       set(val) {
+        //Sending Slack notification to user letting them know they have a new task
+        new Promise(() => {
+          if (val.length > this.tags.length) {
+            let assignee = this.$store.state.users.all.find(
+              x => x.id == val[val.length - 1].id
+            )
+            this.$slack.sendTaskAssignedMessage(
+              assignee,
+              this.$parent.$parent.$parent.$parent.project,
+              this.value,
+              this.currentUser,
+              this.listName
+            )
+          }
+        }).catch(error => {
+          console.log(error)
+        })
         this.tagsProxy = val.map(tag => {
           return tag.id
         })
@@ -249,6 +282,12 @@ export default {
         this.modelChange()
       }
     }
+  },
+  created() {
+    this.currentUser = this.$store.getters["users/getUserByUID"](
+      this.$store.state.users.current_user.uid
+    )
+    this.listName = this.$parent.list.name
   },
   methods: {
     modelChange() {

@@ -41,6 +41,10 @@ function linkToString(toConvert) {
   })
 }
 
+function removeWhitespace(string) {
+  return string.replace(/\s/g, "")
+}
+
 function generateGuid() {
   return guidGenerator()
 }
@@ -57,5 +61,6 @@ export default {
   stringToLink,
   linkToString,
   generateGuid,
-  generateColourPalette
+  generateColourPalette,
+  removeWhitespace
 }

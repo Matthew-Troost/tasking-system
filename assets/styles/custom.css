@@ -115,11 +115,17 @@ margin-left: 15px;
 .ti-tag .ti-icon-close {
   color: black;
 }
+.ti-tag{
+  color:black !important;
+}
 
 .ti-selected-item {
   background-color: #3f51b5 !important;
 }
-
+.tag-custom {
+  background: #f8f9fa !important;
+  color: #0b192b !important;
+}
 .ti-deletion-mark {
   background-color: #e54d42 !important;
 }

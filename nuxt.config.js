@@ -3,6 +3,11 @@ module.exports = {
   /*
    ** Headers of the page
    */
+  env: {
+    SLACK_OAUTH:
+      "xoxp-823708849781-823708850917-825918728998-fb4382930818ce29838da6180a82e0d9",
+    SLACK_BOT_OAUTH: "xoxb-823708849781-818109654179-aw07enjx34ROM9zUzeYGfx1e"
+  },
   head: {
     title: process.env.npm_package_name || "",
     meta: [
