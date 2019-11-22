@@ -97,14 +97,13 @@ export function taskCompleted(task, user, listName) {
 }
 
 function difficulty(level) {
-  switch (level) {
-    case "easy":
-      return "⚡"
-    case "medium":
-      return "⚡⚡"
-    case "difficult":
-      return "⚡⚡⚡"
+  let difficultyLevel = {
+    easy: "⚡",
+    medium: "⚡⚡",
+    difficult: "⚡⚡⚡",
+    default: ""
   }
+  return difficultyLevel[level] || difficultyLevel["default"]
 }
 
 function priorityStyle(level) {

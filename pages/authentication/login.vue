@@ -9,7 +9,7 @@
                 <img :src="model.logo" />
               </div>
               <h1 class="mb-3 text-18">Sign In</h1>
-              <b-form @submit.prevent="formSubmit">
+              <b-form>
                 <b-form-group label="Email Address" class="text-12">
                   <b-form-input
                     v-model="model.email"
@@ -36,7 +36,7 @@
                   tag="button"
                   class="btn-rounded btn-block mt-2"
                   variant="primary mt-2"
-                  @click="login"
+                  @click.prevent="login"
                 >
                   SignIn
                 </b-button>
@@ -63,12 +63,12 @@ export default {
     }
   },
   created() {
-    if (this.$store.getters["users/current_user"]) {
-      this.$store.dispatch("users/logout")
+    if (this.$store.state.users.current_user) {
+      this.$store.state.auth.signOut()
     }
   },
   methods: {
-    login: function() {
+    login() {
       this.$store.state.auth
         .signInWithEmailAndPassword(this.model.email, this.model.password)
         .then(

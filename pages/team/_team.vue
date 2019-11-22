@@ -6,7 +6,7 @@
         <b-col md="8">
           <h2 class="page-title">
             {{ name }}
-            <small>
+            <small v-if="userIsSuperAdmin">
               <nuxt-link tag="a" class :to="addUrl">
                 <i class="nav-icon i-Add"></i>
                 <span class="item-name"> Add New</span>
@@ -124,6 +124,18 @@ export default {
         }
       })
       return array
+    },
+    currentUser() {
+      return this.$store.getters["users/getUserByUID"](
+        this.$store.state.users.current_user.uid
+      )
+    },
+    userIsSuperAdmin() {
+      return (
+        this.currentUser &&
+        this.currentUser.roles &&
+        this.currentUser.roles.includes("SuperAdmin")
+      )
     }
   },
   validate({ params }) {
