@@ -4,7 +4,8 @@ stages:
   - format
   - build
   # - test
-  - deploy
+  - test-deploy
+  - prod-deploy
 
 # this gets run before anything else
 before_script:
