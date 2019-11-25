@@ -91,7 +91,7 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex"
+import { mapState, mapGetters } from "vuex"
 import Util from "@/utils"
 
 export default {
@@ -108,6 +108,9 @@ export default {
     ...mapState({
       users: state => state.users.all,
       projects: state => state.projects.all
+    }),
+    ...mapGetters({
+      getCurrentUser: "users/getCurrentUser"
     }),
     projectList() {
       let array = []
@@ -130,16 +133,11 @@ export default {
       })
       return array
     },
-    currentUser() {
-      return this.$store.getters["users/getUserByUID"](
-        this.$store.state.users.current_user.uid
-      )
-    },
     userIsSuperAdmin() {
       return (
-        this.currentUser &&
-        this.currentUser.roles &&
-        this.currentUser.roles.includes("SuperAdmin")
+        this.getCurrentUser &&
+        this.getCurrentUser.roles &&
+        this.getCurrentUser.roles.includes("SuperAdmin")
       )
     }
   },

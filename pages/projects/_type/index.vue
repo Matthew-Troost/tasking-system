@@ -6,7 +6,7 @@
         <b-col md="8">
           <h2 class="page-title">
             {{ projectType }}
-            <small v-if="userIsSuperAdmin">
+            <small v-if="userIsSuperAdmin" class="add-new">
               <a v-b-modal.modal-add-project>
                 <i class="nav-icon i-Add"></i>
                 <span class="item-name"> Add New</span>
@@ -91,7 +91,7 @@ export default {
       projects: state => state.projects.all
     }),
     projectDescription() {
-      return `A slack channel for communication reguarding the ${this.projectType.substring(
+      return `A slack channel for communication regarding the ${this.projectType.substring(
         0,
         this.projectType.length - 1
       )}: ${this.newProjectName}`
@@ -105,7 +105,7 @@ export default {
       return (
         this.currentUser &&
         this.currentUser.roles &&
-        this.currentUser.roles.includes("SuperAdmin")
+        this.currentUser.roles.includes("superadmin")
       )
     }
   },
@@ -154,7 +154,8 @@ export default {
                     }
                   ],
                   type: this.projectType.toLowerCase(),
-                  channelId: channel.channel.id
+                  channelId: channel.channel.id,
+                  colour: "#73d8ff"
                 })
                 .then(() => {
                   this.$toast.success(
@@ -173,7 +174,6 @@ export default {
         })
 
       this.$bvModal.hide("modal-add-project")
-      this.$toast.success("Adding project")
     },
     updateColour(detail) {
       this.$store.state.db
@@ -198,5 +198,8 @@ export default {
 }
 .modal-addition-only input {
   margin-right: 15px;
+}
+.add-new:hover {
+  cursor: pointer;
 }
 </style>

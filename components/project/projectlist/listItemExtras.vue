@@ -129,18 +129,17 @@ export default {
       ],
       project: "",
       listName: "",
-      task: "",
-      currentUserInfo: ""
+      task: ""
     }
   },
   computed: {
     ...mapState({
       users: state => state.users.all,
-      currentUser: state => state.users.current_user,
       taskextras: state => state.taskextras.all
     }),
     ...mapGetters({
-      getExtras: "taskextras/getForTask"
+      getExtras: "taskextras/getForTask",
+      getCurrentUser: "users/getCurrentUser"
     }),
     extras() {
       let _extras = this.getExtras(this.taskid)
@@ -157,20 +156,12 @@ export default {
     },
     uploads() {
       return this.lodash.orderBy(this.extras.uploads, "date", "desc")
-    },
-    taskUserEmails() {
-      return this.$store.state.users.all
-        .filter(x => this.task.users.includes(x.id))
-        .map(t => t.email)
     }
   },
   mounted() {
     this.loading = false
   },
   created() {
-    this.currentUserInfo = this.$store.getters["users/getUserByUID"](
-      this.$store.state.users.current_user.uid
-    )
     this.task = this.$parent.$parent.value
 
     this.listName = this.$parent.$parent.listName
@@ -223,45 +214,23 @@ export default {
 
       this.addingNote = true
 
-      //Sending Slack message to people on this task that a new note was added
-      new Promise(() => {
-        this.$slack.sendTaskNoteNotification(
-          this.currentUserInfo,
-          this.task.description,
-          this.project.name,
-          this.taskUserEmails,
-          this.listName
-        )
-      }).catch(error => {
-        console.log(error)
-      })
-
       this.extras.notes.push({
         date: this.$store.state.firebase.firestore.Timestamp.fromDate(
           new Date()
         ),
-        userid: this.currentUser.id,
+        userid: this.getCurrentUser.id,
         content: this.noteContent
       })
 
       this.updateExtras(true)
+      this.$emit(
+        "noteAdded",
+        this.$slack.functions.TASK_NOTIFICATION.NOTE_ADDED
+      )
     },
     saveDoc: function() {
       if (this.document != null) {
         this.uploadingDoc = true
-
-        //Sending Slack message to people on this task that a new document was uploaded
-        new Promise(() => {
-          this.$slack.sendTaskUploadNotification(
-            this.currentUserInfo,
-            this.task.description,
-            this.project.name,
-            this.taskUserEmails,
-            this.listName
-          )
-        }).catch(error => {
-          console.log(error)
-        })
 
         this.$store.state.storage
           .ref(`/TaskDocs/${this.taskid}/${this.document.name}`)
@@ -279,6 +248,10 @@ export default {
                 })
 
                 this.updateExtras(false)
+                this.$emit(
+                  "documentUploaded",
+                  this.$slack.functions.TASK_NOTIFICATION.UPLOAD_ADDED
+                )
               })
               .catch(error => this.displayPushError(false, error))
           })

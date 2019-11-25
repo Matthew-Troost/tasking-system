@@ -1,4 +1,4 @@
-var Util = require("@/utils/index.js")
+//var Util = require("@/utils/index.js")
 
 export function newTask(avatar, project, task, listName) {
   return `
@@ -7,42 +7,26 @@ export function newTask(avatar, project, task, listName) {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "You have a new task:\n*<http://localhost:3000/projects/${
-          project.type
-        }/${Util.default.stringToLink(project.name)}|${
-    project.name
-  }>* [${listName}]"
+        "text": "You have been assigned a new task:\n *${project.name.toUpperCase()}*"
       }
     },
     {
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "*Description:*\n${
-          task.description
-        }\n*Difficulty:*\n${difficulty(task.difficulty)}\n*Hours:*\n ${
+        "text": "> *Description:*\n> [${listName}] - ${
+    task.description
+  }\n> *Difficulty:*\n> ${difficulty(task.difficulty)}\n> *Hours:*\n> ${
     task.hours
-  }\n*Start Date:* \n${timestampToDate(task.startdate)}\n*Priority:* \n"
+  }\n> *Start Date:* \n> ${timestampToDate(
+    task.startdate
+  )}\n> *Priority:* \n> ${task.priority}"
       },
       "accessory": {
         "type": "image",
         "image_url": "${avatar}",
-        "alt_text": "computer thumbnail"
+        "alt_text": "thumbnail"
       }
-    },
-    {
-      "type": "actions",
-      "elements": [
-        {
-          "type": "button",
-          "text": {
-            "type": "plain_text",
-            "emoji": true,
-            "text": "${task.priority}"
-          },
-          ${priorityStyle(task.priority)}
-        }
-      ]
     }
   ]
   `
@@ -54,7 +38,9 @@ export function newNote(user, task, projectname, listName) {
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "${user.first_name} has added a new note:\n Project: *${projectname}* \nTask: *${task}* [${listName}] \n\n _Check it out, it may be for you._"
+				"text": "📝 *${
+          user.first_name
+        }* has added a new note\n\n> *${projectname.toUpperCase()}* \n> Task: *${task}* [${listName}] \n\n _Check it out, it may be for you._"
 			} , "accessory": {
         "type": "image",
         "image_url": "${user.avatar}",
@@ -70,7 +56,9 @@ export function newUpload(user, task, projectname, listName) {
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "${user.first_name} has uploaded a file:\n Project: *${projectname}* \nTask: *${task}* [${listName}] \n\n _Check it out, it may be for you._"
+				"text": "📁 *${
+          user.first_name
+        }* has uploaded a new file\n> Project: *${projectname.toUpperCase()}* \n> Task: *${task}* [${listName}] \n\n _Check it out, it may be for you._"
 			} , "accessory": {
         "type": "image",
         "image_url": "${user.avatar}",
@@ -90,7 +78,7 @@ export function taskCompleted(task, user, listName) {
 			} , "accessory": {
         "type": "image",
         "image_url": "${user.avatar}",
-        "alt_text": "computer thumbnail"
+        "alt_text": "thumbnail"
       }
 		}
 	]`
@@ -106,16 +94,16 @@ function difficulty(level) {
   return difficultyLevel[level] || difficultyLevel["default"]
 }
 
-function priorityStyle(level) {
-  let priority = {
-    high: `"style":"danger"`,
-    medium: "",
-    low: `"style":"primary"`,
-    default: ""
-  }
+// function priorityStyle(level) {
+//   let priority = {
+//     high: `"style":"danger"`,
+//     medium: "",
+//     low: `"style":"primary"`,
+//     default: ""
+//   }
 
-  return priority[level] || priority["default"]
-}
+//   return priority[level] || priority["default"]
+// }
 
 function timestampToDate(timestamp) {
   let date = new Date(timestamp.seconds * 1000)

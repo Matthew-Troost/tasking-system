@@ -59,9 +59,14 @@ export default {
     }
   },
   created() {
+    console.log(process.env.DEVELOPMENT)
     this.user = this.getUserByFullName(
       Utils.linkToString(this.$route.params.user)
     )
+    if (!this.user) {
+      this.$toast.info("User does not exist")
+      return this.$router.back()
+    }
     this.selectedUserId = this.user.id
   },
   mounted() {

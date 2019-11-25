@@ -78,6 +78,16 @@
                 >
                 </b-form-input>
               </b-form-group>
+              <b-form-group label="Password">
+                <b-form-input
+                  v-model="password"
+                  class="mb-2"
+                  label="Password"
+                  placeholder=""
+                  disabled
+                >
+                </b-form-input>
+              </b-form-group>
             </b-col>
             <b-col md="6">
               <b-form-group label="Email">
@@ -136,25 +146,18 @@
                   "
                 />
               </b-form-group>
-              <b-form-group label="Password">
-                <b-form-input
-                  v-model="password"
-                  class="mb-2"
-                  label="Password"
-                  placeholder=""
-                  disabled
-                >
-                </b-form-input>
+              <b-form-group label="Avatar">
+                <p class="file-info">Must be a .png file</p>
+                <b-form-file
+                  v-model="avatar"
+                  type="file"
+                  :class="{ fileInputError: !form.avatar.valid }"
+                  placeholder="Choose or drop avatar here"
+                  drop-placeholder="Drop avatar here"
+                  variant="primary"
+                  value="Upload"
+                />
               </b-form-group>
-              <b-form-file
-                v-model="avatar"
-                type="file"
-                :class="{ fileInputError: !form.avatar.valid }"
-                placeholder="Choose or drop avatar here"
-                drop-placeholder="Drop avatar here"
-                variant="primary"
-                value="Upload"
-              />
               <b-alert
                 v-if="!form.avatar.valid"
                 show
@@ -502,5 +505,11 @@ input {
   float: right;
   margin-right: 5px;
   margin-top: 10px;
+}
+.file-info {
+  margin: 0;
+  font-size: 10px;
+  font-weight: bold;
+  color: #37c162;
 }
 </style>

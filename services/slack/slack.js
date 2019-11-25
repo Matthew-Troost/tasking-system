@@ -1,9 +1,27 @@
 import Slack from "slack"
 import Vue from "vue"
 var blockTemplates = require("@/services/slack/blockTemplates.js")
-var Util = require("@/utils/index.js")
+//var Util = require("@/utils/index.js")
 const botOAuthToken = process.env.SLACK_BOT_OAUTH
 const OAuthToken = process.env.SLACK_OAUTH
+
+export const functions = {
+  MESSAGE: {
+    USER: {
+      BY_EMAIL: "message.user.by_email"
+    },
+    CHANNEL: {
+      BY_NAME: "message.channel.by_name",
+      BY_ID: "message.channel.by_id"
+    }
+  },
+  TASK_NOTIFICATION: {
+    NOTE_ADDED: "task_notification.note_added",
+    UPLOAD_ADDED: "task_notification.upload_added",
+    ASSIGNED: "task_notification.assigned",
+    COMPLETED: "task_notification.completed"
+  }
+}
 
 export function messageUserByEmail(userEmail, message) {
   return new Promise((resolve, reject) => {
@@ -132,22 +150,6 @@ export function sendTaskAssignedMessage(
             channel: user.user.id,
             text: "",
             blocks: blocks,
-            attachments: `[
-                {
-                  "fallback": "View Task http://localhost:3000/projects",
-                  "actions": [
-                      {
-                          "type": "button",
-                          "name": "travel_cancel_123456",
-                          "text": "View Task",
-                          "url": "http://localhost:3000/projects/${
-                            project.type
-                          }/${Util.default.stringToLink(project.name)}",
-                          "style": "primary"
-                      }
-                  ]
-              }
-              ]`,
             parse: "application/json",
             as_user: true
           })
