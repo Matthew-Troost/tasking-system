@@ -294,7 +294,6 @@ export default {
     slackNotify(slackfunction, props) {
       switch (slackfunction) {
         case this.$slack.functions.TASK_NOTIFICATION.ASSIGNED:
-          console.log("slack-assigned")
           this.$slack
             .sendTaskAssignedMessage(
               props.assignee,
@@ -306,7 +305,6 @@ export default {
             .catch(error => this.displaySlackError(error))
           break
         case this.$slack.functions.TASK_NOTIFICATION.COMPLETED:
-          console.log("slack-complted")
           this.$slack.sendTaskCompletedMessage(
             this.getProjectById(this.$parent.projectid),
             this.value,
@@ -315,7 +313,6 @@ export default {
           )
           break
         case this.$slack.functions.TASK_NOTIFICATION.NOTE_ADDED:
-          console.log("slack-note added")
           console.log({
             user: this.getCurrentUser,
             task: this.value.description,
@@ -338,7 +335,6 @@ export default {
             .catch(error => this.displaySlackError(error))
           break
         case this.$slack.functions.TASK_NOTIFICATION.UPLOAD_ADDED:
-          console.log("slack-upload added")
           this.$slack.sendTaskUploadNotification(
             this.getCurrentUser,
             this.value.description,

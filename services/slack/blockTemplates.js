@@ -74,7 +74,7 @@ export function taskCompleted(task, user, listName) {
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "${user.first_name} has marked: *${task.description}* [${listName}] as complete"
+				"text": "✔️ *${user.first_name}* has marked: [${listName}] - *${task.description}* as complete"
 			} , "accessory": {
         "type": "image",
         "image_url": "${user.avatar}",
