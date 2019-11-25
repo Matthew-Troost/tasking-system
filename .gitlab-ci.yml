@@ -40,8 +40,23 @@ build:
 #     - format
 #     - build
 
-deploy:
-  stage: deploy
+test-deploy:
+  stage: test-deploy
+  only:
+    - testing
+  script:
+    - npm install -g firebase-tools
+    - npm run install
+    - npm run build
+    - firebase deploy -m "Pipeline $CI_PIPELINE_ID, build $CI_BUILD_ID" --non-interactive --token $FIREBASE_DEPLOY_KEY
+
+  dependencies:
+    - format
+    - build
+    # - test
+
+prod-deploy:
+  stage: prod-deploy
   only:
     - master #this step only occurs on the master branch
   script:

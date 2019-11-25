@@ -88,7 +88,7 @@
         </b-card>
       </b-col>
     </b-row>
-    <h3 v-else class="no-projects"><i>No projects just yet...</i></h3>
+    <h4 v-else class="no-projects"><b>No projects just yet...</b></h4>
   </div>
 </template>
 <script>
