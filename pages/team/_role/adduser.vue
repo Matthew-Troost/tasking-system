@@ -175,6 +175,7 @@
 <script>
 import Loading from "@/components/loading"
 import generator from "generate-password"
+import Vue from "vue"
 
 export default {
   layout: "default",
@@ -182,8 +183,10 @@ export default {
     Loading
   },
   validate({ params }) {
-    return ["developers", "managing", "socialmedia", "designers"].includes(
-      params.role
+    return (
+      ["Developers", "Managing", "Social Media", "Designers"].includes(
+        params.adduser
+      ) && this.userIsSuperAdmin
     )
   },
   data() {
@@ -368,28 +371,51 @@ export default {
           .createUserWithEmailAndPassword(this.email, this.password)
           .then(
             user => {
-              //Add Avatar
-              this.$store.state.storage
-                .ref(this.avatarSaveUrl)
-                .put(this.avatar)
-                .then(() => {
-                  this.$store.state.storage
-                    .ref(this.avatarSaveUrl)
-                    .getDownloadURL()
-                    .then(url => {
-                      //Add User
-                      this.$store.state.db.collection("users").add({
-                        first_name: this.first_name,
-                        last_name: this.last_name,
-                        nickname: this.nickname,
-                        type: this.lowerCaseTypes,
-                        roles: this.roles || ["User"],
-                        avatar: url,
-                        uid: user.user.uid,
-                        email: this.email
-                      })
-                    })
+              Vue.axios({
+                method: "post",
+                url:
+                  "https://us-central1-steve-eaa4c.cloudfunctions.net/saveAvatar",
+                data: {
+                  avatar: this.avatar,
+                  user: {
+                    first_name: this.first_name,
+                    last_name: this.last_name,
+                    nickname: this.nickname,
+                    type: this.lowerCaseTypes,
+                    roles: this.roles || ["User"],
+                    uid: user.user.uid,
+                    email: this.email
+                  }
+                }
+              })
+                .then(response => {
+                  console.log(response)
                 })
+                .catch(error => {
+                  console.log(error)
+                })
+              //Add Avatar
+              // this.$store.state.storage
+              //   .ref(this.avatarSaveUrl)
+              //   .put(this.avatar)
+              //   .then(() => {
+              //     this.$store.state.storage
+              //       .ref(this.avatarSaveUrl)
+              //       .getDownloadURL()
+              //       .then(url => {
+              //         //Add User
+              //         this.$store.state.db.collection("users").add({
+              //           first_name: this.first_name,
+              //           last_name: this.last_name,
+              //           nickname: this.nickname,
+              //           type: this.lowerCaseTypes,
+              //           roles: this.roles || ["User"],
+              //           avatar: url,
+              //           uid: user.user.uid,
+              //           email: this.email
+              //         })
+              //       })
+              //   })
               resolve(user)
             },
             error => {
