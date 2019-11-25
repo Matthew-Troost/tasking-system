@@ -140,7 +140,7 @@ export function sendTaskAssignedMessage(
         Slack.channels.invite({
           token: OAuthToken,
           channel: project.channelId,
-          user: user
+          user: user.user.id
         })
         //Does not send if user added themselves
         // if (user.user.profile.email === currentUser.email) return
