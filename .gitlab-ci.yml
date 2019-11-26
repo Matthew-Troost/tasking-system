@@ -50,9 +50,9 @@ test-deploy:
     - firebase use default --token $FIREBASE_DEPLOY_KEY
     - firebase deploy -m "Pipeline $CI_PIPELINE_ID, build $CI_BUILD_ID" --non-interactive --token $FIREBASE_DEPLOY_KEY
 
-  dependencies:
-    - format
-    - build
+  # dependencies:
+    # - format
+    # - build
     # - test
 
 prod-deploy:
@@ -64,7 +64,7 @@ prod-deploy:
     - firebase use production
     - firebase deploy -m "Pipeline $CI_PIPELINE_ID, build $CI_BUILD_ID" --non-interactive --token $FIREBASE_DEPLOY_KEY
 
-  dependencies:
-    - format
-    - build
+  # dependencies:
+    # - format
+    # - build
     # - test
