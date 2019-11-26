@@ -6,8 +6,8 @@ module.exports = {
   env: {
     DEVELOPMENT: true, //switch this to true before deploying
     SLACK_OAUTH:
-      "xoxp-823708849781-823708850917-825918728998-fb4382930818ce29838da6180a82e0d9",
-    SLACK_BOT_OAUTH: "xoxb-823708849781-818109654179-aw07enjx34ROM9zUzeYGfx1e"
+      "xoxp-5039254558-11063984753-849564116853-4a335ff20261c511e810a29c3d7f6f5f",
+    SLACK_BOT_OAUTH: "xoxb-5039254558-849096412500-ZaFeCzf2DzceiwIm6hRyuLbm"
   },
   head: {
     title: process.env.npm_package_name || "",
