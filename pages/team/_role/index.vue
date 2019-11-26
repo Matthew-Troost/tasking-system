@@ -137,7 +137,7 @@ export default {
       return (
         this.getCurrentUser &&
         this.getCurrentUser.roles &&
-        this.getCurrentUser.roles.includes("superadmin")
+        this.getCurrentUser.roles.includes("SuperAdmin")
       )
     }
   },
