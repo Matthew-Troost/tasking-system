@@ -53,7 +53,7 @@ test-deploy:
   dependencies:
     - format
     - build
-    - test
+    # - test
 
 prod-deploy:
   stage: prod-deploy
@@ -67,4 +67,4 @@ prod-deploy:
   dependencies:
     - format
     - build
-    - test
+    # - test
