@@ -6,7 +6,7 @@
         <b-col md="8">
           <h2 class="page-title">
             {{ name }}
-            <small>
+            <small v-if="userIsSuperAdmin">
               <nuxt-link
                 tag="a"
                 class
@@ -137,7 +137,7 @@ export default {
       return (
         this.getCurrentUser &&
         this.getCurrentUser.roles &&
-        this.getCurrentUser.roles.includes("SuperAdmin")
+        this.getCurrentUser.roles.includes("superadmin")
       )
     }
   },

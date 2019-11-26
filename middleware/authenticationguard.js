@@ -13,6 +13,7 @@ export default function({ store, route, redirect }) {
   }
 
   switch (route.fullPath) {
+    case "":
     case "/":
       return redirect("/overview")
   }
