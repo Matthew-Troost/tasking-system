@@ -2,8 +2,8 @@ image: node:11.15.0
 
 stages:
   - format
-  - build
   # - test
+  - generate
   - test-deploy
   - prod-deploy
 
@@ -15,18 +15,6 @@ format:
   stage: format
   script:
     - npm run lintfix
-
-build:
-  stage: build
-  script:
-    - npm run build
-  artifacts: #describes a path to the build result. The files in this path can be used in the next build steps
-    expire_in: 1 week
-    paths:
-      - dist
-      - .out
-  dependencies:
-    - format
 
 # test:
 #   stage: test
@@ -41,6 +29,21 @@ build:
 #     - format
 #     - build
 
+generate:
+  stage: generate
+  only:
+    - testing
+    - master
+  script:
+    - npm run generate
+  artifacts: #describes a path to the build result. The files in this path can be used in the next build steps
+    expire_in: 1 week
+    paths:
+      - dist
+      - .out
+  dependencies:
+    - format
+
 test-deploy:
   stage: test-deploy
   only:
@@ -52,8 +55,8 @@ test-deploy:
 
   dependencies:
     - format
-    - build
     # - test
+    - generate
 
 prod-deploy:
   stage: prod-deploy
@@ -66,5 +69,5 @@ prod-deploy:
 
   dependencies:
     - format
-    - build
     # - test
+    - generate
