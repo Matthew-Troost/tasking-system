@@ -28,6 +28,11 @@ export default {
       isSideBarOpen: "sidebar/isOpen",
       loading: "loading"
     })
+  },
+  head() {
+    return {
+      title: "Scheduler"
+    }
   }
 }
 </script>

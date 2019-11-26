@@ -20,7 +20,7 @@ module.exports = {
         content: process.env.npm_package_description || ""
       }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/new-favicon.png" }]
   },
   /*
    ** Customize the progress-bar color
