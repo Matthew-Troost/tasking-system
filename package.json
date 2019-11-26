@@ -1,7 +1,7 @@
 {
-  "name": "steve",
+  "name": "scheduler",
   "version": "1.0.0",
-  "description": "A simple task sheduler.",
+  "description": "Netgen's simple task sheduler.",
   "author": "Netgen",
   "private": true,
   "scripts": {

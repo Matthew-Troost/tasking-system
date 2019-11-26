@@ -40,7 +40,6 @@ generate:
     expire_in: 1 week
     paths:
       - dist
-      - .out
   dependencies:
     - format
 

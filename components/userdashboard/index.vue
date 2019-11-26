@@ -228,7 +228,6 @@ export default {
       this.updateProjectLists()
     },
     updateProjectLists() {
-      console.log("updating project lists")
       let shapedLists = []
 
       this.projectLists.forEach(list => {

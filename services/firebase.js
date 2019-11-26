@@ -27,7 +27,7 @@ var config = process.env.DEVELOPMENT
 
 !firebase.apps.length ? firebase.initializeApp(config) : ""
 
-firebase.firestore().enablePersistence()
+firebase.firestore().enablePersistence({ synchronizeTabs: true })
 
 export const GoogleProvider = new firebase.auth.GoogleAuthProvider()
 export const auth = firebase.auth()
