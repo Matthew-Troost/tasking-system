@@ -1,0 +1,73 @@
+image: node:11.15.0
+
+stages:
+  - format
+  # - test
+  - generate
+  - test-deploy
+  - prod-deploy
+
+# this gets run before anything else
+before_script:
+  - npm install
+
+format:
+  stage: format
+  script:
+    - npm run lintfix
+
+# test:
+#   stage: test
+#   script:
+#     - npm run test
+#   artifacts:
+#     when: always  # save test results even when the task fails
+#     expire_in: 1 week  # save gitlab server space, we copy the files we need to deploy folder later on
+#     paths:
+#       - '.\TestResult.xml'  # saving NUnit results to copy to deploy folder
+#   dependencies:
+#     - format
+#     - build
+
+generate:
+  stage: generate
+  only:
+    - testing
+    - master
+  script:
+    - npm run generate
+  artifacts: #describes a path to the build result. The files in this path can be used in the next build steps
+    expire_in: 1 week
+    paths:
+      - dist
+      - .out
+  dependencies:
+    - format
+
+test-deploy:
+  stage: test-deploy
+  only:
+    - testing
+  script:
+    - npm install -g firebase-tools
+    - firebase use default --token $FIREBASE_DEPLOY_KEY
+    - firebase deploy -m "Pipeline $CI_PIPELINE_ID, build $CI_BUILD_ID" --non-interactive --token $FIREBASE_DEPLOY_KEY
+
+  dependencies:
+    - format
+    # - test
+    - generate
+
+prod-deploy:
+  stage: prod-deploy
+  only:
+    - master
+  script:
+    - npm install -g firebase-tools
+    - firebase use production --token $FIREBASE_DEPLOY_KEY
+    - firebase deploy -m "Pipeline $CI_PIPELINE_ID, build $CI_BUILD_ID" --non-interactive --token $FIREBASE_DEPLOY_KEY
+
+  dependencies:
+    - format
+    # - test
+    - generate

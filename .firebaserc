@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "steve-pre-prod",
+    "production": "steve-eaa4c"
+  }
+}
