@@ -124,10 +124,7 @@ export default {
         ).length > 0
       ) {
         return this.$toast.error("A project with this name already exists")
-      }
-      //Adding Slack channel for this project with an appropriate description and saving
-      //..the channel Id to the project
-      else
+      } else
         new Promise(() => {
           this.$slack
             .addProjectChannel(
