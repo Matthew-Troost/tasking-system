@@ -4,6 +4,12 @@
     <div v-else>
       <h2 class="page-title">
         {{ project.name }}
+        <small>
+          <nuxt-link :to="`/projects/${$route.params.type}`">{{
+            linkToString($route.params.type)
+          }}</nuxt-link>
+          | {{ project.name }}
+        </small>
       </h2>
 
       <b-tabs pills>
@@ -120,6 +126,9 @@ export default {
       })
 
       this.updateProject()
+    },
+    linkToString: function(value) {
+      return Util.linkToString(value)
     }
   }
 }

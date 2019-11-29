@@ -22,6 +22,13 @@
       :user-id="user"
     />
     <div>
+      <nuxt-link
+        :to="`/projects/${toLink(type)}/${toLink(project.name)}/settings`"
+      >
+        <b-button variant="outline-dark m-1 btn-sm f-r"
+          ><i class="i-Gear"></i
+        ></b-button>
+      </nuxt-link>
       <nuxt-link :to="`/projects/${toLink(type)}/${toLink(project.name)}`">
         <b-button variant="outline-primary m-1 btn-sm f-r">View</b-button>
       </nuxt-link>

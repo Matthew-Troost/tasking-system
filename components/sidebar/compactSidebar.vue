@@ -52,6 +52,18 @@
           </a>
           <div class="triangle"></div>
         </li>
+        <li
+          class="nav-item"
+          :class="{ active: selectedParentMenu == 'tickets' }"
+          data-item="tickets"
+          @mouseenter="toggleSubMenu"
+        >
+          <a class="nav-item-hold" href="#">
+            <i class="nav-icon i-Ticket"></i>
+            <span class="nav-text">Tickets</span>
+          </a>
+          <div class="triangle"></div>
+        </li>
       </ul>
     </vue-perfect-scrollbar>
 
@@ -181,6 +193,28 @@
             </li>
           </ul>
         </div>
+        <div
+          class="submenu-area"
+          data-parent="tickets"
+          :class="{ 'd-block': selectedParentMenu == 'tickets' }"
+        >
+          <header>
+            <h6>Tickets</h6>
+            <p>Select a project's tickets.</p>
+          </header>
+          <ul class="childNav" data-parent="tickets">
+            <li class="nav-item">
+              <nuxt-link tag="a" class :to="`/tickets/unassigned`">
+                <span class="item-name">Unassigned</span>
+              </nuxt-link>
+            </li>
+            <li v-for="project in projects" :key="project.id" class="nav-item">
+              <nuxt-link tag="a" class :to="`/tickets/${toLink(project.name)}`">
+                <span class="item-name">{{ project.name }}</span>
+              </nuxt-link>
+            </li>
+          </ul>
+        </div>
       </div>
     </vue-perfect-scrollbar>
     <div
@@ -194,7 +228,7 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters } from "vuex"
+import { mapMutations, mapGetters, mapState } from "vuex"
 import { isMobile } from "mobile-device-detect"
 import Util from "@/utils"
 import avatar from "@/components/projectAvatar"
@@ -216,6 +250,9 @@ export default {
       isSideBarOpen: "sidebar/isOpen",
       getUserProjects: "projects/getForUser",
       getCurrentUser: "users/getCurrentUser"
+    }),
+    ...mapState({
+      projects: state => state.projects.all
     }),
     loading() {
       return this.getCurrentUser == null
