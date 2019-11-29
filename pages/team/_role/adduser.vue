@@ -10,74 +10,36 @@
         </b-col>
       </b-row>
       <b-card title="User Details">
-        <b-form @submit.prevent="submitForm">
+        <b-form @submit.prevent="validateForm">
           <b-row>
             <b-col md="6">
-              <b-form-group label="First Name">
-                <b-form-input
-                  v-model="first_name"
-                  class="mb-2"
-                  fade="true"
-                  :class="{
-                    error:
-                      !form.first_name.minLength.hasMinLength ||
-                      !form.first_name.valid
-                  }"
-                  autocomplete="off"
-                  label="First Name"
-                  placeholder="Enter First Name"
-                >
-                </b-form-input>
-                <transition name="fade">
-                  <b-alert
-                    v-if="!form.first_name.valid"
-                    show
-                    variant="danger"
-                    class="error col-md-6 mt-1"
-                    >Name must have at least
-                    {{ form.first_name.minLength.length }} letters.</b-alert
-                  >
-                </transition>
-              </b-form-group>
-              <b-form-group label="Last Name">
-                <b-form-input
-                  v-model="last_name"
-                  class="mb-2"
-                  :class="{
-                    error:
-                      !form.last_name.minLength.hasMinLength ||
-                      !form.last_name.valid
-                  }"
-                  autocomplete="off"
-                  label="Last Name"
-                  placeholder="Enter Last Name"
-                >
-                </b-form-input>
-                <transition name="fade">
-                  <b-alert
-                    v-if="!form.last_name.valid"
-                    name="fade"
-                    tag="b-alert"
-                    show
-                    fade="true"
-                    variant="danger"
-                    class="error col-md-6 mt-1"
-                    >Last Name must have at least
-                    {{ form.last_name.minLength.length }} letters.</b-alert
-                  ></transition
-                >
-              </b-form-group>
-              <b-form-group label="Nickname">
-                <b-form-input
-                  v-model="nickname"
-                  class="mb-2"
-                  :class="{ error: !form.nickname.minLength.hasMinLength }"
-                  label="Nickname"
-                  autocomplete="off"
-                  placeholder="Enter Nickname"
-                >
-                </b-form-input>
-              </b-form-group>
+              <textbox-comp
+                v-model="first_name"
+                label="First Name"
+                :soft-error="form.first_name.softError"
+                :hard-error="form.first_name.hardError"
+                placeholder="Enter First Name"
+                error-message="Please Enter First Name"
+              ></textbox-comp>
+
+              <textbox-comp
+                v-model="last_name"
+                label="Last Name"
+                :soft-error="form.last_name.softError"
+                :hard-error="form.last_name.hardError"
+                placeholder="Enter Last Name"
+                error-message="Please Enter Last Name"
+              ></textbox-comp>
+
+              <textbox-comp
+                v-model="nickname"
+                label="Nickname"
+                :soft-error="form.nickname.softError"
+                :hard-error="form.nickname.hardError"
+                placeholder="Enter Nickname"
+                error-message="Please Enter Nickname"
+              ></textbox-comp>
+
               <b-form-group label="Password">
                 <b-form-input
                   v-model="password"
@@ -90,29 +52,15 @@
               </b-form-group>
             </b-col>
             <b-col md="6">
-              <b-form-group label="Email">
-                <b-form-input
-                  v-model="email"
-                  class="mb-2"
-                  :class="{ error: !isEmailValid() || !form.email.valid }"
-                  label="Email"
-                  autocomplete="off"
-                  type="email"
-                  placeholder="Enter Email"
-                >
-                </b-form-input>
-                <transition name="fade">
-                  <b-alert
-                    v-if="!form.email.valid"
-                    show
-                    variant="danger"
-                    class="error col-md-6 mt-1"
-                    >{{
-                      email ? "Email format is incorrect" : "Please enter email"
-                    }}</b-alert
-                  >
-                </transition>
-              </b-form-group>
+              <textbox-comp
+                v-model="email"
+                label="Email"
+                :soft-error="form.email.softError"
+                :hard-error="form.email.hardError"
+                placeholder="Enter Email"
+                :error-message="form.email.errorMessage"
+              ></textbox-comp>
+
               <b-form-group label="Positions">
                 <vue-tags-input
                   id="tagInput"
@@ -123,15 +71,10 @@
                   placeholder="Type Position Name"
                   @tags-changed="newTags => (types = newTags.map(x => x.text))"
                 />
-                <transition name="fade">
-                  <b-alert
-                    v-show="!form.type.valid"
-                    show
-                    variant="danger"
-                    class="error col-md-6 mt-1"
-                    >{{ form.type.errorMessage }}</b-alert
-                  >
-                </transition>
+                <error-comp
+                  :hard-error="form.type.hardError"
+                  :error-message="form.type.errorMessage"
+                ></error-comp>
               </b-form-group>
               <b-form-group label="Roles">
                 <vue-tags-input
@@ -151,20 +94,17 @@
                 <b-form-file
                   v-model="avatar"
                   type="file"
-                  :class="{ fileInputError: !form.avatar.valid }"
+                  :class="{ fileInputError: form.avatar.hardError }"
                   placeholder="Choose or drop avatar here"
                   drop-placeholder="Drop avatar here"
                   variant="primary"
                   value="Upload"
                 />
               </b-form-group>
-              <b-alert
-                v-if="!form.avatar.valid"
-                show
-                variant="danger"
-                class="error col-md-6 mt-1"
-                >Please upload an avatar for this user</b-alert
-              >
+              <error-comp
+                :hard-error="form.avatar.hardError"
+                :error-message="form.avatar.errorMessage"
+              ></error-comp>
               <b-button type="submit" class="save-btn" variant="primary"
                 >Save</b-button
               >
@@ -178,11 +118,15 @@
 <script>
 import Loading from "@/components/loading"
 import generator from "generate-password"
+import textboxComp from "@/components/form/textbox-comp"
+import errorComp from "@/components/form/error-comp"
 
 export default {
   layout: "default",
   components: {
-    Loading
+    Loading,
+    textboxComp,
+    errorComp
   },
   validate({ params }) {
     return ["developers", "managing", "socialmedia", "designers"].includes(
@@ -233,16 +177,13 @@ export default {
       return this.types.map(x => x.toLowerCase())
     },
     teamParameter() {
-      switch (this.types[0].toLowerCase()) {
-        case "designer":
-          return "designers"
-        case "developer":
-          return "developers"
-        case "management":
-          return "managing"
-        default:
-          return this.types[0].toLowerCase()
+      let parameter = {
+        designer: "designers",
+        developer: "developers",
+        management: "managing",
+        default: this.types[0].toLowerCase()
       }
+      return parameter[this.types[0].toLowerCase()] || parameter["default"]
     },
     currentUser() {
       return this.$store.getters["users/getUserByUID"](
@@ -258,15 +199,11 @@ export default {
     }
   },
   watch: {
-    first_name(newValue) {
-      const hasMinLength =
-        this.minLength(newValue, 3) && (this.form.first_name.valid = true)
-      this.form.first_name.minLength.hasMinLength = hasMinLength
+    first_name() {
+      this.form.first_name.hardError = false
     },
-    last_name(newValue) {
-      const hasMinLength =
-        this.minLength(newValue, 3) && (this.form.last_name.valid = true)
-      this.form.last_name.minLength.hasMinLength = hasMinLength
+    last_name() {
+      this.form.last_name.hardError = false
     },
     types() {
       if (this.types.length !== 0) {
@@ -286,13 +223,16 @@ export default {
         this.form.type.correctInput = true
         this.form.type.errorMessage = "Please select a Role for this user"
       }
-      this.form.type.valid = true
+      this.form.type.hardError = false
     },
     email() {
-      this.form.email.valid = this.email !== "" || this.form.email.validFormat
+      this.form.email.softError = !this.isEmailValid()
+      this.form.email.hardError = false
     },
     avatar() {
-      this.form.avatar.valid = true
+      let ispng = this.avatar.type.includes("png")
+      this.form.avatar.hardError = !ispng
+      if (!ispng) this.form.avatar.errorMessage = "Please Upload a .png File"
     }
   },
   mounted() {
@@ -302,42 +242,29 @@ export default {
   beforeMount() {
     this.form = {
       first_name: {
-        minLength: {
-          hasMinLength: true,
-          length: 3
-        },
-        required: true,
-        valid: true
+        hardError: false
       },
       last_name: {
-        minLength: {
-          hasMinLength: true,
-          length: 3
-        },
-        required: true,
-        valid: true
+        hardError: false
       },
       nickname: {
-        minLength: {
-          hasMinLength: true,
-          length: 3
-        },
-        required: false,
-        valid: true
+        hardError: false
       },
       email: {
-        required: true,
-        validFormat: this.isEmailValid(),
-        valid: true
+        softError: false,
+        hardError: false,
+        errorMessage: this.email
+          ? "Email Format is Incorrect"
+          : "Please Enter Email"
       },
       type: {
-        required: true,
-        valid: true,
+        hardError: false,
         correctInput: false,
         errorMessage: ""
       },
       avatar: {
-        valid: true
+        hardError: false,
+        errorMessage: "Please Upload an Avatar"
       }
     }
     switch (this.$route.params.role) {
@@ -358,7 +285,7 @@ export default {
     this.loading = false
   },
   methods: {
-    addUser() {
+    submitForm() {
       return new Promise((resolve, reject) => {
         this.$toast.success(`Adding User`)
         this.$router.push({
@@ -369,81 +296,85 @@ export default {
         })
         this.$store.state.auth
           .createUserWithEmailAndPassword(this.email, this.password)
-          .then(
-            user => {
-              //Add Avatar
-              this.$store.state.storage
-                .ref(this.avatarSaveUrl)
-                .put(this.avatar)
-                .then(() => {
-                  this.$store.state.storage
-                    .ref(this.avatarSaveUrl)
-                    .getDownloadURL()
-                    .then(url => {
-                      //Add User
-                      this.$store.state.db.collection("users").add({
-                        first_name: this.first_name,
-                        last_name: this.last_name,
-                        nickname: this.nickname,
-                        type: this.lowerCaseTypes,
-                        roles: this.roles || ["User"],
-                        avatar: url,
-                        uid: user.user.uid,
-                        email: this.email
-                      })
-                    })
-                })
-              resolve(user)
-            },
-            error => {
-              reject(error)
-            }
-          )
+          .then(user => {
+            this.addAvatar().then(() => {
+              this.getAvatarUrl().then(url => {
+                this.addUser(user, url)
+              })
+            })
+          })
+          .catch(error => {
+            reject(error)
+          })
+      })
+    },
+    addAvatar() {
+      return new Promise(() => {
+        this.$store.state.storage.ref(this.avatarSaveUrl).put(this.avatar)
+      })
+    },
+    addUser(user, url) {
+      return new Promise(() => {
+        this.$store.state.db.collection("users").add({
+          first_name: this.first_name,
+          last_name: this.last_name,
+          nickname: this.nickname,
+          type: this.lowerCaseTypes,
+          roles: this.roles || ["User"],
+          avatar: url,
+          uid: user.user.uid,
+          email: this.email
+        })
+      })
+    },
+    getAvatarUrl() {
+      return new Promise((reject, resolve) => {
+        this.$store.state.storage
+          .ref(this.avatarSaveUrl)
+          .getDownloadURL()
+          .then(url => {
+            resolve(url)
+          })
+          .catch(error => {
+            reject(error)
+          })
       })
     },
     isEmailValid() {
-      return this.email == "" || this.reg.test(this.email)
+      return this.email === "" || this.reg.test(this.email)
     },
-    minLength(text, size) {
-      return text == "" || text.length >= size
-    },
-    submitForm() {
+    validateForm() {
       //Form Validation
       this.valid = true
-      if (!this.form.first_name.minLength.hasMinLength || !this.first_name) {
-        this.form.first_name.valid = false
+      if (!this.first_name) {
+        this.form.first_name.hardError = true
         this.valid = false
       }
-      if (!this.form.last_name.minLength.hasMinLength || !this.last_name) {
-        this.form.last_name.valid = false
+      if (!this.last_name) {
+        this.form.last_name.hardError = true
         this.valid = false
       }
-      if (!this.form.email.validFormat || this.email === "") {
-        this.form.email.valid = false
+      if (this.form.email.softError || this.email === "") {
+        this.form.email.hardError = true
         this.valid = false
       }
-      if (
-        this.form.type.required &&
-        (!this.form.type.correctInput || this.types.length === 0)
-      ) {
+      if (!this.form.type.correctInput || this.types.length === 0) {
         this.valid = false
-        this.form.type.valid = false
+        this.form.type.hardError = true
       }
       if (!this.avatar) {
         this.valid = false
-        this.form.avatar.valid = false
+        this.form.avatar.hardError = true
       }
       if (this.valid)
-        this.addUser().then(
-          user => {
-            console.log(user)
+        this.submitForm()
+          .then(() => {
             this.$toast.success("User Successfully Added")
-          },
-          error => {
+          })
+          .catch(error => {
             console.log(error)
             this.$toast.error("Error Encountered")
-          }
-        )
+          })
     }
   }
 }

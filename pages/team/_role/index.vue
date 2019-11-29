@@ -6,7 +6,7 @@
         <b-col md="8">
           <h2 class="page-title">
             {{ name }}
-            <small v-if="userIsSuperAdmin">
+            <small v-if="!userIsSuperAdmin">
               <nuxt-link
                 tag="a"
                 class
