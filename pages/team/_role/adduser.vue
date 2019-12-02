@@ -230,9 +230,10 @@ export default {
       this.form.email.hardError = false
     },
     avatar() {
-      let ispng = this.avatar.type.includes("png")
-      this.form.avatar.hardError = !ispng
-      if (!ispng) this.form.avatar.errorMessage = "Please Upload a .png File"
+      this.form.avatar.isPng = this.avatar.type.includes("png")
+      this.form.avatar.hardError = !this.form.avatar.isPng
+      if (!this.form.avatar.isPng)
+        this.form.avatar.errorMessage = "Please Upload a .png File"
     }
   },
   mounted() {
@@ -264,7 +265,8 @@ export default {
       },
       avatar: {
         hardError: false,
-        errorMessage: "Please Upload an Avatar"
+        errorMessage: "Please Upload an Avatar",
+        isPng: true
       }
     }
     switch (this.$route.params.role) {
@@ -285,23 +287,37 @@ export default {
     this.loading = false
   },
   methods: {
-    submitForm() {
+    async submitForm() {
       return new Promise((resolve, reject) => {
         this.$toast.success(`Adding User`)
         this.$router.push({
-          name: "team-team",
+          name: "team-role",
           params: {
-            team: this.teamParameter
+            role: this.teamParameter
           }
         })
         this.$store.state.auth
           .createUserWithEmailAndPassword(this.email, this.password)
           .then(user => {
-            this.addAvatar().then(() => {
-              this.getAvatarUrl().then(url => {
-                this.addUser(user, url)
+            this.addAvatar()
+              .then(() => {
+                this.getAvatarUrl()
+                  .then(url => {
+                    this.addUser(user, url)
+                      .then(() => {
+                        resolve(true)
+                      })
+                      .catch(error => {
+                        reject(error)
+                      })
+                  })
+                  .catch(error => {
+                    reject(error)
+                  })
               })
-            })
+              .catch(error => {
+                reject(error)
+              })
           })
           .catch(error => {
             reject(error)
@@ -309,26 +325,42 @@ export default {
       })
     },
     addAvatar() {
-      return new Promise(() => {
-        this.$store.state.storage.ref(this.avatarSaveUrl).put(this.avatar)
+      return new Promise((resolve, reject) => {
+        this.$store.state.storage
+          .ref(this.avatarSaveUrl)
+          .put(this.avatar)
+          .then(() => {
+            resolve(true)
+          })
+          .catch(error => {
+            reject(error)
+          })
       })
     },
     addUser(user, url) {
-      return new Promise(() => {
-        this.$store.state.db.collection("users").add({
-          first_name: this.first_name,
-          last_name: this.last_name,
-          nickname: this.nickname,
-          type: this.lowerCaseTypes,
-          roles: this.roles || ["User"],
-          avatar: url,
-          uid: user.user.uid,
-          email: this.email
-        })
+      return new Promise((resolve, reject) => {
+        this.$store.state.db
+          .collection("users")
+          .add({
+            first_name: this.first_name,
+            last_name: this.last_name,
+            nickname: this.nickname,
+            type: this.lowerCaseTypes,
+            roles: this.roles === [] ? ["User"] : this.roles,
+            avatar: url,
+            uid: user.user.uid,
+            email: this.email
+          })
+          .then(() => {
+            resolve(true)
+          })
+          .catch(error => {
+            reject(error)
+          })
       })
     },
     getAvatarUrl() {
-      return new Promise((reject, resolve) => {
+      return new Promise((resolve, reject) => {
         this.$store.state.storage
           .ref(this.avatarSaveUrl)
           .getDownloadURL()
@@ -344,7 +376,6 @@ export default {
       return this.email === "" || this.reg.test(this.email)
     },
     validateForm() {
-      //Form Validation
       this.valid = true
       if (!this.first_name) {
         this.form.first_name.hardError = true
@@ -365,7 +396,13 @@ export default {
       if (!this.avatar) {
         this.valid = false
         this.form.avatar.hardError = true
+        this.form.avatar.errorMessage = "Please Upload an Avatar"
+      } else if (!this.form.avatar.isPng) {
+        this.valid = false
+        this.form.avatar.hardError = true
+        this.form.avatar.errorMessage = "Please Upload a .png File"
       }
+
       if (this.valid)
         this.submitForm()
           .then(() => {
@@ -382,9 +419,7 @@ export default {
 <style scoped>
 .error {
   border-color: #f30000 !important;
-  /* border-color: #dc5050 !important; */
   box-shadow: 0 0 10px 0.2rem rgba(181, 0, 0, 0.25);
-  /* box-shadow: 0 0 0 0.2rem rgba(181, 0, 0, 0.25); */
 }
 .fileInputError {
   box-shadow: 0 0 10px 0.2rem rgba(181, 0, 0, 0.25);

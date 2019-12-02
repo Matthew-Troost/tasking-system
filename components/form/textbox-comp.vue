@@ -6,7 +6,7 @@
         fade="true"
         class="mb-2"
         :class="{
-          error: softError
+          'custom-error': softError
         }"
         autocomplete="off"
         :label="label"
@@ -61,5 +61,3 @@ export default {
   }
 }
 </script>
-
-<style scoped></style>

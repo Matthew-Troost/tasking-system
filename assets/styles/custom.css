@@ -264,7 +264,7 @@ input::placeholder {
   opacity: 1 !important;
 }
 
-.error {
+.custom-error {
   border-color: #f30000 !important;
-  box-shadow: 0 0 10px 0.2rem rgba(181, 0, 0, 0.25);
+  box-shadow: 0 0 10px 0.2rem rgba(181, 0, 0, 0.25) !important;
 }

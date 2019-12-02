@@ -5,7 +5,7 @@
         v-if="hardError"
         show
         variant="danger"
-        class="error col-md-6 mt-1"
+        class="custom-error col-md-6 mt-1"
         >{{ errorMessage }}</b-alert
       >
     </transition>
