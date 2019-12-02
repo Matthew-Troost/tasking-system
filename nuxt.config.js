@@ -30,7 +30,7 @@ module.exports = {
   /*
    ** Global CSS
    */
-  css: ["@/assets/styles/custom.css"],
+  css: ["@/assets/styles/custom.css", "@/assets/styles/tags-input/custom.css"],
   /*
    ** Plugins to load before mounting the App
    */

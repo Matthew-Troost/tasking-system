@@ -117,7 +117,7 @@
                 <vue-tags-input
                   id="tagInput"
                   v-model="type"
-                  class="tag-custom text-14 tag-custom"
+                  class="tag-form text-14"
                   :tags="types"
                   :autocomplete-items="filteredTypes"
                   placeholder="Type Position Name"
@@ -137,7 +137,7 @@
                 <vue-tags-input
                   id="roleInput"
                   v-model="role"
-                  class="tag-custom text-14 tag-custom"
+                  class="tag-form text-14"
                   :tags="roles"
                   :autocomplete-items="filteredRoles"
                   placeholder="Type Role Name"

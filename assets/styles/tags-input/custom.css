@@ -1,0 +1,47 @@
+.ti-tags {
+  flex-wrap: unset !important;
+}
+
+.list-item-tags-input .ti-tag {
+  background-color: transparent !important;
+}
+
+.list-item-tags-input .ti-tag .ti-icon-close {
+  color: black;
+}
+.list-item-tags-input .ti-tag {
+  color: black !important;
+}
+
+.list-item-tags-input .ti-selected-item {
+  background-color: #3f51b5 !important;
+}
+.tag-form {
+  background: #f8f9fa !important;
+  color: #0b192b !important;
+}
+.tag-form .ti-input {
+    border-radius: .25rem;
+    border: 1px solid #ced4da !important;
+    color: #0b192b !important;
+  }
+
+.list-item-tags-input .ti-deletion-mark {
+  background-color: #e54d42 !important;
+}
+
+.list-item-tags-input .ti-new-tag-input-wrapper input {
+  min-width: unset !important;
+}
+
+.list-item-tags-input .ti-input {
+  border: none !important;
+  padding: 0 !important;
+}
+.list-item-tags-input .ti-tag {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.ti-input input {
+  background-color: transparent !important;
+}

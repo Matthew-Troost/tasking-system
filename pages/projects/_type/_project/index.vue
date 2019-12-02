@@ -67,16 +67,16 @@ export default {
       projects: state => state.projects.all
     }),
     project() {
-      let selectedpojects = this.projects.filter(project => {
+      let selectedpoject = this.projects.find(project => {
         return project.name == Util.linkToString(this.$route.params.project)
       })
 
-      if (selectedpojects.length > 0) {
-        return selectedpojects[0]
-      } else {
+      if (!selectedpoject) {
         this.$toast.info("Project does not exist")
         return this.$router.back()
       }
+
+      return selectedpoject
     },
     calendarColourPalette() {
       if (this.project) {
