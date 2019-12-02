@@ -28,6 +28,7 @@
 <script>
 import Util from "@/utils"
 import VueTagsInput from "@johmun/vue-tags-input"
+// import { mapGetters } from "vuex"
 
 export default {
   components: {
@@ -46,6 +47,18 @@ export default {
         ]
       }
     }
+  },
+  computed: {
+    // project() {
+    //   let selectedpoject = this.projects.find(project => {
+    //     return project.name == Util.linkToString(this.$route.params.project)
+    //   })
+    //   if (!selectedpoject) {
+    //     this.$toast.info("Project does not exist")
+    //     return this.$router.back()
+    //   }
+    //   return selectedpoject
+    // }
   },
   methods: {
     linkToString: function(value) {

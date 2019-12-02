@@ -52,7 +52,7 @@
 <script>
 import List from "@/components/project/projectlist/list"
 import Calendar from "@/components/calendar"
-import { mapState } from "vuex"
+import { mapGetters } from "vuex"
 import Util from "@/utils"
 
 export default {
@@ -63,13 +63,13 @@ export default {
     Calendar
   },
   computed: {
-    ...mapState({
-      projects: state => state.projects.all
+    ...mapGetters({
+      getProjectByName: "projects/getByName"
     }),
     project() {
-      let selectedpoject = this.projects.find(project => {
-        return project.name == Util.linkToString(this.$route.params.project)
-      })
+      let selectedpoject = this.getProjectByName(
+        Util.linkToString(this.$route.params.project)
+      )
 
       if (!selectedpoject) {
         this.$toast.info("Project does not exist")
