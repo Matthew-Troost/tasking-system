@@ -75,7 +75,6 @@ export default {
         this.$toast.info("Project does not exist")
         return this.$router.back()
       }
-
       return selectedpoject
     },
     calendarColourPalette() {
@@ -89,7 +88,7 @@ export default {
       })
     },
     loading() {
-      return this.project == null
+      return !this.project
     }
   },
   methods: {

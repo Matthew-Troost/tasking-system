@@ -19,6 +19,7 @@
         v-model="associatedEmails.tag"
         :tags="associatedEmails.tags"
         :validation="associatedEmails.validation"
+        class="tag-form"
         @tags-changed="newTags => (associatedEmails.tags = newTags)"
       />
     </b-card>
