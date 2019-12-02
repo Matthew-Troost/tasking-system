@@ -221,3 +221,7 @@ input::placeholder {
 .flickity-slider .is-selected {
   opacity: 1 !important;
 }
+
+.mt-15{
+  margin-top: 15px;
+}

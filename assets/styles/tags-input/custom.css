@@ -19,6 +19,7 @@
 .tag-form {
   background: #f8f9fa !important;
   color: #0b192b !important;
+  max-width: unset !important;
 }
 .tag-form .ti-input {
     border-radius: .25rem;

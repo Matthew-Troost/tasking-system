@@ -151,8 +151,11 @@ export default {
                     }
                   ],
                   type: this.projectType.toLowerCase(),
-                  channelId: channel.channel.id,
-                  colour: "#73d8ff"
+                  settings: {
+                    colour: "#73d8ff",
+                    associatedEmails: [],
+                    slackChannelId: channel.channel.id
+                  }
                 })
                 .then(() => {
                   this.$toast.success(
