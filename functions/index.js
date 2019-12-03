@@ -55,10 +55,9 @@ exports.receiveTicket = functions.https.onRequest(async (request, response) => {
     })
 
   var associatedProject = projects.find(project => {
+    if (!project.settings) return false
     return project.settings.associatedEmails.includes(request.body.from)
   })
-
-  var attachments = []
 
   var thread = {
     from: request.body.from,
@@ -66,14 +65,28 @@ exports.receiveTicket = functions.https.onRequest(async (request, response) => {
     cc: request.body.cc,
     subject: request.body.subject,
     html: request.body.html,
-    date: admin.firestore.Timestamp.fromDate(new Date(request.body.date))
+    date: admin.firestore.Timestamp.fromDate(new Date(request.body.date)),
+    attachments: []
   }
 
-  //move this to seperate function and call after add or update
-  if (request.body.attachments) {
-    request.body.attachments.forEach(attachment => {
-      attachments.push(Buffer.from(attachment, "base64"))
-    })
+  if (request.body.attachments.length > 0) {
+    try {
+      request.body.attachments.forEach(attachment => {
+        admin
+          .storage()
+          .bucket()
+          .file(`TicketAttachments/${attachment.filename}`)
+          .save(Buffer.from(attachment.data, "base64"), {
+            metadata: { contentType: attachment.filetype },
+            public: true
+          })
+
+        thread.attachments.push()
+      })
+    } catch (error) {
+      console.error(error)
+      bugsnagClient.notify(`TICKET FUNCTION: Attachments - ${error}`)
+    }
   }
 
   await admin
