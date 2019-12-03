@@ -1,5 +1,3 @@
-//var Util = require("@/utils/index.js")
-
 export function newTask(avatar, project, task, listName) {
   return `
   [
@@ -32,7 +30,7 @@ export function newTask(avatar, project, task, listName) {
   `
 }
 
-export function newNote(user, task, projectname, listName) {
+export function newNote(user, task, projectname, listName, content) {
   return `[
 		{
 			"type": "section",
@@ -40,7 +38,7 @@ export function newNote(user, task, projectname, listName) {
 				"type": "mrkdwn",
 				"text": "📝 *${
           user.first_name
-        }* has added a new note\n\n> *${projectname.toUpperCase()}* \n> Task: *${task}* [${listName}] \n\n _Check it out, it may be for you._"
+        }* has added a new note\n\n> *${projectname.toUpperCase()}* \n> Task: *${task}* [${listName}] \n> ${content}"
 			} , "accessory": {
         "type": "image",
         "image_url": "${user.avatar}",
