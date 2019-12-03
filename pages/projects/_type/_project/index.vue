@@ -46,7 +46,7 @@
 <script>
 import List from "@/components/project/projectlist/list"
 import Calendar from "@/components/calendar"
-import { mapState } from "vuex"
+import { mapState, mapGetters } from "vuex"
 import Util from "@/utils"
 
 export default {
@@ -56,22 +56,19 @@ export default {
     List,
     Calendar
   },
+  data() {
+    return {
+      project: null
+    }
+  },
   computed: {
     ...mapState({
       projects: state => state.projects.all
     }),
-    project() {
-      let selectedpojects = this.projects.filter(project => {
-        return project.name == Util.linkToString(this.$route.params.project)
-      })
+    ...mapGetters({
+      getProjectByName: "projects/getByName"
+    }),
 
-      if (selectedpojects.length > 0) {
-        return selectedpojects[0]
-      } else {
-        this.$toast.info("Project does not exist")
-        return this.$router.back()
-      }
-    },
     calendarColourPalette() {
       if (this.project) {
         return Util.generateColourPalette(this.project.colour)
@@ -84,6 +81,15 @@ export default {
     },
     loading() {
       return this.project == null
+    }
+  },
+  created() {
+    this.project = this.getProjectByName(
+      Util.linkToString(this.$route.params.project)
+    )
+    if (!this.project) {
+      this.$toast.info("Project does not exist")
+      return this.$router.back()
     }
   },
   methods: {
