@@ -1,12 +1,14 @@
 <template>
   <div class="container">
-    <div :id="`pp_${userId}`">
-      <img v-lazy="url" alt :style="styles" />
+    <div :id="id">
+      <img v-if="onlyInitials" ref="avatarImage" alt :style="styles" />
+      <img v-else v-lazy="url" alt :style="styles" />
       <h6 v-if="!hideNickName">{{ displayName }}</h6>
     </div>
+
     <b-popover
-      v-if="hideNickName"
-      :target="`pp_${userId}`"
+      v-if="hideNickName && onlyInitials"
+      :target="id"
       triggers="hover focus"
       :content="displayName"
       placement="top"
@@ -15,10 +17,17 @@
 </template>
 <script>
 import { mapState } from "vuex"
+import AvatarInitials from "avatar-initials"
+import Utils from "@/utils"
+
 export default {
   layout: "default",
   name: "ProjectAvatar",
   props: {
+    onlyInitials: {
+      type: Boolean,
+      default: false
+    },
     imageUrl: {
       type: String,
       default: ""
@@ -38,6 +47,16 @@ export default {
     width: {
       type: Number,
       default: 40
+    },
+
+    borderRadius: {
+      type: Number,
+      default: 50
+    }
+  },
+  data() {
+    return {
+      id: Utils.generateGuid()
     }
   },
   computed: {
@@ -62,8 +81,30 @@ export default {
     styles() {
       return {
         "max-width": "unset",
-        width: `${this.width}px`
+        width: `${this.width}px`,
+        height: `${this.width}px`,
+        borderRadius: `${this.borderRadius}%`
       }
+    },
+    userInitials() {
+      return `${this.user.first_name
+        .substr(0, 1)
+        .toUpperCase()} ${this.user.last_name
+        .substr(this.user.last_name.length - 1, this.user.last_name.length)
+        .toUpperCase()}`
+    }
+  },
+  mounted() {
+    if (this.onlyInitials) {
+      var test = new AvatarInitials(this.$refs.avatarImage, {
+        useGravatar: false,
+        initials: this.userInitials,
+        initial_fg: "black",
+        initial_font_family: "Nunito,sans-serif",
+        initial_weight: 400
+      })
+      //this needs to be here to fix weird bug on overview page
+      test.initial_size = 10
     }
   }
 }
