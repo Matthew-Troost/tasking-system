@@ -163,9 +163,7 @@ export default {
   },
   created() {
     this.task = this.$parent.$parent.value
-
     this.listName = this.$parent.$parent.listName
-
     this.project = this.$parent.$parent.$parent.$parent.$parent.$parent.project
   },
   methods: {
@@ -225,7 +223,8 @@ export default {
       this.updateExtras(true)
       this.$emit(
         "noteAdded",
-        this.$slack.functions.TASK_NOTIFICATION.NOTE_ADDED
+        this.$slack.functions.TASK_NOTIFICATION.NOTE_ADDED,
+        { content: this.extractContent(this.noteContent) }
       )
     },
     saveDoc: function() {
@@ -266,6 +265,21 @@ export default {
       )
       this.addingNote = false
       this.uploadingDoc = false
+    },
+    extractContent(element) {
+      //Replaces list items with bullet points
+      let containsList = element.includes("<li>")
+      if (containsList) {
+        element = element.replaceAll("<li>", "<li>•")
+        element = element.replaceAll("</li>", "\n></li>")
+
+        element = element.replace("•", "\n>•")
+      }
+
+      let span = document.createElement("span")
+      span.innerHTML = element
+
+      return span.textContent || span.innerText
     }
   }
 }

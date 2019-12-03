@@ -114,6 +114,7 @@
                   :hide-nick-name="true"
                   :width="24"
                   :nick-name="props.tag.text"
+                  :height="24"
                   :only-initials="true"
                 />
               </div>
@@ -333,7 +334,8 @@ export default {
               this.users
                 .filter(x => this.tagsProxy.includes(x.id))
                 .map(t => t.email),
-              this.$parent.list.name
+              this.$parent.list.name,
+              props.content
             )
             .catch(error => this.displaySlackError(error))
           break

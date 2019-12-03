@@ -16,7 +16,10 @@ export const getters = {
   },
   getUserByFullName: state => fullname => {
     return state.all.find(user => {
-      return `${user.first_name} ${user.last_name}` == fullname
+      return (
+        `${user.first_name.toLowerCase()} ${user.last_name.toLowerCase()}` ==
+        fullname.toLowerCase()
+      )
     })
   },
   getForRole: state => role => {

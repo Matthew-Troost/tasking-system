@@ -96,7 +96,7 @@ export default {
   },
   mounted() {
     if (this.onlyInitials) {
-      var test = new AvatarInitials(this.$refs.avatarImage, {
+      var avatar = new AvatarInitials(this.$refs.avatarImage, {
         useGravatar: false,
         initials: this.userInitials,
         initial_fg: "black",
@@ -104,7 +104,7 @@ export default {
         initial_weight: 400
       })
       //this needs to be here to fix weird bug on overview page
-      test.initial_size = 10
+      avatar.initial_size = 10
     }
   }
 }

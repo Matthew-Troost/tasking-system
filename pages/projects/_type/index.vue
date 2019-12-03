@@ -94,7 +94,7 @@ export default {
       return `A slack channel for communication regarding the ${this.projectType.substring(
         0,
         this.projectType.length - 1
-      )}: ${this.newProjectName}`
+      )}: ${Util.linkToString(this.newProjectName)}`
     },
     currentUser() {
       return this.$store.getters["users/getUserByUID"](
@@ -134,7 +134,7 @@ export default {
               Util.linkToString(this.newProjectName),
               this.projectDescription
             )
-            .then(channel => {
+            .then(id => {
               this.$store.state.db
                 .collection("projects")
                 .add({
@@ -154,7 +154,7 @@ export default {
                     }
                   ],
                   type: this.projectType.toLowerCase(),
-                  channelId: channel.channel.id,
+                  channelId: id,
                   colour: "#73d8ff"
                 })
                 .then(() => {

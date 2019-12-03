@@ -53,10 +53,18 @@ export function sendTaskNoteNotification(
   task,
   projectName,
   userEmails,
-  listName
+  listName,
+  content
 ) {
   return new Promise((resolve, reject) => {
-    let blocks = blockTemplates.newNote(user, task, projectName, listName)
+    let blocks = blockTemplates.newNote(
+      user,
+      task,
+      projectName,
+      listName,
+      content
+    )
+
     Slack.users
       .list({
         token: botOAuthToken
@@ -178,21 +186,42 @@ export function sendTaskCompletedMessage(project, task, user, listName) {
 
 export function addProjectChannel(name, description) {
   return new Promise((resolve, reject) => {
-    Slack.channels
-      .create({
-        token: OAuthToken,
-        name: name
+    //Check that there isnt already a channel for this project
+    getChannelByName(name)
+      .then(projectChannel => {
+        if (!projectChannel) {
+          Slack.channels
+            .create({
+              token: OAuthToken,
+              name: name
+            })
+            .then(channel => {
+              //Only add description if creating the channel
+              addChannelDescription(projectChannel.id, description)
+              projectChannel = channel
+            })
+            .catch(error => {
+              reject(error)
+            })
+        }
+        resolve(projectChannel.id)
       })
-      .then(channel => {
-        Slack.channels
-          .setPurpose({
-            token: OAuthToken,
-            purpose: description,
-            channel: channel.channel.id
-          })
-          .then(() => {
-            resolve(channel)
-          })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+export function addChannelDescription(channelId, description) {
+  return new Promise((resolve, reject) => {
+    Slack.channels
+      .setPurpose({
+        token: OAuthToken,
+        purpose: description,
+        channel: channelId
+      })
+      .then(() => {
+        resolve(true)
       })
       .catch(error => {
         reject(error)
@@ -239,23 +268,33 @@ export function messageChannelById(channelId, message, optionalBlocks) {
 }
 export function createChannel(name, optionalMessage) {
   return new Promise((resolve, reject) => {
-    Slack.channels
-      .create({
-        token: OAuthToken,
-        name: name
-      })
-      .then(channel => {
+    //Check that there isnt already a channel for this project
+    getChannelByName(name)
+      .then(projectChannel => {
+        if (!projectChannel) {
+          Slack.channels
+            .create({
+              token: OAuthToken,
+              name: name
+            })
+            .then(channel => {
+              projectChannel = channel
+            })
+            .catch(error => {
+              reject(error)
+            })
+        }
         if (optionalMessage) {
           Slack.chat.postMessage({
             token: OAuthToken,
-            channel: channel.channel.id,
+            channel: projectChannel.channel.id,
             text: optionalMessage
           })
         }
-        resolve(channel)
+        resolve(projectChannel)
       })
-      .catch(error => {
-        reject(error)
+      .catch(err => {
+        reject(err)
       })
   })
 }
@@ -265,7 +304,7 @@ export function deleteChannelById(channelId) {
   return new Promise((resolve, reject) => {
     Vue.axios
       .post(
-        `https://slack.com/api/channels.delete?token=xoxp-823708849781-823708850917-830716278257-1777cf3a58818bb7ab17d75abcec9092&channel=${channelId}`
+        `https://slack.com/api/channels.delete?token=${OAuthToken}&channel=${channelId}`
       )
       .then(response => {
         resolve(response)
@@ -293,7 +332,7 @@ export function deleteChannelByName(channelName) {
       .then(channel => {
         Vue.axios
           .post(
-            `https://slack.com/api/channels.delete?token=xoxp-823708849781-823708850917-830716278257-1777cf3a58818bb7ab17d75abcec9092&channel=${channel.id}`
+            `https://slack.com/api/channels.delete?token=${OAuthToken}&channel=${channel.id}`
           )
           .then(response => {
             resolve(response)
