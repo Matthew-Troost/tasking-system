@@ -126,7 +126,15 @@ export default {
           if (event.from.id == event.to.id) {
             this.onTaskMove(event.oldIndex, event.newIndex)
           }
-        }
+        },
+        onStart: () => {
+          document.body.style.cursor = "grabbing"
+        },
+        onEnd: () => {
+          document.body.style.cursor = "auto"
+        },
+        forceFallback: true,
+        animation: 150
       }
     )
   },

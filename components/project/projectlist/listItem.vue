@@ -19,6 +19,7 @@
           :value="value.description"
           placeholder="..."
           style="padding-right: 20px; width: 100%"
+          class="input-grab"
           @input="modelChange"
         />
         <b-badge
@@ -37,7 +38,8 @@
           "
         />
       </b-col>
-      <b-col md="6">
+
+      <b-col md="6" class="dragable">
         <b-row style="text-align: center">
           <b-col md="2" style="border-left: 1px solid #cacaca">
             <input
@@ -112,6 +114,7 @@
                   :hide-nick-name="true"
                   :width="24"
                   :nick-name="props.tag.text"
+                  :only-initials="true"
                 />
               </div>
             </VueTagsInput>
@@ -394,5 +397,22 @@ input:focus {
 .extrasCount {
   padding: 3px;
   height: fit-content;
+}
+.dragable {
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab !important;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+.input-grab:active {
+  cursor: grabbing !important;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+
+.dragable:active {
+  cursor: grabbing !important;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
 }
 </style>
