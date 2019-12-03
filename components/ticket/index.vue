@@ -2,9 +2,14 @@
   <b-card class=" mb-30">
     <div class="d-sm-flex align-item-sm-center flex-sm-nowrap">
       <div>
-        <h5><a href="">#23. New icons set for an iOS app</a></h5>
+        <h5>
+          <a class="cursor-pointer" @click="onTicketSelected"
+            ><span class="ticket-number">{{ value.number }}.</span>
+            {{ value.thread[0].subject }}</a
+          >
+        </h5>
         <p class="ul-task-manager__paragraph mb-3">
-          A collection of textile samples ..
+          {{ value.thread[0].from }}
         </p>
         <a href="#" class="m-1">
           <i
@@ -21,45 +26,55 @@
 
       <ul class="list list-unstyled mb-0 mt-3 mt-sm-0 ml-auto">
         <li>
-          <span class="ul-task-manager__font-date text-muted">20 Jan,2015</span>
+          <span class="ul-task-manager__font-date text-muted">{{
+            value.thread[value.thread.length - 1].date.toDate()
+              | moment("from", "now")
+          }}</span>
         </li>
-        <li><a href="#">Eternity app</a></li>
+        <b-badge pill variant="warning p-2 m-1">Unanswered</b-badge>
       </ul>
     </div>
     <div slot="footer">
-      <small
+      <div
         class="text-muted d-sm-flex justify-content-sm-between align-items-sm-center"
       >
-        <span>Due: <span class="font-weight-semibold">18 hours</span></span>
+        <span
+          >Received:
+          <span
+            ><b>{{
+              value.thread[0].date.toDate() | moment("from", "now")
+            }}</b></span
+          ></span
+        >
 
         <div class="list-inline mb-0 mt-2 mt-sm-0">
-          <b-dropdown
-            variant="link p-0"
-            toggle-class="text-decoration-none"
-            no-caret
-          >
-            <template slot="button-content"
-              >On hold</template
-            >
-            <b-dropdown-item href="#">Action</b-dropdown-item>
-            <b-dropdown-item href="#">Another action</b-dropdown-item>
-            <b-dropdown-item href="#">Something else here...</b-dropdown-item>
-          </b-dropdown>
-
-          <b-dropdown
-            variant="link p-2"
-            toggle-class="text-decoration-none"
-            no-caret
-          >
-            <template slot="button-content"
-              ><i class="i-Gear-2"></i
-            ></template>
-            <b-dropdown-item href="#">Action</b-dropdown-item>
-            <b-dropdown-item href="#">Another action</b-dropdown-item>
-            <b-dropdown-item href="#">Something else here...</b-dropdown-item>
-          </b-dropdown>
+          <b-badge pill variant="success p-2 m-1">Open</b-badge>
         </div>
-      </small>
+      </div>
     </div>
   </b-card>
 </template>
+<script>
+export default {
+  props: {
+    value: {
+      type: Object,
+      default: null
+    }
+  },
+  methods: {
+    onTicketSelected() {
+      this.$emit("ticketSelected")
+    }
+  }
+}
+</script>
+<style scoped>
+.ticket-number {
+  font-size: 12px;
+  font-weight: bold;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+</style>
