@@ -31,7 +31,9 @@
               | moment("from", "now")
           }}</span>
         </li>
-        <b-badge pill variant="warning p-2 m-1">Unanswered</b-badge>
+        <b-badge v-if="isUnanswered" pill variant="warning p-2 m-1"
+          >Unanswered</b-badge
+        >
       </ul>
     </div>
     <div slot="footer">
@@ -48,7 +50,10 @@
         >
 
         <div class="list-inline mb-0 mt-2 mt-sm-0">
-          <b-badge pill variant="success p-2 m-1">Open</b-badge>
+          <b-badge v-if="value.status === 'open'" pill variant="success p-2 m-1"
+            >Open</b-badge
+          >
+          <b-badge v-else pill variant="danger p-2 m-1">Closed</b-badge>
         </div>
       </div>
     </div>
@@ -60,6 +65,13 @@ export default {
     value: {
       type: Object,
       default: null
+    }
+  },
+  computed: {
+    isUnanswered() {
+      return !this.value.thread[this.value.thread.length - 1].from.includes(
+        "@netgen.co.za"
+      )
     }
   },
   methods: {

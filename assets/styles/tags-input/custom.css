@@ -46,3 +46,6 @@
 .ti-input input {
   background-color: transparent !important;
 }
+.vue-tags-input{
+  background: transparent !important;
+}

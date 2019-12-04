@@ -225,3 +225,6 @@ input::placeholder {
 .mt-15{
   margin-top: 15px;
 }
+a {
+  text-decoration-line: none !important;
+}

@@ -8,7 +8,14 @@
         :key="threaditem.id"
         class="thread-content"
       >
-        <div class="details">
+        <div
+          class="details"
+          :class="[
+            threaditem.from.includes('@netgen.co.za')
+              ? 'details-staff'
+              : 'details-client'
+          ]"
+        >
           <p>
             Received:
             <b>{{ threaditem.date.toDate() | moment("dddd, MMMM Do YYYY") }}</b>
@@ -49,12 +56,19 @@ export default {
   margin-bottom: 25px;
 }
 .details {
-  border: 1px solid #cecece;
   border-radius: 5px;
   padding: 5px;
-  background-color: #cecece;
   padding-left: 10px;
   margin-bottom: 10px;
+}
+.details-client {
+  border: 1px solid #cecece;
+  background-color: #cecece;
+}
+.details-staff {
+  border: 1px solid #3f51b5;
+  background-color: #3f51b5;
+  color: white;
 }
 .details p {
   margin-bottom: 0;

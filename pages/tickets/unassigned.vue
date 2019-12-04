@@ -39,7 +39,6 @@ export default {
   methods: {
     onTicketSelect(ticket) {
       this.selectedTicket = ticket
-      console.log(ticket)
     }
   }
 }
