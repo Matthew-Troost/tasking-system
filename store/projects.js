@@ -28,7 +28,7 @@ export const getters = {
   },
   getByName: state => projectName => {
     return state.all.find(project => {
-      return project.name === projectName
+      return project.name.toLowerCase() === projectName.toLowerCase()
     })
   }
 }
