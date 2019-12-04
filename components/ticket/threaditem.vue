@@ -1,5 +1,9 @@
 <template>
-  <div class="thread-content" :class="[showAll ? 'full-height' : '']">
+  <div
+    ref="container"
+    class="thread-content"
+    :class="[showAll ? 'full-height' : '']"
+  >
     <div
       class="details"
       :class="[
@@ -22,7 +26,7 @@
     </div>
     <div class="load-more">
       <b-button variant="outline-light m-1 btn-sm" @click="toggleHeight"
-        >Show more</b-button
+        >Show {{ showAll ? "less" : "more" }}</b-button
       >
     </div>
     <!-- eslint-disable-next-line vue/no-v-html -->
@@ -56,8 +60,6 @@ export default {
   padding: 15px;
   max-height: 400px;
   overflow: hidden;
-  -webkit-transition: 1s;
-  transition: 1s;
   position: relative;
   margin-bottom: 15px;
 }
