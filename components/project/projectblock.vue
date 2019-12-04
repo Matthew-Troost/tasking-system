@@ -14,6 +14,7 @@
       v-show="selectColour"
       v-model="colour"
       class="colour-picker"
+      :palette="colorPalete"
     />
     <ProjectAvatar
       v-for="user in projectUsers"
@@ -56,7 +57,45 @@ export default {
       colour: {
         hex: "#194d33"
       },
-      selectColour: false
+      selectColour: false,
+      colorPalete: [
+        "#5bc0de",
+        "#5cb85c",
+        "#428bca",
+        "#96ceb4",
+        "#ffeead",
+        "#ff6f69",
+        "#ffcc5c",
+        "#88d8b0",
+        "#00b159",
+        "#ffc425",
+        "#f37735",
+        "#b3ecec",
+        "#ffd460",
+        "#2f7eb5",
+        "#479cc1",
+        "#76d7da",
+        "#519051",
+        "#07F85E",
+        "#F807A1",
+        "#85F00F",
+        "#FFEE34",
+        "#55FFF9",
+        "#FF555B",
+        "#077CF8",
+        "#BBFE01",
+        "#89FE24",
+        "#24FE01",
+        "#FEDB01",
+        "#4FF4FC",
+        "#AD4FFC",
+        "#FC574F",
+        "#9DFC4F",
+        "#FF52C8",
+        "#FFDF52",
+        "#52FF89",
+        "#5272FF"
+      ]
     }
   },
   computed: {

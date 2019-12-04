@@ -353,7 +353,7 @@ export default {
       }
     },
     displaySlackError(error) {
-      this.$toast.warning(
+      this.$toast.error(
         `There was an issue sending slack communications: ${error}`
       )
     }

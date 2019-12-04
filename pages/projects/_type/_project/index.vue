@@ -15,7 +15,7 @@
             <List
               v-for="(list, index) in lists"
               :key="list.id"
-              v-model="project.lists[index]"
+              v-model="lists[index]"
               :fixed="list.name == 'Completed'"
               :projectid="project.id"
               :update-function="updateProject"
@@ -68,16 +68,17 @@ export default {
     ...mapGetters({
       getProjectByName: "projects/getByName"
     }),
-
     calendarColourPalette() {
       if (this.project) {
         return Util.generateColourPalette(this.project.colour)
       } else return null
     },
     lists() {
-      return this.project.lists.filter(list => {
-        return !list.archived
+      let lists = this.project.lists.filter(list => {
+        return !list.archived && list.name !== "Completed"
       })
+      lists.push(this.project.lists.find(x => x.name === "Completed"))
+      return lists
     },
     loading() {
       return this.project == null
@@ -120,11 +121,13 @@ export default {
 
       fromList.tasks.forEach((task, index) => {
         if (task.identifier == parameters.taskId) {
+          if (toList.name === "Completed") {
+            task.completed = true
+          }
           toList.tasks.unshift(task)
           fromList.tasks.splice(index, 1)
         }
       })
-
       this.updateProject()
     }
   }
