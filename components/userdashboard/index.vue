@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-row v-if="getProjectsForUser(userid).length > 0">
+    <b-row v-if="projects.length > 0">
       <b-col md="3">
         <b-card class="view-toggle">
           <b-row>
@@ -22,7 +22,7 @@
         </b-card>
         <b-card class="project-progress">
           <div
-            v-for="project in getProjectsForUser(userid)"
+            v-for="project in projects"
             :key="project.id"
             class="progress-container"
           >
@@ -33,6 +33,7 @@
               </span>
             </div>
             <b-progress
+              :ref="project.id"
               height="5px"
               :value="projectProgressPercent(project.id)"
             ></b-progress>
@@ -113,7 +114,8 @@ export default {
     return {
       projectListsProxy: [],
       blurredProjects: [],
-      calendarViewSelected: true
+      calendarViewSelected: true,
+      projects: null
     }
   },
   computed: {
@@ -124,8 +126,8 @@ export default {
     projectLists: {
       get() {
         let lists = []
-        if (this.getProjectsForUser(this.userid)) {
-          this.getProjectsForUser(this.userid).forEach(project => {
+        if (this.projects) {
+          this.projects.forEach(project => {
             const blurredProject = this.blurredProjects.find(blurredProject => {
               return blurredProject.name === project.name
             })
@@ -147,8 +149,8 @@ export default {
         data: [],
         colours: []
       }
-      if (this.getProjectsForUser(this.userid)) {
-        this.getProjectsForUser(this.userid).forEach(project => {
+      if (this.projects) {
+        this.projects.forEach(project => {
           let hourCount = 0
           project.lists.forEach(list => {
             list.tasks.forEach(task => {
@@ -166,11 +168,20 @@ export default {
       return composition
     }
   },
+  created() {
+    this.projects = this.getProjectsForUser(this.userid)
+  },
+  mounted() {
+    this.projects.forEach(project => {
+      let ref = this.$refs[project.id]
+      ref[0].$children[0].$el.style.backgroundColor = project.colour
+    })
+  },
   methods: {
     projectProgressPercent(projectid) {
       let allTasks = 0
       let completedTasks = 0
-      this.getProjectsForUser(this.userid)
+      this.projects
         .find(project => {
           return project.id == projectid
         })

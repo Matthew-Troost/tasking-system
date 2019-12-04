@@ -102,6 +102,7 @@ export default {
       let projectColours = []
 
       this.value.forEach((list, index) => {
+        if (list.archived) return
         var projectColour = projectColours.find(project => {
           return project.name === list.projectName
         })
