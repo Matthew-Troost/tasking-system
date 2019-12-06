@@ -31,7 +31,7 @@ format:
 #     - build
 
 test-generate:
-  stage: generate-testing
+  stage: test-generate
   only:
     - testing
   script:
@@ -44,11 +44,11 @@ test-generate:
     - format
 
 prod-generate:
-  stage: generate-master
+  stage: prod-generate
   only:
     - master
   script:
-    - npm run  generate-master
+    - npm run generate-prod
   artifacts:
     expire_in: 1 week
     paths:
