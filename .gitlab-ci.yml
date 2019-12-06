@@ -3,8 +3,8 @@ image: node:11.15.0
 stages:
   - format
   # - test
-  - generate-testing
-  - generate-master
+  - test-generate
+  - prod-generate
   - test-deploy
   - prod-deploy
 
@@ -30,26 +30,26 @@ format:
 #     - format
 #     - build
 
-generate-testing:
+test-generate:
   stage: generate-testing
   only:
     - testing
   script:
     - npm run generate-testing
-  artifacts: #describes a path to the build result. The files in this path can be used in the next build steps
+  artifacts:
     expire_in: 1 week
     paths:
       - dist
   dependencies:
     - format
 
-generate-master:
+prod-generate:
   stage: generate-master
   only:
     - master
   script:
     - npm run  generate-master
-  artifacts: #describes a path to the build result. The files in this path can be used in the next build steps
+  artifacts:
     expire_in: 1 week
     paths:
       - dist
@@ -69,7 +69,7 @@ test-deploy:
   dependencies:
     - format
     # - test
-    - generate-testing
+    - test-generate
 
 prod-deploy:
   stage: prod-deploy
@@ -83,4 +83,4 @@ prod-deploy:
   dependencies:
     - format
     # - test
-    - generate-master
+    - prod-generate

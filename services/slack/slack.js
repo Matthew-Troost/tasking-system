@@ -84,7 +84,7 @@ export function sendTaskNoteNotification(
         //Does not send to the user who made the note
         if (
           (!data.user || data.user.profile.email === user.email) &&
-          !process.env.DEVELOPMENT
+          !process.env.NODE_ENV === "development"
         )
           return
         messageUser()
@@ -116,7 +116,7 @@ export function sendTaskUploadNotification(
         //Does not send to the user who uploaded the file
         if (
           (!data.user || data.user.profile.email === user.email) &&
-          !process.env.DEVELOPMENT
+          !process.env.NODE_ENV === "development"
         )
           return
         messageUser()
@@ -149,7 +149,7 @@ export function sendTaskAssignedMessage(
       //Does not send to the user who assigned the task
       if (
         (!data.user || data.user.profile.email === currentUser.email) &&
-        !process.env.DEVELOPMENT
+        !process.env.NODE_ENV === "development"
       )
         return
       messageUser()
