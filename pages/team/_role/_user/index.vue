@@ -59,7 +59,7 @@ export default {
     }
   },
   created() {
-    console.log(process.env.NODE_ENV == "development")
+    console.log(process.env.DEVELOPMENT)
     this.user = this.getUserByFullName(
       Utils.linkToString(this.$route.params.user)
     )
