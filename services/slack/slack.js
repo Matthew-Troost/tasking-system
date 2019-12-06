@@ -1,9 +1,34 @@
 import Slack from "slack"
 import Vue from "vue"
 var blockTemplates = require("@/services/slack/blockTemplates.js")
-//var Util = require("@/utils/index.js")
 const botOAuthToken = process.env.SLACK_BOT_OAUTH
 const OAuthToken = process.env.SLACK_OAUTH
+
+class SlackData {
+  constructor(user, message, blocks, channel, users) {
+    this.user = user ? user.user.id : null
+    this._message = message
+    this._blocks = blocks
+    this.channel = channel
+    this.users = users
+  }
+
+  get blocks() {
+    return this._blocks || "[]"
+  }
+  set blocks(value) {
+    this._blocks = value
+  }
+
+  get message() {
+    return this._message || ""
+  }
+
+  set message(value) {
+    this._message = value
+  }
+}
+let data = new SlackData()
 
 export const functions = {
   MESSAGE: {
@@ -24,28 +49,17 @@ export const functions = {
 }
 
 export function messageUserByEmail(userEmail, message) {
-  return new Promise((resolve, reject) => {
-    Slack.users
-      .lookupByEmail({
-        token: botOAuthToken,
-        email: userEmail
-      })
-      .then(user => {
-        Slack.chat
-          .postMessage({
-            token: botOAuthToken,
-            channel: user.user.id,
-            text: message,
-            as_user: true
-          })
-          .then(result => {
-            resolve(result)
-          })
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
+  data.message = message
+  return getUserByEmail(userEmail)
+    .then(() => {
+      messageUser()
+    })
+    .catch(error => {
+      Promise.reject(error)
+    })
+    .finally(() => {
+      data = new SlackData()
+    })
 }
 
 export function sendTaskNoteNotification(
@@ -56,42 +70,37 @@ export function sendTaskNoteNotification(
   listName,
   content
 ) {
-  return new Promise((resolve, reject) => {
-    let blocks = blockTemplates.newNote(
-      user,
-      task,
-      projectName,
-      listName,
-      content
-    )
-
-    Slack.users
-      .list({
-        token: botOAuthToken
+  data.blocks = blockTemplates.newNote(
+    user,
+    task,
+    projectName,
+    listName,
+    content
+  )
+  return getUsersList()
+    .then(() => {
+      userEmails.forEach(email => {
+        data.user = data.users.members.find(x => x.profile.email == email)
+        //Does not send to the user who made the note
+        if (
+          (!data.user || data.user.profile.email === user.email) &&
+          !process.env.DEVELOPMENT
+        )
+          return
+        messageUser()
       })
-      .then(slackUsers => {
-        userEmails.forEach(email => {
-          let slackUser = slackUsers.members.find(x => x.profile.email == email)
-          //Does not send to the user who made the note
-          // if (!slackUser || slackUser.profile.email === user.email) return
-          Slack.chat
-            .postMessage({
-              token: botOAuthToken,
-              channel: slackUser.id,
-              text: "",
-              blocks: blocks,
-              as_user: true
-            })
-            .then(result => {
-              resolve(result)
-            })
-        })
-      })
-      .catch(err => {
-        reject(err)
-      })
-  })
+    })
+    .then(result => {
+      return Promise.resolve(result)
+    })
+    .catch(err => {
+      return Promise.reject(err)
+    })
+    .finally(() => {
+      data = new SlackData()
+    })
 }
+
 export function sendTaskUploadNotification(
   user,
   task,
@@ -99,34 +108,29 @@ export function sendTaskUploadNotification(
   userEmails,
   listName
 ) {
-  return new Promise((resolve, reject) => {
-    let blocks = blockTemplates.newUpload(user, task, projectName, listName)
-    Slack.users
-      .list({
-        token: botOAuthToken
+  data.blocks = blockTemplates.newUpload(user, task, projectName, listName)
+  return getUsersList()
+    .then(() => {
+      userEmails.forEach(email => {
+        data.user = data.users.members.find(x => x.profile.email == email)
+        //Does not send to the user who uploaded the file
+        if (
+          (!data.user || data.user.profile.email === user.email) &&
+          !process.env.DEVELOPMENT
+        )
+          return
+        messageUser()
       })
-      .then(slackUsers => {
-        userEmails.forEach(email => {
-          let slackUser = slackUsers.members.find(x => x.profile.email == email)
-          //Does not send to the user who uploaded the file
-          // if (!slackUser || slackUser.profile.email === user.email) return
-          Slack.chat
-            .postMessage({
-              token: botOAuthToken,
-              channel: slackUser.id,
-              text: "",
-              blocks: blocks,
-              as_user: true
-            })
-            .then(result => {
-              resolve(result)
-            })
-        })
-      })
-      .catch(err => {
-        reject(err)
-      })
-  })
+    })
+    .then(result => {
+      return Promise.resolve(result)
+    })
+    .catch(error => {
+      return handleError(error)
+    })
+    .finally(() => {
+      data = new SlackData()
+    })
 }
 
 export function sendTaskAssignedMessage(
@@ -136,230 +140,212 @@ export function sendTaskAssignedMessage(
   currentUser,
   listName
 ) {
-  let blocks = blockTemplates.newTask(assignee.avatar, project, task, listName)
-  return new Promise((resolve, reject) => {
-    Slack.users
-      .lookupByEmail({
-        token: botOAuthToken,
-        email: assignee.email
-      })
-      .then(user => {
-        //Add user to channel
-        Slack.channels.invite({
-          token: OAuthToken,
-          channel: project.channelId,
-          user: user.user.id
-        })
-        //Does not send if user added themselves
-        // if (user.user.profile.email === currentUser.email) return
-        Slack.chat
-          .postMessage({
-            token: botOAuthToken,
-            channel: user.user.id,
-            text: "",
-            blocks: blocks,
-            parse: "application/json",
-            as_user: true
-          })
-          .then(result => {
-            resolve(result)
-          })
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
+  data.blocks = blockTemplates.newTask(assignee.avatar, project, task, listName)
+  return Promise.all([
+    getChannelById(project.channelId),
+    getUserByEmail(assignee.email)
+  ])
+    .then(() => {
+      //Does not send to the user who assigned the task
+      if (
+        (!data.user || data.user.profile.email === currentUser.email) &&
+        !process.env.DEVELOPMENT
+      )
+        return
+      messageUser()
+    })
+    .then(() => inviteUserToChannel())
+    .catch(error => {
+      return handleError(error)
+    })
+    .finally(() => {
+      data = new SlackData()
+    })
 }
 
 export function sendTaskCompletedMessage(project, task, user, listName) {
-  return new Promise((resolve, reject) => {
-    let blocks = blockTemplates.taskCompleted(task, user, listName)
-    messageChannelById(project.channelId, "", blocks)
-      .then(result => {
-        resolve(result)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
+  data.blocks = blockTemplates.taskCompleted(task, user, listName)
+  data.channel = { id: project.channelId }
+  return messageChannel()
+    .then(result => {
+      return Promise.resolve(result)
+    })
+    .catch(error => {
+      return handleError(error)
+    })
 }
 
 export function addProjectChannel(name, description) {
-  return new Promise((resolve, reject) => {
-    //Check that there isnt already a channel for this project
-    getChannelByName(name)
-      .then(projectChannel => {
-        if (!projectChannel) {
-          Slack.channels
-            .create({
-              token: OAuthToken,
-              name: name
-            })
-            .then(channel => {
-              //Only add description if creating the channel
-              addChannelDescription(projectChannel.id, description)
-              projectChannel = channel
-            })
-            .catch(error => {
-              reject(error)
-            })
-        }
-        resolve(projectChannel.id)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
+  return getChannelByName(name)
+    .then(() => {
+      if (!data.channel) {
+        //Only add description if creating the channel
+        createChannel(name).then(() => addChannelDescription(description))
+      }
+    })
+    .then(() => {
+      return Promise.resolve(data.channel.id)
+    })
+    .catch(error => {
+      return handleError(error)
+    })
+    .finally(() => {
+      data = new SlackData()
+    })
 }
 
-export function addChannelDescription(channelId, description) {
-  return new Promise((resolve, reject) => {
-    Slack.channels
-      .setPurpose({
-        token: OAuthToken,
-        purpose: description,
-        channel: channelId
-      })
-      .then(() => {
-        resolve(true)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
-}
-
-export function messageChannelByName(channelName, message) {
-  return new Promise((resolve, reject) => {
-    getChannelByName(channelName)
-      .then(channel => {
-        Slack.chat
-          .postMessage({
-            token: botOAuthToken,
-            channel: channel.id,
-            text: message
-          })
-          .then(result => {
-            resolve(result)
-          })
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
-}
-
-export function messageChannelById(channelId, message, optionalBlocks) {
-  return new Promise((resolve, reject) => {
-    Slack.chat
-      .postMessage({
-        token: botOAuthToken,
-        channel: channelId,
-        text: message,
-        blocks: optionalBlocks
-      })
-      .then(result => {
-        resolve(result)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
-}
-export function createChannel(name, optionalMessage) {
-  return new Promise((resolve, reject) => {
-    //Check that there isnt already a channel for this project
-    getChannelByName(name)
-      .then(projectChannel => {
-        if (!projectChannel) {
-          Slack.channels
-            .create({
-              token: OAuthToken,
-              name: name
-            })
-            .then(channel => {
-              projectChannel = channel
-            })
-            .catch(error => {
-              reject(error)
-            })
-        }
-        if (optionalMessage) {
-          Slack.chat.postMessage({
-            token: OAuthToken,
-            channel: projectChannel.channel.id,
-            text: optionalMessage
-          })
-        }
-        resolve(projectChannel)
-      })
-      .catch(err => {
-        reject(err)
-      })
-  })
-}
 //Uses a legacy token which is aparently depricated and won't be supported forever
 //Apps and bots don't have post auth scope which is needed to delete a channel so do not see another way of doing this now
+/* 
+[Channel Deletion]
+*/
 export function deleteChannelById(channelId) {
-  return new Promise((resolve, reject) => {
-    Vue.axios
-      .post(
-        `https://slack.com/api/channels.delete?token=${OAuthToken}&channel=${channelId}`
-      )
-      .then(response => {
-        resolve(response)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
+  Vue.axios
+    .post(
+      `https://slack.com/api/channels.delete?token=${OAuthToken}&channel=${channelId}`
+    )
+    .then(response => {
+      Promise.resolve(response)
+    })
+    .catch(error => {
+      return handleError(error)
+    })
 }
-export function test(input) {
-  return new Promise((resolve, reject) => {
-    Vue.axios
-      .get(input)
-      .then(response => {
-        resolve(response)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
-}
+
 export function deleteChannelByName(channelName) {
-  return new Promise((resolve, reject) => {
-    getChannelByName(channelName)
-      .then(channel => {
-        Vue.axios
-          .post(
-            `https://slack.com/api/channels.delete?token=${OAuthToken}&channel=${channel.id}`
-          )
-          .then(response => {
-            resolve(response)
-          })
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
+  return getChannelByName(channelName)
+    .then(() => {
+      deleteChannelById(data.channel.id)
+    })
+    .then(() => {
+      Promise.resolve("channel Deleted")
+    })
+    .catch(error => {
+      return handleError(error)
+    })
 }
 
 export function getChannelByName(channelName) {
-  return new Promise((resolve, reject) => {
-    Slack.channels
-      .list({
-        token: OAuthToken
-      })
-      .then(list => {
-        const channel = list.channels.find(
-          x => x.name.toLowerCase() === channelName.toLowerCase()
-        )
-        resolve(channel)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
+  return Slack.channels
+    .list({
+      token: OAuthToken
+    })
+    .then(list => {
+      const channel = list.channels.find(
+        x => x.name.toLowerCase() === channelName.toLowerCase()
+      )
+      if (channel) data.channel = channel
+    })
+    .catch(error => {
+      return handleError(error)
+    })
+}
+
+/*
+[Internal Functions]
+*/
+function addChannelDescription(description) {
+  return Slack.channels
+    .setPurpose({
+      token: OAuthToken,
+      purpose: description,
+      channel: data.channel.id
+    })
+    .catch(error => {
+      return handleError(error)
+    })
+}
+
+function messageChannel() {
+  return Slack.chat
+    .postMessage({
+      token: botOAuthToken,
+      channel: data.channel.id,
+      text: data.message,
+      blocks: data.blocks
+    })
+    .catch(error => {
+      return handleError(error)
+    })
+}
+
+function createChannel(name) {
+  return Slack.channels
+    .create({
+      token: OAuthToken,
+      name: name
+    })
+    .then(channel => (data.channel = channel.channel))
+    .catch(error => {
+      return handleError(error)
+    })
+}
+
+function getUserByEmail(userEmail) {
+  return Slack.users
+    .lookupByEmail({
+      token: botOAuthToken,
+      email: userEmail
+    })
+    .then(user => {
+      data.user = user.user
+      Promise.resolve()
+    })
+    .catch(error => {
+      Promise.reject(error)
+    })
+}
+
+function messageUser() {
+  return Slack.chat
+    .postMessage({
+      token: botOAuthToken,
+      channel: data.user.id,
+      text: data.message || "",
+      blocks: data.blocks || "[]",
+      as_user: true
+    })
+    .catch(err => {
+      Promise.reject(err)
+    })
+}
+
+function inviteUserToChannel() {
+  return Slack.channels
+    .invite({
+      token: OAuthToken,
+      channel: data.channel.id,
+      user: data.user.id
+    })
+    .catch(error => {
+      if (!error.message == "already_in_channel") throw error
+    })
+}
+
+function getChannelById(id) {
+  return Slack.channels
+    .list({
+      token: OAuthToken
+    })
+    .then(channels => {
+      data.channel = channels.channels.find(x => x.id == id)
+    })
+    .catch(error => {
+      return Promise.reject(error)
+    })
+}
+
+function getUsersList() {
+  return Slack.users
+    .list({
+      token: botOAuthToken
+    })
+    .then(users => (data.users = users))
+}
+
+function handleError(error) {
+  console.log(error)
+  return Promise.reject(error)
 }
 
 export default Slack
