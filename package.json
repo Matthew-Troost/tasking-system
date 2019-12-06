@@ -5,10 +5,12 @@
   "author": "Netgen",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
+    "dev": "cross-env NODE_ENV=development,DEVELOPMENT=true nodemon server/index.js --watch server",
     "build": "nuxt build",
-    "start": "cross-env NODE_ENV=production node server/index.js",
-    "generate": "nuxt generate",
+    "start": "cross-env NODE_ENV=production,DEVELOPMENT=false node server/index.js",
+    "generate-testing": "cross-env DEVELOPMENT=true nuxt generate",
+    "generate-master": "cross-env DEVELOPMENT=false nuxt generate",
+
     "test": "jest",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore ."
