@@ -48,7 +48,10 @@ export default {
       type: Number,
       default: 40
     },
-
+    height: {
+      type: Number,
+      default: 43
+    },
     borderRadius: {
       type: Number,
       default: 50
