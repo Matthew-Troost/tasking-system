@@ -4,7 +4,8 @@ module.exports = {
    ** Headers of the page
    */
   env: {
-    DEVELOPMENT: true, //switch this to false before deploying
+    //Moved to package.json file
+    // DEVELOPMENT: true, //switch this to false before deploying
     SLACK_OAUTH:
       "xoxp-5039254558-11063984753-849564116853-4a335ff20261c511e810a29c3d7f6f5f",
     SLACK_BOT_OAUTH: "xoxb-5039254558-849096412500-ZaFeCzf2DzceiwIm6hRyuLbm",
