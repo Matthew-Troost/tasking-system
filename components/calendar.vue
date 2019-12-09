@@ -14,8 +14,14 @@
           "
           >{{ extraInfo.task.priority }}</span
         >
-        <span class="list">{{ extraInfo.task.listName }}: </span>
-        <span>{{ extraInfo.task.description }}</span>
+        <span class="list"
+          >{{
+            `${extraInfo.task.listName.substr(0, 35)} ${
+              extraInfo.task.listName.length > 35 ? "..." : ""
+            }`
+          }}:
+        </span>
+        <span>{{ extraInfo.task.description.substr(0, 35) }}</span>
         <span class="hours"
           >{{ extraInfo.task.hours }} hour{{
             extraInfo.task.hours == 1 ? "" : "s"
