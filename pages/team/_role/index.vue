@@ -54,7 +54,7 @@
                 <div
                   v-for="project in projectList[user.id]"
                   :key="project"
-                  class="text-center"
+                  class="inline"
                 >
                   <b-badge
                     pill
@@ -192,5 +192,8 @@ export default {
 <style scoped>
 .user-card {
   margin-bottom: 15px;
+}
+.inline {
+  display: inline-block;
 }
 </style>
