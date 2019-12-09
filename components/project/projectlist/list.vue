@@ -270,6 +270,7 @@ export default {
 }
 input {
   border: none;
+  width: 90%;
 }
 input:focus {
   outline: none;
