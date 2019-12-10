@@ -263,3 +263,7 @@ input::placeholder {
 .flickity-slider .is-selected{
   opacity: 1 !important;
 }
+.custom-padding {
+  padding: 0 !important;
+  padding-right: 15px !important;
+}
