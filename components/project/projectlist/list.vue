@@ -47,6 +47,15 @@
         <b-col md="5"> </b-col>
       </b-row>
     </div>
+    <transition name="fade">
+      <div
+        v-show="dragging"
+        :id="`${list.identifier}-trash`"
+        class="mb-20 trash-grid"
+      >
+        drop here to delete
+      </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -84,10 +93,12 @@ export default {
   data() {
     return {
       sortableRef: null,
+      trashCanRef: null,
       updateTimer: null,
       hourSort: false,
       difficultySort: false,
-      tasksProxy: []
+      tasksProxy: [],
+      dragging: false
     }
   },
   computed: {
@@ -129,11 +140,21 @@ export default {
         },
         onStart: () => {
           document.body.style.cursor = "grabbing"
+          this.dragging = true
         },
         onEnd: () => {
           document.body.style.cursor = "auto"
+          this.dragging = false
         },
         forceFallback: true,
+        animation: 150
+      }
+    )
+
+    this.trashCanRef = new Sortable(
+      document.getElementById(`${this.list.identifier}-trash`),
+      {
+        group: this.projectid,
         animation: 150
       }
     )
@@ -303,5 +324,17 @@ input:focus {
 }
 .sort-trigger:hover {
   opacity: 1;
+}
+.trash-grid {
+  text-align: center;
+  font-size: 14px;
+  color: red;
+  border: 1px solid;
+  border-radius: 5px;
+  background-color: #ffbdbd;
+  padding: 7px;
+}
+.mb-20 {
+  margin-bottom: 20px !important;
 }
 </style>
