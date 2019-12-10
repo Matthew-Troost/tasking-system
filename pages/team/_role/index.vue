@@ -44,6 +44,7 @@
           >
             <b-card class="card-profile-1 mb-30 text-center">
               <b-dropdown
+                v-if="userIsSuperAdmin"
                 size="lg"
                 variant="link"
                 toggle-class="text-decoration-none custom-padding"
