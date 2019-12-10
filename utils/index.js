@@ -51,9 +51,9 @@ function generateGuid() {
 
 function generateColourPalette(baseColour) {
   return chroma
-    .scale([baseColour, "#000000"])
+    .scale([baseColour, chroma(baseColour).darken(2.6)])
     .mode("lch")
-    .colors(5)
+    .colors(8)
 }
 
 export default {

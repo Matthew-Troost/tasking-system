@@ -99,7 +99,7 @@ export default {
       this.$store.state.db
         .collection("projects")
         .doc(projectid)
-        .update(this.$store.getters["projects/getById"](projectid))
+        .update(this.project)
     },
     addList: function() {
       this.project.lists.push({
