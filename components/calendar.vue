@@ -14,8 +14,18 @@
           "
           >{{ extraInfo.task.priority }}</span
         >
-        <span class="list">{{ extraInfo.task.listName }}: </span>
-        <span>{{ extraInfo.task.description }}</span>
+        <span class="list"
+          >{{
+            `${extraInfo.task.listName.substr(0, 35)} ${
+              extraInfo.task.listName.length > 35 ? "..." : ""
+            }`
+          }}:
+        </span>
+        <span>{{
+          `${extraInfo.task.description.substr(0, 45)} ${
+            extraInfo.task.description.length > 45 ? "..." : ""
+          }`
+        }}</span>
         <span class="hours"
           >{{ extraInfo.task.hours }} hour{{
             extraInfo.task.hours == 1 ? "" : "s"
@@ -135,12 +145,18 @@ export default {
           if (this.restrictToUserId) {
             if (task.users.includes(this.restrictToUserId) && !task.completed) {
               eventsList.push(event)
-              if (!usedColours.includes(this.colours[index]))
+              if (
+                !usedColours.includes(this.colours[index]) &&
+                index < this.colours.length
+              )
                 usedColours.push(this.colours[index])
             }
           } else if (!task.completed) {
             eventsList.push(event)
-            if (!usedColours.includes(this.colours[index]))
+            if (
+              !usedColours.includes(this.colours[index]) &&
+              index < this.colours.length
+            )
               usedColours.push(this.colours[index])
           }
 
@@ -175,7 +191,6 @@ export default {
           }
         })
       })
-
       this.$emit("input", updatedLists)
       this.$emit("events-adjusted")
     },

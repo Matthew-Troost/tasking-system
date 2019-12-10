@@ -52,6 +52,9 @@
           </a>
           <div class="triangle"></div>
         </li>
+        <span class="ml-2 badge badge-pill badge-success version"
+          >TEST RELEASE</span
+        >
       </ul>
     </vue-perfect-scrollbar>
 
@@ -302,3 +305,14 @@ export default {
   }
 }
 </script>
+<style scoped>
+.version {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin-bottom: 8px;
+  white-space: unset;
+  margin-right: 8px;
+  background-color: #af63e8;
+}
+</style>

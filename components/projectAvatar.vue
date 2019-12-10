@@ -92,9 +92,7 @@ export default {
     userInitials() {
       return `${this.user.first_name
         .substr(0, 1)
-        .toUpperCase()} ${this.user.last_name
-        .substr(this.user.last_name.length - 1, this.user.last_name.length)
-        .toUpperCase()}`
+        .toUpperCase()} ${this.user.last_name.substr(0, 1).toUpperCase()}`
     }
   },
   mounted() {

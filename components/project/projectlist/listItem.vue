@@ -231,9 +231,14 @@ export default {
       },
       set(val) {
         if (val.length > this.tags.length) {
-          this.slackNotify(this.$slack.functions.TASK_NOTIFICATION.ASSIGNED, {
-            assignee: this.users.find(x => x.id == val[val.length - 1].id)
-          })
+          var latestAssignee = this.users.find(
+            x => x.id == val[val.length - 1].id
+          )
+          if (latestAssignee != this.getCurrentUser) {
+            this.slackNotify(this.$slack.functions.TASK_NOTIFICATION.ASSIGNED, {
+              assignee: latestAssignee
+            })
+          }
         }
         this.tagsProxy = val.map(tag => {
           return tag.id
@@ -317,15 +322,6 @@ export default {
           )
           break
         case this.$slack.functions.TASK_NOTIFICATION.NOTE_ADDED:
-          console.log({
-            user: this.getCurrentUser,
-            task: this.value.description,
-            projetc: this.getProjectById(this.$parent.projectid).name,
-            assigned: this.users
-              .filter(x => this.tagsProxy.includes(x.id))
-              .map(t => t.email),
-            list: this.$parent.list.name
-          })
           this.$slack
             .sendTaskNoteNotification(
               this.getCurrentUser,
