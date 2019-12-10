@@ -63,7 +63,7 @@ import dayGridPlugin from "@fullcalendar/daygrid"
 
 import "@fullcalendar/core/main.css"
 import "@fullcalendar/daygrid/main.css"
-import "../assets/styles/calendar/calendar_custom.css"
+import "@/assets/styles/calendar/calendar_custom.css"
 
 export default {
   name: "Calendar",
