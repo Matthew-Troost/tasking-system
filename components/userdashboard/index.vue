@@ -231,7 +231,7 @@ export default {
 
       fromList.tasks.forEach((task, index) => {
         if (task.identifier == parameters.taskId) {
-          toList.tasks.unshift(task)
+          if (toList) toList.tasks.unshift(task)
           fromList.tasks.splice(index, 1)
         }
       })
