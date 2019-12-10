@@ -43,6 +43,19 @@
             class="user-card"
           >
             <b-card class="card-profile-1 mb-30 text-center">
+              <b-dropdown
+                size="lg"
+                variant="link"
+                toggle-class="text-decoration-none custom-padding"
+                no-caret
+              >
+                <template slot="button-content" class="custom-padding">
+                  &#x2026;<span class="sr-only">Search</span></template
+                >
+                <b-dropdown-item @click="sendResetPassword(user)"
+                  >Reset Password</b-dropdown-item
+                >
+              </b-dropdown>
               <div class="avatar mb-3">
                 <img v-if="user.avatar" v-lazy="user.avatar" alt />
               </div>
@@ -184,6 +197,20 @@ export default {
     },
     toLink: function(projectName) {
       return Util.stringToLink(projectName)
+    },
+    sendResetPassword(user) {
+      this.$store.state.auth
+        .sendPasswordResetEmail(user.email)
+        .then(() => {
+          this.$toast.success(
+            `Sent a password reset email to ${user.first_name}`
+          )
+        })
+        .catch(error => {
+          this.$toast.error(
+            `There was an error sending the password reset email: ${error}`
+          )
+        })
     }
   }
 }
@@ -195,5 +222,10 @@ export default {
 }
 .inline {
   display: inline-block;
+}
+.b-dropdown {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 </style>
