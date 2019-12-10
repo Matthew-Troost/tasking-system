@@ -155,9 +155,7 @@ export default {
       document.getElementById(`${this.list.identifier}-trash`),
       {
         group: this.projectid,
-        animation: 150,
-        fallbackOnBody: true,
-        swapThreshold: 0.65
+        animation: 150
       }
     )
   },

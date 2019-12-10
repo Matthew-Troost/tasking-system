@@ -121,10 +121,13 @@ export default {
 
       fromList.tasks.forEach((task, index) => {
         if (task.identifier == parameters.taskId) {
-          if (toList.name === "Completed") {
-            task.completed = true
+          if (toList) {
+            //if not, item was dragged to deleted list
+            if (toList.name === "Completed") {
+              task.completed = true
+            }
+            toList.tasks.unshift(task)
           }
-          toList.tasks.unshift(task)
           fromList.tasks.splice(index, 1)
         }
       })
