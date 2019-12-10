@@ -47,13 +47,15 @@
         <b-col md="5"> </b-col>
       </b-row>
     </div>
-    <div
-      v-show="dragging"
-      :id="`${list.identifier}-trash`"
-      class="mb-20 trash-grid"
-    >
-      drop here to delete
-    </div>
+    <transition name="fade">
+      <div
+        v-show="dragging"
+        :id="`${list.identifier}-trash`"
+        class="mb-20 trash-grid"
+      >
+        drop here to delete
+      </div>
+    </transition>
   </div>
 </template>
 <script>
