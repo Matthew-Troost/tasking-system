@@ -40,11 +40,30 @@
     </div>
     <div class="list-group-item totals">
       <b-row>
-        <b-col md="6"></b-col>
+        <b-col md="3">
+          <b-progress
+            v-if="!fixed"
+            :max="tasks.length"
+            height="10px"
+            class="progress"
+          >
+            <b-progress-bar
+              variant="success"
+              class="progress-text"
+              :value="completedTasks"
+              :label="
+                `${(
+                  (completedTasks / (tasks.length == 0 ? 1 : tasks.length)) *
+                  100
+                ).toFixed()}%`
+              "
+            ></b-progress-bar>
+          </b-progress>
+        </b-col>
+        <b-col md="3"> </b-col>
         <b-col md="1">
           <b class="hours">{{ totalHours }}</b>
         </b-col>
-        <b-col md="5"> </b-col>
       </b-row>
     </div>
     <transition name="fade">
@@ -119,6 +138,11 @@ export default {
         if (this.applicable(task)) total += task.hours
       })
       return total
+    },
+    completedTasks() {
+      return this.tasks.filter(task => {
+        return task.completed
+      }).length
     }
   },
   mounted() {
@@ -336,5 +360,12 @@ input:focus {
 }
 .mb-20 {
   margin-bottom: 20px !important;
+}
+.progress-text {
+  font-size: 7px;
+}
+.progress {
+  max-width: 200px;
+  margin-top: 4px;
 }
 </style>
