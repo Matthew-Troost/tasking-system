@@ -210,7 +210,7 @@ export default {
         difficulty: "easy",
         hours: 1,
         startdate: this.$store.state.firebase.firestore.Timestamp.fromDate(
-          new Date()
+          new Date().setHours(24)
         ),
         enddate: this.$store.state.firebase.firestore.Timestamp.fromDate(
           new Date()
@@ -360,6 +360,14 @@ input:focus {
 }
 .mb-20 {
   margin-bottom: 20px !important;
+}
+
+.highlight {
+  background-color: #3f51b554;
+  transition: background-color 1s linear;
+}
+.no-highlight {
+  background-color: transparent;
 }
 .progress-text {
   font-size: 7px;

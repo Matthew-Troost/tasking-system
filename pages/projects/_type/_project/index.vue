@@ -7,7 +7,7 @@
       </h2>
 
       <b-tabs pills>
-        <b-tab active>
+        <b-tab ref="list-tab" active>
           <template slot="title">
             <i class="i-Pen-4  ul-tab__icon" />
           </template>

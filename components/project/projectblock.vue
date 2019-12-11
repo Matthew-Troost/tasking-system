@@ -108,7 +108,7 @@ export default {
         this.project.lists.forEach(list => {
           if (list.tasks) {
             list.tasks.forEach(task => {
-              if (task.users) {
+              if (task.users && !task.completed) {
                 task.users.forEach(userid => {
                   if (!users.includes(userid)) users.push(userid)
                 })
