@@ -182,6 +182,12 @@
                 <span class="item-name">Sites</span>
               </nuxt-link>
             </li>
+            <li class="nav-item">
+              <nuxt-link tag="a" class to="/projects/social-media">
+                <i class="nav-icon i-Facebook-2"></i>
+                <span class="item-name">Social Media</span>
+              </nuxt-link>
+            </li>
           </ul>
         </div>
       </div>
