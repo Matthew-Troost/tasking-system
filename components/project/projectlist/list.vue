@@ -210,7 +210,7 @@ export default {
         difficulty: "easy",
         hours: 1,
         startdate: this.$store.state.firebase.firestore.Timestamp.fromDate(
-          new Date().setHours(24)
+          new Date()
         ),
         enddate: this.$store.state.firebase.firestore.Timestamp.fromDate(
           new Date()
