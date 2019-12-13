@@ -1,7 +1,12 @@
 <template>
   <div
     :id="value.identifier"
-    :class="[{ completed: value.completed }, 'list-group-item']"
+    :class="[
+      {
+        completed: value.completed
+      },
+      'list-group-item'
+    ]"
   >
     <b-row>
       <b-col md="6" style="display:inherit">
@@ -14,6 +19,9 @@
           />
           <span class="checkmark"></span>
         </label>
+        <b-badge v-if="isOverdue" pill class="overdue" variant="danger"
+          >DUE {{ cappedEndDate | moment("from", "now") }}</b-badge
+        >
         <input
           ref="description"
           :value="value.description"
@@ -256,6 +264,21 @@ export default {
         .filter(i => {
           return i.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1
         })
+    },
+    cappedEndDate() {
+      var enddate = new Date(this.value.enddate.toDate())
+      enddate.setHours(23)
+      enddate.setMinutes(59)
+      return enddate
+    },
+    isOverdue() {
+      var morning = new Date()
+      morning.setHours(0)
+      morning.setMinutes(0)
+
+      var diff = morning.getTime() - this.cappedEndDate.getTime()
+
+      return diff > 0 && !this.value.completed
     }
   },
   watch: {
@@ -412,5 +435,11 @@ input:focus {
   cursor: grabbing !important;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
+}
+.overdue {
+  height: fit-content;
+  margin-right: 5px;
+  margin-top: 4px;
+  text-transform: uppercase;
 }
 </style>
