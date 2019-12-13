@@ -57,6 +57,7 @@
       @eventMouseLeave="eventHoverLeave"
       @eventDrop="onEventAdjusted"
       @eventResize="onEventAdjusted"
+      @eventClick="onEventClicked"
     />
   </div>
 </template>
@@ -195,11 +196,17 @@ export default {
       this.$emit("events-adjusted")
     },
     onDayRender: function(info) {
-      if (info.date.getDay() == 0 || info.date.getDay() == 6) {
+      if (
+        info.date.getDay() == 0 ||
+        info.date.getDay() == 6 ||
+        info.date < new Date()
+      ) {
         info.el.classList.add("fc-weekend")
       }
     },
-    // eslint-disable-next-line no-unused-vars
+    onEventClicked(info) {
+      this.$emit("event-clicked", info.event.extendedProps)
+    },
     eventHoverEnter(info) {
       document.getElementsByClassName("fc-toolbar")[0].style.display = "none"
       this.extraInfo.task = info.event.extendedProps
