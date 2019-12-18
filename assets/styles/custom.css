@@ -267,3 +267,7 @@ input::placeholder {
   padding: 0 !important;
   padding-right: 15px !important;
 }
+.btn-link:hover {
+  text-decoration: none !important;
+  font-weight: bold;
+}

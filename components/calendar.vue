@@ -177,7 +177,6 @@ export default {
     },
     onEventAdjusted: function(info) {
       const enddate = info.event.end
-      enddate.setDate(enddate.getDate() - 1)
 
       const updatedLists = this.value
       updatedLists.forEach(list => {
@@ -187,7 +186,14 @@ export default {
               info.event.start
             )
             task.enddate = this.$store.state.firebase.firestore.Timestamp.fromDate(
-              enddate
+              new Date(
+                enddate.getFullYear(),
+                enddate.getMonth(),
+                enddate.getDate() - 1,
+                23,
+                59,
+                59
+              )
             )
           }
         })

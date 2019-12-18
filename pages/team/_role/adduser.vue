@@ -435,13 +435,11 @@ export default {
       }
       if (this.valid)
         this.addUser().then(
-          user => {
-            console.log(user)
+          () => {
             this.$toast.success("User Successfully Added")
           },
           error => {
-            console.log(error)
-            this.$toast.error("Error Encountered")
+            this.$toast.error(`There was an issue adding a new user: ${error}`)
           }
         )
     }

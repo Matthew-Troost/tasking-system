@@ -64,28 +64,65 @@
                 {{ !user.nickname ? user.first_name : user.nickname }}
               </h5>
 
-              <div v-if="projectList[user.id]">
-                <div
-                  v-for="project in projectList[user.id]"
-                  :key="project"
-                  class="inline"
-                >
-                  <b-badge
-                    pill
-                    variant="outline-dark p-2 m-1"
-                    :to="'/projects/systems/' + toLink(project)"
-                    nuxt
-                    >{{ project }}
-                  </b-badge>
+              <flickity :ref="`slider_${user.id}`" :options="slider.options">
+                <div class="carousel-cell">
+                  <div v-if="projectList[user.id]">
+                    <b-badge
+                      v-for="project in projectList[user.id].slice(0, 4)"
+                      :key="project.id"
+                      pill
+                      variant="outline-dark p-2 m-1"
+                      :to="'/projects/systems/' + toLink(project.name)"
+                      nuxt
+                      class="inline"
+                      >{{ project.name }}
+                    </b-badge>
+                    <b-badge
+                      v-if="projectList[user.id].length > 4"
+                      class="inline"
+                      pill
+                      variant="outline-dark p-2 m-1"
+                      >+{{ projectList[user.id].length - 4 }}
+                    </b-badge>
+                  </div>
                 </div>
-              </div>
-              <div v-else>
-                <div class="text-center">
-                  <b-badge pill variant="outline-dark p-2 m-1"
-                    >No Tasks
-                  </b-badge>
+                <div v-if="projectList[user.id]" class="carousel-cell">
+                  <div
+                    v-for="project in projectList[user.id]"
+                    :key="project.id"
+                    class="project-stats"
+                  >
+                    <p>
+                      {{ project.name }}
+                    </p>
+                    <div class="details">
+                      <b-badge
+                        pill
+                        :variant="
+                          `${
+                            project.taskCount < 4
+                              ? 'success'
+                              : project.taskCount < 6
+                              ? 'warning'
+                              : 'danger'
+                          } p-2`
+                        "
+                        >{{ project.taskCount }} tasks</b-badge
+                      >
+
+                      <p
+                        :class="
+                          project.completionDate < new Date() ? 'overdue' : ''
+                        "
+                      >
+                        free
+                        {{ project.completionDate | moment("from", "now") }}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </flickity>
+
               <nuxt-link
                 :to="
                   `/team/${
@@ -93,10 +130,17 @@
                   }/${user.first_name.toLowerCase()}-${user.last_name.toLowerCase()}`
                 "
               >
-                <button class="btn btn-primary btn-rounded mt-2">
-                  {{ user.first_name }}'s Schedule
+                <button class="btn btn-primary btn-rounded mt-2 thin">
+                  Schedule
                 </button>
               </nuxt-link>
+              <button
+                v-if="projectList[user.id]"
+                class="btn btn-primary btn-rounded mt-2 thin"
+                @click="toggleStats(user.id)"
+              >
+                Quick Stats
+              </button>
             </b-card>
           </b-col>
         </transition-group>
@@ -107,15 +151,27 @@
 <script>
 import { mapState, mapGetters } from "vuex"
 import Util from "@/utils"
+import flickity from "vue-flickity"
 
 export default {
   layout: "default",
+  components: {
+    flickity
+  },
   data() {
     return {
       name: "",
       position: "",
       loading: true,
-      searchWord: ""
+      searchWord: "",
+      slider: {
+        options: {
+          pageDots: false,
+          wrapAround: true,
+          adaptiveHeight: true,
+          prevNextButtons: false
+        }
+      }
     }
   },
   computed: {
@@ -129,21 +185,29 @@ export default {
     projectList() {
       let array = []
       this.projects.forEach(project => {
-        if (project.lists) {
-          project.lists.forEach(list => {
-            if (list.tasks)
-              list.tasks.forEach(task => {
-                if (task.users)
-                  task.users.forEach(user => {
-                    if (!array[user]) {
-                      array[user] = []
-                    }
-                    if (user && !array[user].includes(project.name))
-                      array[user].push(project.name)
-                  })
-              })
+        project.lists.forEach(list => {
+          list.tasks.forEach(task => {
+            if (task.completed) return
+
+            task.users.forEach(userId => {
+              if (!array[userId]) array[userId] = []
+
+              let projectDetail = {
+                ...project,
+                taskCount: this.taskCount(project, userId),
+                completionDate: this.userProjectComplDate(project, userId)
+              }
+
+              if (
+                userId &&
+                !array[userId].find(detail => {
+                  return detail.id == project.id
+                })
+              )
+                array[userId].push(projectDetail)
+            })
           })
-        }
+        })
       })
       return array
     },
@@ -212,6 +276,39 @@ export default {
             `There was an error sending the password reset email: ${error}`
           )
         })
+    },
+    taskCount(project, userId) {
+      let count = 0
+      console.log(userId)
+      project.lists.forEach(list => {
+        list.tasks.forEach(task => {
+          if (!task.completed && task.users.includes(userId)) count++
+        })
+      })
+      console.log(project)
+      return count
+    },
+    userProjectComplDate(project, userId) {
+      let maxPerList = []
+      project.lists.forEach(list => {
+        maxPerList.push(
+          list.tasks
+            .filter(task => {
+              return task.users.includes(userId)
+            })
+            .reduce(
+              (max, task) =>
+                task.enddate.toDate() > max ? task.enddate.toDate() : max,
+              new Date(2010, 1, 1)
+            )
+        )
+      })
+      return maxPerList.reduce((max, listMax) =>
+        listMax > max ? listMax : max
+      )
+    },
+    toggleStats(userid) {
+      this.$refs["slider_" + userid][0].next()
     }
   }
 }
@@ -228,5 +325,39 @@ export default {
   position: absolute;
   right: 0;
   top: 0;
+}
+.greyed {
+  background: #eeeeee;
+}
+.thin {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+.carousel-cell {
+  width: 100%;
+}
+.project-stats {
+  text-align: left;
+  max-width: 250px;
+  margin: auto;
+  margin-bottom: 10px;
+}
+.project-stats:last-child {
+  margin-bottom: 0px !important;
+}
+.project-stats p {
+  margin: 0;
+}
+.project-stats .details p {
+  float: right;
+  font-size: 75%;
+  padding-right: 0px !important;
+}
+.project-stats .details * {
+  padding: 5px 10px !important;
+}
+.overdue {
+  color: red;
+  font-weight: bold;
 }
 </style>

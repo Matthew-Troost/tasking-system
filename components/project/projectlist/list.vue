@@ -203,6 +203,7 @@ export default {
       }, 5000)
     },
     addTask: function() {
+      let today = new Date()
       this.tasks.push({
         identifier: Utils.generateGuid(),
         completed: false,
@@ -210,10 +211,24 @@ export default {
         difficulty: "easy",
         hours: 1,
         startdate: this.$store.state.firebase.firestore.Timestamp.fromDate(
-          new Date()
+          new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate(),
+            0,
+            0,
+            0
+          )
         ),
         enddate: this.$store.state.firebase.firestore.Timestamp.fromDate(
-          new Date()
+          new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate(),
+            23,
+            59,
+            59
+          )
         ),
         priority: "low",
         users: []
