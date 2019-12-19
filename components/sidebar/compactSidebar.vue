@@ -179,7 +179,7 @@
             <li class="nav-item">
               <nuxt-link tag="a" class to="/projects/sites">
                 <i class="nav-icon i-Globe"></i>
-                <span class="item-name">Sites</span>
+                <span class="item-name">Web Sites</span>
               </nuxt-link>
             </li>
             <li class="nav-item">
