@@ -245,7 +245,6 @@ export default {
     ...mapMutations({ toggleOpen: "sidebar/toggleOpen" }),
 
     compactSideBarToggle() {
-      // console.log("test");
       if (this.isSideBarOpen) {
         this.toggleOpen()
       }

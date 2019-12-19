@@ -5,6 +5,7 @@
     :speed="2"
     primary-color="#f3f3f3"
     secondary-color="#ecebeb"
+    preserve-aspect-ratio="none"
   >
     <rect x="0" y="2.67" rx="3" ry="3" width="46" height="36" />
     <rect x="55" y="2.67" rx="3" ry="3" width="46" height="36" />

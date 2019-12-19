@@ -204,7 +204,6 @@ export default {
         return this.value.priority
       },
       set(val) {
-        console.log("setting priority")
         this.priorityProxy = val
       }
     },

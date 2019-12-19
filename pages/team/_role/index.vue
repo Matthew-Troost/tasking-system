@@ -279,13 +279,11 @@ export default {
     },
     taskCount(project, userId) {
       let count = 0
-      console.log(userId)
       project.lists.forEach(list => {
         list.tasks.forEach(task => {
           if (!task.completed && task.users.includes(userId)) count++
         })
       })
-      console.log(project)
       return count
     },
     userProjectComplDate(project, userId) {
