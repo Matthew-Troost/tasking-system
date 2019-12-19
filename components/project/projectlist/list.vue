@@ -22,22 +22,43 @@
           ></i>
         </b-col>
         <b-col md="2">
-          <i v-if="!fixed" class="nav-icon i-Remove f-r" @click="archive"></i>
+          <i
+            v-if="!fixed"
+            v-b-popover.hover.top="'Archive'"
+            class="nav-icon i-Remove f-r"
+            @click="archive"
+          ></i>
+          <i
+            v-if="tasks.length > 0"
+            v-b-toggle="`list-collapse_${list.identifier}`"
+            v-b-popover.hover.top="visible ? 'Collapse' : 'Reveal'"
+            :class="`nav-icon i-Arrow-${visible ? 'Up' : 'Down'}-in-Circle f-r`"
+          ></i>
         </b-col>
       </b-row>
     </div>
-    <div :id="list.identifier" class="list-group">
-      <ListItem
-        v-for="task in tasks.filter(task => {
-          return applicable(task)
-        })"
-        :key="task.identifier"
-        v-model="tasks[tasks.indexOf(task)]"
-        :priority="task.priority"
-        :update-function="updateFunction"
-        @item-update="callbackUpdate"
-      />
-    </div>
+    <b-collapse
+      :id="`list-collapse_${list.identifier}`"
+      :visible="visible"
+      class="mt-2"
+      @hide="onCollapse(false)"
+      @show="onCollapse(true)"
+    >
+      <div :id="list.identifier" class="list-group">
+        <ListItem
+          v-for="task in tasks.filter(task => {
+            return applicable(task)
+          })"
+          :key="task.identifier"
+          v-model="tasks[tasks.indexOf(task)]"
+          :priority="task.priority"
+          :list-name="list.name"
+          :update-function="updateFunction"
+          @item-update="callbackUpdate"
+          @notify="slackNotify"
+        />
+      </div>
+    </b-collapse>
     <div class="list-group-item totals">
       <b-row>
         <b-col md="3">
@@ -64,6 +85,11 @@
         <b-col md="1">
           <b class="hours">{{ totalHours }}</b>
         </b-col>
+        <b-col md="5">
+          <b-badge v-if="!visible" pill variant="dark m-2 f-r total-pill"
+            >Collapsed</b-badge
+          >
+        </b-col>
       </b-row>
     </div>
     <transition name="fade">
@@ -81,6 +107,7 @@
 import ListItem from "./listItem"
 import Sortable from "sortablejs"
 import Utils from "@/utils"
+import { mapGetters } from "vuex"
 
 export default {
   name: "List",
@@ -117,10 +144,16 @@ export default {
       hourSort: false,
       difficultySort: false,
       tasksProxy: [],
-      dragging: false
+      dragging: false,
+      visible: true,
+      collapsedPriorDrag: false
     }
   },
   computed: {
+    ...mapGetters({
+      getCurrentUser: "users/getCurrentUser",
+      getProjectById: "projects/getById"
+    }),
     list() {
       return this.value
     },
@@ -163,10 +196,12 @@ export default {
           }
         },
         onStart: () => {
+          this.$emit("dragging-started")
           document.body.style.cursor = "grabbing"
           this.dragging = true
         },
         onEnd: () => {
+          this.$emit("dragging-stopped")
           document.body.style.cursor = "auto"
           this.dragging = false
         },
@@ -182,6 +217,11 @@ export default {
         animation: 150
       }
     )
+
+    this.visible =
+      this.tasks.find(task => {
+        return !task.completed
+      }) != null || !this.tasks.length
   },
   methods: {
     applicable(task) {
@@ -193,6 +233,15 @@ export default {
     },
     update: function() {
       this.updateFunction(this.projectid)
+    },
+    onSeperateListDragging(isDragging) {
+      if (isDragging) {
+        if (!this.visible) this.collapsedPriorDrag = true
+        this.visible = true
+      } else {
+        if (this.collapsedPriorDrag) this.visible = false
+        this.collapsedPriorDrag = false
+      }
     },
     callbackUpdate: function() {
       if (this.updateTimer != null) {
@@ -235,6 +284,55 @@ export default {
       })
       this.update()
     },
+    slackNotify(details) {
+      switch (details.slackfunction) {
+        case this.$slack.functions.TASK_NOTIFICATION.ASSIGNED:
+          this.$slack
+            .sendTaskAssignedMessage(
+              details.props.assignee,
+              this.getProjectById(this.projectid),
+              details.props.task,
+              this.getCurrentUser,
+              this.list.name
+            )
+            .catch(error => this.displaySlackError(error))
+          break
+        case this.$slack.functions.TASK_NOTIFICATION.COMPLETED:
+          this.$slack.sendTaskCompletedMessage(
+            this.getProjectById(this.projectid),
+            details.props.task,
+            this.getCurrentUser,
+            this.list.name
+          )
+          break
+        case this.$slack.functions.TASK_NOTIFICATION.NOTE_ADDED:
+          this.$slack
+            .sendTaskNoteNotification(
+              this.getCurrentUser,
+              details.props.task.description,
+              this.getProjectById(this.projectid).name,
+              details.props.emails,
+              this.list.name,
+              details.props.content
+            )
+            .catch(error => this.displaySlackError(error))
+          break
+        case this.$slack.functions.TASK_NOTIFICATION.UPLOAD_ADDED:
+          this.$slack.sendTaskUploadNotification(
+            this.getCurrentUser,
+            details.props.task.description,
+            this.getProjectById(this.projectid).name,
+            details.props.emails,
+            this.list.name
+          )
+          break
+      }
+    },
+    displaySlackError(error) {
+      this.$toast.error(
+        `There was an issue sending slack communications: ${error}`
+      )
+    },
     archive: function() {
       this.$dialog({
         title: `Archive ${this.list.name}`,
@@ -256,8 +354,10 @@ export default {
         ]
       })
     },
+    onCollapse(value) {
+      this.visible = value
+    },
     sumHours: function(total, task) {
-      console.log(task)
       return total + task.hours
     },
     sortTasks: function(sortProperty) {
@@ -342,6 +442,8 @@ input:focus {
   background-color: #dedede;
   border-color: #d2d2d2;
   margin-bottom: 20px !important;
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
 }
 .totals p {
   margin: 0;
@@ -390,5 +492,8 @@ input:focus {
 .progress {
   max-width: 200px;
   margin-top: 4px;
+}
+.total-pill {
+  margin: 4px 0px 0px !important;
 }
 </style>

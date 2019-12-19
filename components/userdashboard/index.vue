@@ -132,6 +132,12 @@ export default {
               return blurredProject.name === project.name
             })
             project.lists.forEach(list => {
+              if (
+                !list.tasks.find(task => {
+                  return !task.completed
+                })
+              )
+                return
               list.projectName = project.name
               list.blurred = blurredProject ? blurredProject.blur : false
               lists.push(list)
