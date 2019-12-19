@@ -15,12 +15,15 @@
             <List
               v-for="(list, index) in lists"
               :key="list.id"
+              ref="lists"
               v-model="lists[index]"
               :fixed="list.name == 'Completed'"
               :projectid="project.id"
               :update-function="updateProject"
               @list-update="updateProject"
               @item-moved="onListShuffled"
+              @dragging-started="notifyOtherListsOfDragging(true)"
+              @dragging-stopped="notifyOtherListsOfDragging(false)"
             />
             <b-button variant="outline-light m-1 btn-sm" @click="addList"
               >Add new list</b-button
@@ -132,6 +135,11 @@ export default {
         }
       })
       this.updateProject()
+    },
+    notifyOtherListsOfDragging(value) {
+      this.$refs["lists"].forEach(list => {
+        list.onSeperateListDragging(value)
+      })
     }
   }
 }
