@@ -1,11 +1,10 @@
 <template>
   <div>
-    <loading v-if="loading" />
-    <div v-else>
-      <h2 class="page-title">
-        {{ project.name }}
-      </h2>
-
+    <h2 class="page-title">
+      {{ project.name }}
+    </h2>
+    <p v-if="loading">loading...</p>
+    <div v-show="!loading" v-if="constrcuting">
       <b-tabs pills>
         <b-tab ref="list-tab" active>
           <template slot="title">
@@ -61,7 +60,9 @@ export default {
   },
   data() {
     return {
-      project: null
+      project: null,
+      loading: true,
+      constrcuting: false
     }
   },
   computed: {
@@ -82,10 +83,15 @@ export default {
       })
       lists.push(this.project.lists.find(x => x.name === "Completed"))
       return lists
-    },
-    loading() {
-      return this.project == null
     }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.constrcuting = true
+      this.$nextTick(() => {
+        this.loading = false
+      })
+    }, 500)
   },
   created() {
     this.project = this.getProjectByName(

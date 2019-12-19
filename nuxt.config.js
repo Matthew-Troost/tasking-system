@@ -5,7 +5,7 @@ module.exports = {
    */
   env: {
     //Moved to package.json file
-    DEVELOPMENT: process.env.NODE_ENV !== "production", //switch this to false before deploying
+    DEVELOPMENT: process.env.NODE_ENV === "production", //switch this to false before deploying
     SLACK_OAUTH:
       "xoxp-5039254558-11063984753-849564116853-4a335ff20261c511e810a29c3d7f6f5f",
     SLACK_BOT_OAUTH: "xoxb-5039254558-849096412500-ZaFeCzf2DzceiwIm6hRyuLbm",
@@ -27,7 +27,7 @@ module.exports = {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: "#2f495e" },
+  loading: { color: "#3f51b5", throttle: 0, continuous: true },
   /*
    ** Global CSS
    */
