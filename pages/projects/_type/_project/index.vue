@@ -3,7 +3,7 @@
     <h2 class="page-title">
       {{ project.name }}
     </h2>
-    <p v-if="loading">loading...</p>
+    <loadingSkeleton v-if="loading" />
     <div v-show="!loading" v-if="constrcuting">
       <b-tabs pills>
         <b-tab ref="list-tab" active>
@@ -48,6 +48,7 @@
 <script>
 import List from "@/components/project/projectlist/list"
 import Calendar from "@/components/calendar"
+import loadingSkeleton from "@/components/project/loadSkeleton"
 import { mapState, mapGetters } from "vuex"
 import Util from "@/utils"
 
@@ -56,7 +57,8 @@ export default {
   name: "Project",
   components: {
     List,
-    Calendar
+    Calendar,
+    loadingSkeleton
   },
   data() {
     return {
