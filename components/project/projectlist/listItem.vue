@@ -141,8 +141,8 @@
       <ListItemExtras
         ref="taskExtras"
         :taskid="value.identifier"
-        @noteAdded="slackNotify"
-        @documentUploaded="slackNotify"
+        @noteAdded="notify"
+        @documentUploaded="notify"
       />
     </b-collapse>
   </div>
@@ -165,6 +165,10 @@ export default {
       type: Object,
       default: null
     },
+    listName: {
+      type: String,
+      default: null
+    },
     updateFunction: {
       type: Function,
       default: null
@@ -178,8 +182,7 @@ export default {
       updateTimer: null,
       tag: "",
       tagsProxy: this.value.users,
-      extrasExpanded: false,
-      listName: ""
+      extrasExpanded: false
     }
   },
 
@@ -211,7 +214,7 @@ export default {
       },
       set(val) {
         if (val) {
-          this.slackNotify(this.$slack.functions.TASK_NOTIFICATION.COMPLETED)
+          this.notify(this.$slack.functions.TASK_NOTIFICATION.COMPLETED)
         }
         this.checkedProxy = val
       }
@@ -243,7 +246,7 @@ export default {
             x => x.id == val[val.length - 1].id
           )
           if (latestAssignee != this.getCurrentUser) {
-            this.slackNotify(this.$slack.functions.TASK_NOTIFICATION.ASSIGNED, {
+            this.notify(this.$slack.functions.TASK_NOTIFICATION.ASSIGNED, {
               assignee: latestAssignee
             })
           }
@@ -298,9 +301,6 @@ export default {
       }
     }
   },
-  created() {
-    this.listName = this.$parent.list.name
-  },
   methods: {
     modelChange() {
       this.$emit("input", {
@@ -323,58 +323,17 @@ export default {
     onExtrasToggle: function() {
       this.extrasExpanded = !this.extrasExpanded
     },
-    slackNotify(slackfunction, props) {
-      switch (slackfunction) {
-        case this.$slack.functions.TASK_NOTIFICATION.ASSIGNED:
-          this.$slack
-            .sendTaskAssignedMessage(
-              props.assignee,
-              this.getProjectById(this.$parent.projectid),
-              this.value,
-              this.getCurrentUser,
-              this.$parent.list.name
-            )
-            .catch(error => this.displaySlackError(error))
-          break
-        case this.$slack.functions.TASK_NOTIFICATION.COMPLETED:
-          this.$slack.sendTaskCompletedMessage(
-            this.getProjectById(this.$parent.projectid),
-            this.value,
-            this.getCurrentUser,
-            this.$parent.list.name
-          )
-          break
-        case this.$slack.functions.TASK_NOTIFICATION.NOTE_ADDED:
-          this.$slack
-            .sendTaskNoteNotification(
-              this.getCurrentUser,
-              this.value.description,
-              this.getProjectById(this.$parent.projectid).name,
-              this.users
-                .filter(x => this.tagsProxy.includes(x.id))
-                .map(t => t.email),
-              this.$parent.list.name,
-              props.content
-            )
-            .catch(error => this.displaySlackError(error))
-          break
-        case this.$slack.functions.TASK_NOTIFICATION.UPLOAD_ADDED:
-          this.$slack.sendTaskUploadNotification(
-            this.getCurrentUser,
-            this.value.description,
-            this.getProjectById(this.$parent.projectid).name,
-            this.users
-              .filter(x => this.tagsProxy.includes(x.id))
-              .map(t => t.email),
-            this.$parent.list.name
-          )
-          break
-      }
-    },
-    displaySlackError(error) {
-      this.$toast.error(
-        `There was an issue sending slack communications: ${error}`
-      )
+    notify(slackfunction, props) {
+      this.$emit("notify", {
+        function: slackfunction,
+        props: {
+          ...props,
+          emails: this.users
+            .filter(x => this.tagsProxy.includes(x.id))
+            .map(t => t.email),
+          task: this.value
+        }
+      })
     }
   }
 }
