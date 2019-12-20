@@ -24,14 +24,14 @@
         <b-col md="2">
           <i
             v-if="!fixed"
-            v-b-popover.hover.top="'Archive'"
+            v-b-popover.hover.topleft="'Archive'"
             class="nav-icon i-Remove f-r"
             @click="archive"
           ></i>
           <i
             v-if="tasks.length > 0"
             v-b-toggle="`list-collapse_${list.identifier}`"
-            v-b-popover.hover.top="visible ? 'Collapse' : 'Reveal'"
+            v-b-popover.hover.topleft="visible ? 'Collapse' : 'Reveal'"
             :class="`nav-icon i-Arrow-${visible ? 'Up' : 'Down'}-in-Circle f-r`"
           ></i>
         </b-col>
@@ -94,7 +94,7 @@
     </div>
     <transition name="fade">
       <div
-        v-show="dragging"
+        v-show="trash.show"
         :id="`${list.identifier}-trash`"
         class="mb-20 trash-grid"
       >
@@ -144,7 +144,10 @@ export default {
       hourSort: false,
       difficultySort: false,
       tasksProxy: [],
-      dragging: false,
+      trash: {
+        show: false,
+        timeout: null
+      },
       visible: true,
       collapsedPriorDrag: false
     }
@@ -198,12 +201,15 @@ export default {
         onStart: () => {
           this.$emit("dragging-started")
           document.body.style.cursor = "grabbing"
-          this.dragging = true
+          this.trash.timeout = setTimeout(() => {
+            this.trash.show = true
+          }, 500)
         },
         onEnd: () => {
           this.$emit("dragging-stopped")
           document.body.style.cursor = "auto"
-          this.dragging = false
+          clearTimeout(this.trash.timeout)
+          this.trash.show = false
         },
         forceFallback: true,
         animation: 150
