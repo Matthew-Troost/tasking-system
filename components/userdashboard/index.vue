@@ -1,97 +1,101 @@
 <template>
   <div>
-    <LoadingSkeleton v-if="loading" />
-    <div v-show="!loading" v-if="constrcuting">
-      <b-row v-if="projects.length > 0">
-        <b-col md="3">
-          <b-card class="view-toggle">
-            <b-row>
-              <b-col sm="6"
-                ><i
-                  class="i-Calendar-4"
-                  :class="calendarViewSelected ? 'view-selected' : ''"
-                  @click="toggleView"
-                ></i>
-              </b-col>
-              <b-col sm="6">
-                <i
-                  class="i-Letter-Open"
-                  :class="!calendarViewSelected ? 'view-selected' : ''"
-                  @click="toggleView"
-                ></i
-              ></b-col>
-            </b-row>
-          </b-card>
-          <b-card class="project-progress">
-            <div
-              v-for="project in projects"
-              :key="project.id"
-              class="progress-container"
-            >
-              <div class="d-flex">
-                <span class="text-muted text-12">{{ project.name }}</span>
-                <span class="text-muted text-12 ml-auto">
-                  {{ projectProgressPercent(project.id) }}%
-                </span>
-              </div>
-              <b-progress
-                :ref="project.id"
-                height="5px"
-                :value="projectProgressPercent(project.id)"
-              ></b-progress>
-            </div>
-          </b-card>
-          <b-card v-if="projectComposition.data.length > 1" class="pie-chart">
-            <ProjectComposition
-              :composition="projectComposition"
-              @legendSelectChanged="blurCalendarEvents"
-            />
-          </b-card>
-        </b-col>
-        <b-col md="9">
-          <b-card class="project-calendar">
-            <Calendar
-              v-show="calendarViewSelected"
-              key="calendar"
-              v-model="projectLists"
-              :restrict-to-user-id="userid"
-              :colour-palette="projectComposition.colours"
-              :colour-by-project="true"
-              @events-adjusted="updateProjectLists"
-            />
-            <div v-show="!calendarViewSelected" key="list">
+    <h4 v-if="!projects.length" class="no-projects">
+      <b>No projects just yet...</b>
+    </h4>
+    <div v-else>
+      <LoadingSkeleton v-if="loading" />
+      <div v-show="!loading" v-if="constrcuting">
+        <b-row v-if="projects.length > 0">
+          <b-col md="3">
+            <b-card class="view-toggle">
+              <b-row>
+                <b-col sm="6"
+                  ><i
+                    class="i-Calendar-4"
+                    :class="calendarViewSelected ? 'view-selected' : ''"
+                    @click="toggleView"
+                  ></i>
+                </b-col>
+                <b-col sm="6">
+                  <i
+                    class="i-Letter-Open"
+                    :class="!calendarViewSelected ? 'view-selected' : ''"
+                    @click="toggleView"
+                  ></i
+                ></b-col>
+              </b-row>
+            </b-card>
+            <b-card class="project-progress">
               <div
-                v-for="projectName in lodash
-                  .uniqBy(projectLists, 'projectName')
-                  .map(list => list.projectName)"
-                :key="projectName"
+                v-for="project in projects"
+                :key="project.id"
+                class="progress-container"
               >
-                <h4>
-                  <b>{{ projectName }}</b>
-                </h4>
-                <List
-                  v-for="list in projectLists.filter(list => {
-                    return (
-                      list.projectName == projectName &&
-                      projectListApplicableToUser(list)
-                    )
-                  })"
-                  :key="list.identifier"
-                  v-model="projectLists[projectLists.indexOf(list)]"
-                  :fixed="true"
-                  :projectid="getProjectByName(list.projectName).id"
-                  :userid="userid"
-                  :update-function="updateProjectLists"
-                  class="ml-15"
-                  @list-update="updateProjectLists"
-                  @item-moved="onListShuffled"
-                />
+                <div class="d-flex">
+                  <span class="text-muted text-12">{{ project.name }}</span>
+                  <span class="text-muted text-12 ml-auto">
+                    {{ projectProgressPercent(project.id) }}%
+                  </span>
+                </div>
+                <b-progress
+                  :ref="project.id"
+                  height="5px"
+                  :value="projectProgressPercent(project.id)"
+                ></b-progress>
               </div>
-            </div>
-          </b-card>
-        </b-col>
-      </b-row>
-      <h4 v-else class="no-projects"><b>No projects just yet...</b></h4>
+            </b-card>
+            <b-card v-if="projectComposition.data.length > 1" class="pie-chart">
+              <ProjectComposition
+                :composition="projectComposition"
+                @legendSelectChanged="blurCalendarEvents"
+              />
+            </b-card>
+          </b-col>
+          <b-col md="9">
+            <b-card class="project-calendar">
+              <Calendar
+                v-show="calendarViewSelected"
+                key="calendar"
+                v-model="projectLists"
+                :restrict-to-user-id="userid"
+                :colour-palette="projectComposition.colours"
+                :colour-by-project="true"
+                @events-adjusted="updateProjectLists"
+              />
+              <div v-show="!calendarViewSelected" key="list">
+                <div
+                  v-for="projectName in lodash
+                    .uniqBy(projectLists, 'projectName')
+                    .map(list => list.projectName)"
+                  :key="projectName"
+                >
+                  <h4>
+                    <b>{{ projectName }}</b>
+                  </h4>
+                  <List
+                    v-for="list in projectLists.filter(list => {
+                      return (
+                        list.projectName == projectName &&
+                        projectListApplicableToUser(list)
+                      )
+                    })"
+                    :key="list.identifier"
+                    v-model="projectLists[projectLists.indexOf(list)]"
+                    :fixed="true"
+                    :projectid="getProjectByName(list.projectName).id"
+                    :userid="userid"
+                    :update-function="updateProjectLists"
+                    class="ml-15"
+                    @list-update="updateProjectLists"
+                    @item-moved="onListShuffled"
+                  />
+                </div>
+              </div>
+            </b-card>
+          </b-col>
+        </b-row>
+      </div>
     </div>
   </div>
 </template>

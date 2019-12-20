@@ -40,7 +40,6 @@
     <b-collapse
       :id="`list-collapse_${list.identifier}`"
       :visible="visible"
-      class="mt-2"
       @hide="onCollapse(false)"
       @show="onCollapse(true)"
     >
