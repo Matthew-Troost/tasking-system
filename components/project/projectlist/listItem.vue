@@ -23,31 +23,42 @@
           >DUE {{ cappedEndDate | moment("from", "now") }}</b-badge
         >
         <input
+          :id="`description_${value.identifier}`"
           ref="description"
           :value="value.description"
           placeholder="..."
           style="padding-right: 20px; width: 100%"
-          class="input-grab"
+          :class="[{ 'no-point': value.completed }, 'input-grab']"
           @input="modelChange"
         />
+        <b-popover
+          :target="`description_${value.identifier}`"
+          placement="top"
+          triggers="hover"
+          delay="500"
+          :content="value.description"
+          :disabled="value.completed"
+          custom-class="blue-popover"
+        ></b-popover>
         <b-badge
           v-show="extrasCount > 0"
-          class="extrasCount"
+          :class="[{ 'no-point': value.completed }, 'extrasCount']"
           pill
           variant="primary"
           >{{ extrasCount }}</b-badge
         >
         <i
           v-b-toggle="`extra_${value.identifier}`"
-          :class="
-            `${
-              extrasExpanded || extrasCount > 0 ? 'extras-trigger-active' : ''
-            } nav-icon i-Folder extras-trigger`
-          "
+          :class="[
+            {
+              'extras-trigger-active': extrasExpanded || extrasCount > 0,
+              'no-point': value.completed
+            },
+            'nav-icon i-Folder extras-trigger'
+          ]"
         />
       </b-col>
-
-      <b-col md="6" class="dragable">
+      <b-col md="6" :class="[{ 'no-point': value.completed }, 'dragable']">
         <b-row style="text-align: center">
           <b-col md="2" style="border-left: 1px solid #cacaca">
             <input
@@ -400,5 +411,8 @@ input:focus {
   margin-right: 5px;
   margin-top: 4px;
   text-transform: uppercase;
+}
+.no-point {
+  pointer-events: none;
 }
 </style>

@@ -207,7 +207,7 @@ export default {
     projectListApplicableToUser(list) {
       let result = false
       list.tasks.forEach(task => {
-        if (task.users.includes(this.userid)) {
+        if (!task.completed && task.users.includes(this.userid)) {
           result = true
         }
       })
