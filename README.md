@@ -2,8 +2,6 @@
 
 > A simple task sheduler.
 
-<img src="assets/images/scheduler.gif" />
-
 ## Build Setup
 
 ``` bash
