@@ -2,56 +2,13 @@
 
 > A simple task sheduler.
 
-## Build Setup
+Given the task to re-write the existing company task system, we wrote a neat little tool to management work in projects amongst a team. The editing of tasks can be seen in real-time along with notifications via Slack.
 
-``` bash
-# install dependencies
-$ npm run install
+Highlights:
 
-# serve with hot reload at localhost:3000
-$ npm run dev
+Azure pipeline feed into the system
+Slack notifications
+Static loaded SPA allows for zero load time after initial
+Utilized: Vue.js, Nuxt.js, Vuex, Node.js, Firebase, Jest, GitLab CI/CD
 
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
-```
-
-## Required VS Code Extensions 
-
-- **Prettier**
-- **EsLint**
-- **Vetur**
-
-## Code Formatting
-
-```bash
-# to run a code format check 
-$ npm run lint
-
-# to auto fix what can be fixed
-$ npm run lintfix
-
-# to set-up formatting on saving (VS Code)
-Add the following lines to your settings.json file:
-
-  "eslint.validate": [
-    {
-      "language": "vue",
-      "autoFix": true
-    },
-    {
-      "language": "javascript",
-      "autoFix": true
-    },
-    {
-      "language": "javascriptreact",
-      "autoFix": true
-    }
-  ],
-  "eslint.autoFixOnSave": true,
-  "editor.formatOnSave": false,
-  "vetur.validation.template": false
-```
+<img src="assets/images/schedular.gif"  />
