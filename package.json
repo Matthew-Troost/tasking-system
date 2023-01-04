@@ -42,7 +42,7 @@
     "generate-password": "^1.4.2",
     "gin-blocks": "^1.1.0",
     "mobile-device-detect": "^0.3.3",
-    "nuxt": "^2.0.0",
+    "nuxt": "^2.15.8",
     "nuxt-fontawesome": "^0.4.0",
     "slack": "^11.0.2",
     "sortablejs": "^1.10.1",
